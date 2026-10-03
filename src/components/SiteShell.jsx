@@ -1,6 +1,8 @@
 import { useEffect, useRef } from "react";
 import { Outlet, useLocation } from "react-router-dom";
+import { trackEvent } from "../data/analytics.js";
 import { getProjectBySlug } from "../data/projects.js";
+import { serviceOfferings } from "../data/services.js";
 import SiteFooter from "./SiteFooter.jsx";
 import SiteHeader from "./SiteHeader.jsx";
 import WhatsAppButton from "./WhatsAppButton.jsx";
@@ -9,14 +11,14 @@ const siteOrigin = "https://vip-studios.pages.dev";
 
 const pageMetadata = {
   "/": {
-    title: "VIP StudioS — Social, shot & edited",
+    title: "Social Media Management & Video Production in Pune | VIP StudioS",
     description:
-      "Social-media strategy, account management, video shoots, and professional editing from VIP StudioS. Explore illustrative concepts and start a project.",
+      "Pune-based social media management, video shoots and professional editing for brands and businesses. Plan, produce and publish content across India.",
   },
   "/services": {
-    title: "Social & video services — VIP StudioS",
+    title: "Video & social content services in Pune — VIP StudioS",
     description:
-      "Social-media strategy, content planning and publishing, video shoots, and professional editing from VIP StudioS.",
+      "Explore video editing, short-form, YouTube, production, podcast video, social-media content and monthly support from VIP StudioS.",
   },
   "/work": {
     title: "Portfolio concepts — VIP StudioS",
@@ -26,7 +28,7 @@ const pageMetadata = {
   "/about": {
     title: "The studio — VIP StudioS",
     description:
-      "Learn about the connected social-media and video approach at VIP StudioS: planning, shoots, publishing, and professional editing.",
+      "VIP StudioS is a Pune-based creative video and content studio working with businesses, brands and creators across India.",
   },
   "/contact": {
     title: "Start a conversation — VIP StudioS",
@@ -38,6 +40,7 @@ const pageMetadata = {
 function RouteMetadata() {
   const { pathname, hash } = useLocation();
   const previousPathname = useRef(pathname);
+  const lastTrackedPath = useRef("");
 
   useEffect(() => {
     if (previousPathname.current !== pathname) {
@@ -61,19 +64,33 @@ function RouteMetadata() {
       ? pathname.split("/").at(-1)
       : "";
     const project = slug ? getProjectBySlug(slug) : null;
+    const serviceSlug = pathname.startsWith("/services/")
+      ? pathname.split("/").at(-1)
+      : "";
+    const service = serviceSlug
+      ? serviceOfferings.find((item) => item.slug === serviceSlug)
+      : null;
     const metadata =
       project
         ? {
             title: `${project.title} — Concept project — VIP StudioS`,
             description: `${project.summary} This is illustrative concept work, not a commissioned client project.`,
           }
+        : service
+          ? {
+              title: `${service.title} in Pune — VIP StudioS`,
+              description: `${service.description} Based in Pune, working with clients across India.`,
+            }
         : pageMetadata[pathname.replace(/\/$/, "") || "/"] ?? {
             title: "Page not found — VIP StudioS",
-            description: "This page is not available. Explore the VIP StudioS portfolio.",
+            description: "This page is not available. Explore VIP StudioS services or contact the studio.",
           };
 
     const canonicalUrl = new URL(pathname, siteOrigin).href;
-    const isNotFound = !project && !pageMetadata[pathname.replace(/\/$/, "") || "/"];
+    const isNotFound =
+      !project &&
+      !service &&
+      !pageMetadata[pathname.replace(/\/$/, "") || "/"];
     document.title = metadata.title;
     document
       .querySelector('meta[name="description"]')
@@ -102,7 +119,89 @@ function RouteMetadata() {
     document
       .querySelector('meta[name="robots"]')
       ?.setAttribute("content", isNotFound ? "noindex, follow" : "index, follow");
+    const breadcrumbScriptId = "route-breadcrumb-schema";
+    let breadcrumbScript = document.getElementById(breadcrumbScriptId);
+    if (pathname === "/") {
+      breadcrumbScript?.remove();
+    } else {
+      if (!breadcrumbScript) {
+        breadcrumbScript = document.createElement("script");
+        breadcrumbScript.id = breadcrumbScriptId;
+        breadcrumbScript.type = "application/ld+json";
+        document.head.append(breadcrumbScript);
+      }
+      const routeLabel = project?.title || service?.title || ({
+        "/services": "Services",
+        "/work": "Our Work",
+        "/about": "About",
+        "/contact": "Contact",
+      }[pathname] || "Page");
+      const category = pathname.startsWith("/services/")
+        ? "Services"
+        : pathname.startsWith("/work/")
+          ? "Our Work"
+          : "";
+      const crumbs = [{ name: "Home", path: "/" }];
+      if (category) {
+        crumbs.push({
+          name: category,
+          path: category === "Services" ? "/services" : "/work",
+        });
+      }
+      crumbs.push({ name: routeLabel, path: pathname });
+      breadcrumbScript.textContent = JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: crumbs.map((crumb, index) => ({
+          "@type": "ListItem",
+          position: index + 1,
+          name: crumb.name,
+          item: new URL(crumb.path, siteOrigin).href,
+        })),
+      });
+    }
+    if (lastTrackedPath.current !== pathname) {
+      trackEvent("page_view", {
+        page_path: pathname,
+        page_title: metadata.title,
+      });
+      if (service) {
+        trackEvent("service_page_view", { service_name: service.title });
+      }
+      lastTrackedPath.current = pathname;
+    }
   }, [hash, pathname]);
+
+  return null;
+}
+
+function ConversionEvents() {
+  useEffect(() => {
+    function handleClick(event) {
+      const target = event.target instanceof Element ? event.target.closest("a, button") : null;
+      if (!target) return;
+      const href = target.getAttribute("href") || "";
+      const label = target.getAttribute("aria-label") || target.textContent.trim().replace(/\s+/g, " ");
+      if (href.startsWith("https://wa.me/")) {
+        const placement = target.classList.contains("whatsapp-float")
+          ? "floating_button"
+          : target.classList.contains("header-whatsapp")
+            ? "mobile_navigation"
+            : "contact_or_footer";
+        trackEvent("whatsapp_click", { link_text: label, placement });
+      } else if (href.startsWith("mailto:")) {
+        trackEvent("email_click", { link_text: label });
+      } else if (href.startsWith("tel:")) {
+        trackEvent("call_click", { link_text: label });
+      } else if (target.closest(".project-link")) {
+        trackEvent("portfolio_view", { project_name: label });
+      } else if (target.matches(".button, .studio-text-link")) {
+        trackEvent("cta_click", { link_text: label, link_url: href });
+      }
+    }
+    document.addEventListener("click", handleClick);
+    return () => document.removeEventListener("click", handleClick);
+  }, []);
 
   return null;
 }
@@ -115,6 +214,7 @@ export default function SiteShell() {
       </a>
       <SiteHeader />
       <RouteMetadata />
+      <ConversionEvents />
       <main id="main-content" tabIndex="-1">
         <Outlet />
       </main>

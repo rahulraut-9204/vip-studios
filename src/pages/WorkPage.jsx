@@ -17,17 +17,18 @@ export default function WorkPage() {
   );
 
   return (
-    <section className="page-section page-gutter work-page">
-      <div className="page-intro">
-        <h1>Frames for<br /><span>the feed.</span></h1>
-        <p className="page-lede">
-          A few visual directions for the kind of stories we can shape across
-          social and video. Every project and stock image here is illustrative,
-          not commissioned VIP StudioS work.
+    <section className="studio-page studio-work-page">
+      <div className="studio-page-intro">
+        <p className="studio-location">VISUAL DIRECTIONS · CONCEPT STUDIES</p>
+        <h1>Frames for<br /><span>the story.</span></h1>
+        <p>
+          Explore a few illustrative directions for social and video. These
+          studies use stock imagery; they are not client projects or proof of
+          delivered results.
         </p>
       </div>
 
-      <div className="work-toolbar">
+      <div className="work-toolbar studio-work-toolbar">
         <div aria-label="Filter concept projects" className="filter-list" role="group">
           {projectCategories.map((category) => (
             <button
@@ -41,8 +42,8 @@ export default function WorkPage() {
             </button>
           ))}
         </div>
-        <span className="work-count">
-          {String(visibleProjects.length).padStart(2, "0")} CONCEPTS
+        <span className="work-count" aria-live="polite">
+          {String(visibleProjects.length).padStart(2, "0")} CONCEPT STUDIES
         </span>
       </div>
 

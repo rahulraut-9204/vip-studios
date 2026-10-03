@@ -1,73 +1,51 @@
-import { motion, useReducedMotion } from "motion/react";
 import { ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { serviceAreas } from "../data/services.js";
-
-const spring = { type: "spring", stiffness: 120, damping: 22 };
+import { serviceOfferings } from "../data/services.js";
 
 export default function ServicesPage() {
-  const reduceMotion = useReducedMotion();
-
   return (
-    <section className="page-section page-gutter services-page">
-      <div className="page-intro">
+    <section className="studio-page studio-services-page">
+      <header className="studio-page-intro">
+        <p className="studio-location">FROM FIRST IDEA TO FINAL FRAME</p>
         <h1>
-          Social, shot<br />
-          &amp; <span>edited.</span>
+          Make the idea
+          <br />
+          <span>go further.</span>
         </h1>
-        <p className="page-lede">
-          Strategy and content under one roof. We plan and manage your social
-          presence, then make the videos that bring it to life.
+        <p>
+          Social-media planning and management, video shoots and professional
+          editing—shaped around what you want to create.
         </p>
-      </div>
-
-      <div className="services-list">
-        {serviceAreas.map((service, index) => (
-          <motion.article
-            className={`service-detail-row service-detail-${service.id}`}
-            id={`service-${service.id}`}
-            key={service.id}
-            initial={reduceMotion ? false : { opacity: 0, y: 28 }}
-            transition={reduceMotion ? { duration: 0 } : { ...spring, delay: index * 0.07 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.25 }}
-          >
-            <span className="service-detail-label">{service.label}</span>
-            <div className="service-detail-main">
+      </header>
+      <div className="studio-offering-list">
+        {serviceOfferings.map((service, index) => (
+          <article className="studio-offering" key={service.slug}>
+            <span className="studio-offering-index">{String(index + 1).padStart(2, "0")}</span>
+            <div>
               <h2>{service.title}</h2>
               <p>{service.description}</p>
-              <Link
-                className="service-enquire-link"
-                to={`/contact?service=${encodeURIComponent(service.enquiryValue)}`}
-              >
-                Enquire about {service.label.toLowerCase()}{" "}
-                <ArrowUpRight aria-hidden="true" size={15} />
-              </Link>
             </div>
-            <ul>
-              {service.deliverables.map((deliverable) => (
-                <li key={deliverable}>{deliverable}</li>
-              ))}
-            </ul>
-            <span className="service-detail-glyph" aria-hidden="true">
-              {service.id === "social" ? "S" : service.id === "shoot" ? "V" : "E"}
-            </span>
-          </motion.article>
+            <Link
+              aria-label={`Learn about ${service.title}`}
+              className="studio-offering-link"
+              to={`/services/${service.slug}`}
+            >
+              <ArrowUpRight aria-hidden="true" size={21} />
+            </Link>
+          </article>
         ))}
       </div>
-
-      <p className="growth-note">
-        Social strategy and consistent publishing are built to support growth.
-        No one can promise how an audience will respond.
+      <p className="studio-quote-note">
+        Pricing is scoped to the brief. Share your requirements for a project
+  quotation; no package rates or performance outcomes are promised here.
       </p>
-
-      <div className="service-end">
+      <div className="studio-end-card">
         <div>
-          <h2>Different idea?<br />Let&apos;s talk it through.</h2>
-          <p>Tell us what you want to make, manage, or improve.</p>
+          <h2>Not sure what you need yet?</h2>
+          <p>Start with the goal. We can talk through the format and next step.</p>
         </div>
         <Link className="button button-gold" to="/contact">
-          Start a conversation <ArrowUpRight aria-hidden="true" size={16} />
+          Tell us about it <ArrowUpRight aria-hidden="true" size={17} />
         </Link>
       </div>
     </section>

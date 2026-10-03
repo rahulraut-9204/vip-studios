@@ -1,145 +1,103 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Layers3, Play, Scissors, Video } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { projects } from "../data/projects.js";
 
-const moments = [
-  {
-    id: "social",
-    label: "Social",
-    detail: "Plan the presence",
-    image: projects[0],
-  },
-  {
-    id: "shoot",
-    label: "Shoot",
-    detail: "Capture the moment",
-    image: projects[3],
-  },
-  {
-    id: "edit",
-    label: "Edit",
-    detail: "Shape the final cut",
-    image: projects[2],
-  },
+const frames = [
+  { id: "social", label: "Social", icon: Layers3, project: projects[0] },
+  { id: "shoot", label: "Shoot", icon: Video, project: projects[3] },
+  { id: "edit", label: "Edit", icon: Scissors, project: projects[2] },
 ];
 
-const spring = { type: "spring", stiffness: 120, damping: 22 };
-
 export default function HeroReel() {
-  const [activeMoment, setActiveMoment] = useState(moments[1]);
+  const [active, setActive] = useState(frames[1]);
   const reduceMotion = useReducedMotion();
+  const Icon = active.icon;
 
   return (
-    <section aria-labelledby="home-title" className="hero-reel page-gutter">
-      <div className="hero-composition">
-        <motion.div
-          animate={{ opacity: 1, y: 0 }}
-          className="hero-copy"
-          initial={reduceMotion ? false : { opacity: 0, y: 22 }}
-          transition={reduceMotion ? { duration: 0 } : { ...spring, delay: 0.08 }}
-        >
-          <h1 id="home-title">
-            Stories,
-            <br />
-            <span>in motion.</span>
-          </h1>
-          <p className="hero-offer">
-            We plan and manage your social presence, then produce the video
-            that brings your ideas to life—from shoot to final edit.
-          </p>
-          <div className="hero-actions">
-            <Link className="button button-gold" to="/contact">
-              Start a project <ArrowUpRight aria-hidden="true" size={17} />
-            </Link>
-            <Link className="text-link" to="/work">
-              View our work <ArrowUpRight aria-hidden="true" size={16} />
-            </Link>
-          </div>
-          <div className="hero-promise">
-            <span aria-hidden="true" className="hero-promise-mark" />
-            <p>One creative partner, from the first plan to the final post.</p>
-          </div>
-        </motion.div>
-
-        <motion.div
-          animate={{ opacity: 1, scale: 1, rotate: 0 }}
-          className="hero-reel-stage"
-          initial={reduceMotion ? false : { opacity: 0, scale: 0.96, rotate: 2.5 }}
-          transition={reduceMotion ? { duration: 0 } : { ...spring, delay: 0.18 }}
-        >
-          <div className="reel-frame">
-            <AnimatePresence initial={false} mode="wait">
-              <motion.img
-                alt={activeMoment.image.imageAlt}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 1.035 }}
-                initial={reduceMotion ? false : { opacity: 0, scale: 1.055 }}
-                key={activeMoment.id}
-                loading="eager"
-                fetchPriority="high"
-                src={activeMoment.image.image}
-                transition={{
-                  duration: reduceMotion ? 0 : 0.42,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-              />
-            </AnimatePresence>
-            <span aria-hidden="true" className="reel-flash" />
-            <div aria-live="polite" className="reel-caption">
-              <span>ILLUSTRATIVE CONCEPT / NOT CLIENT WORK</span>
-              <strong>{activeMoment.image.title}</strong>
-            </div>
-            <span aria-hidden="true" className="reel-frame-index">
-              V/S — 01
-            </span>
-          </div>
-
-          <div
-            aria-label="Explore our services"
-            className="reel-controls"
-            role="group"
-          >
-            {moments.map((moment, index) => (
-              <button
-                aria-pressed={activeMoment.id === moment.id}
-                className={`reel-control${activeMoment.id === moment.id ? " is-active" : ""}`}
-                key={moment.id}
-                onClick={() => setActiveMoment(moment)}
-                type="button"
-              >
-                <img alt="" className="reel-control-image" src={moment.image.image} />
-                <span className="reel-control-copy">
-                  <span className="reel-control-index">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                  <span className="reel-control-label">{moment.label}</span>
-                  <span className="reel-control-detail">{moment.detail}</span>
-                </span>
-                <ArrowUpRight
-                  aria-hidden="true"
-                  className="reel-control-arrow"
-                  size={15}
-                />
-              </button>
-            ))}
-          </div>
-        </motion.div>
+    <section aria-labelledby="home-title" className="studio-hero studio-route-stop" data-route-stop="Start">
+      <div className="studio-hero-copy">
+        <p className="studio-location">SOCIAL MEDIA & VIDEO STUDIO · PUNE</p>
+        <h1 id="home-title">
+          Social media.
+          <br />
+          <span>Shot &amp; edited.</span>
+        </h1>
+        <p className="studio-hero-intro">
+          We manage social accounts and create the video content around them —
+          from planning and shoots to professional editing and publishing.
+          Based in Pune, working across India.
+        </p>
+        <div className="studio-hero-actions">
+          <Link className="button button-gold" to="/contact">
+            Discuss your project <ArrowUpRight aria-hidden="true" size={17} />
+          </Link>
+          <Link className="studio-text-link" to="/services">
+            Explore services <ArrowUpRight aria-hidden="true" size={16} />
+          </Link>
+        </div>
+        <p className="studio-hero-services">
+          Social media management <i /> Video shoots <i /> Professional editing
+        </p>
       </div>
 
-      <div className="hero-base">
-        <span>STRATEGY</span>
-        <span aria-hidden="true">/</span>
-        <span>SHOOT</span>
-        <span aria-hidden="true">/</span>
-        <span>EDIT</span>
-        <span aria-hidden="true">/</span>
-        <span>PUBLISH</span>
-        <span className="hero-base-rule" />
-        <Link to="/services">
-          How we work <ArrowUpRight aria-hidden="true" size={15} />
-        </Link>
+      <div className="studio-hero-art">
+        <div className="studio-frame-stamp">
+          <span>V/S</span>
+          <span>CONTENT / STUDY 01</span>
+        </div>
+        <div className="studio-frame-master">
+          <AnimatePresence initial={false} mode="wait">
+            <motion.img
+              alt={active.project.imageAlt}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 1.025 }}
+              initial={reduceMotion ? false : { opacity: 0, scale: 1.04 }}
+              key={active.id}
+              loading="eager"
+              fetchPriority="high"
+              src={active.project.image}
+              style={{ objectPosition: active.project.imagePosition }}
+              transition={{ duration: reduceMotion ? 0 : 0.45, ease: [0.22, 1, 0.36, 1] }}
+            />
+          </AnimatePresence>
+          <div className="studio-frame-shade" />
+          <div className="studio-frame-caption">
+            <span><Icon aria-hidden="true" size={15} /> CONCEPT VISUAL · NOT CLIENT WORK</span>
+            <strong>{active.project.title}</strong>
+          </div>
+          <span className="studio-frame-index">00{frames.indexOf(active) + 1} / 03</span>
+          <span aria-hidden="true" className="studio-frame-crosshair studio-crosshair-one" />
+          <span aria-hidden="true" className="studio-frame-crosshair studio-crosshair-two" />
+          <div aria-label="Illustrative concept shown in landscape, vertical and square crops" className="studio-export-stamps">
+            <span>LANDSCAPE</span>
+            <span>VERTICAL</span>
+            <span>SQUARE</span>
+          </div>
+        </div>
+
+        <div aria-label="Explore the connected services" className="studio-frame-controls" role="group">
+          {frames.map((frame, index) => {
+            const FrameIcon = frame.icon;
+            return (
+              <button
+                aria-pressed={active.id === frame.id}
+                className={`studio-frame-control${active.id === frame.id ? " is-active" : ""}`}
+                key={frame.id}
+                onClick={() => setActive(frame)}
+                type="button"
+              >
+                <span>0{index + 1}</span>
+                <FrameIcon aria-hidden="true" size={15} />
+                {frame.label}
+              </button>
+            );
+          })}
+        </div>
+        <p className="studio-frame-footnote">
+          <Play aria-hidden="true" size={13} /> A visual study, not a showreel
+        </p>
       </div>
     </section>
   );

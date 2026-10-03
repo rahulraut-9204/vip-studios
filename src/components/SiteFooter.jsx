@@ -1,13 +1,13 @@
 import { ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { contactConfig, getWhatsAppHref } from "../data/contact.js";
-import { serviceAreas } from "../data/services.js";
+import { serviceOfferings } from "../data/services.js";
 import Brand from "./Brand.jsx";
 
 const footerLinks = [
   { label: "Home", to: "/" },
   { label: "Services", to: "/services" },
-  { label: "Portfolio", to: "/work" },
+  { label: "Our Work", to: "/work" },
   { label: "About", to: "/about" },
   { label: "Contact", to: "/contact" },
 ];
@@ -24,6 +24,7 @@ export default function SiteFooter() {
             Tell us about it <ArrowUpRight aria-hidden="true" size={16} />
           </Link>
           <p>Social, shot &amp; edited.</p>
+          <p className="footer-service-area">Pune, Maharashtra · Serving clients across India</p>
         </div>
         <div className="footer-group">
           <h3>Explore</h3>
@@ -36,9 +37,9 @@ export default function SiteFooter() {
         <div className="footer-group">
           <h3>Services</h3>
           <ul className="footer-link-list">
-            {serviceAreas.map((service) => (
-              <li key={service.id}>
-                <Link to={`/services#service-${service.id}`}>{service.label}</Link>
+            {serviceOfferings.map((service) => (
+              <li key={service.slug}>
+                <Link to={`/services/${service.slug}`}>{service.title}</Link>
               </li>
             ))}
           </ul>
@@ -68,7 +69,7 @@ export default function SiteFooter() {
       </div>
       <div className="footer-bottom">
         <span>© {new Date().getFullYear()} VIP StudioS</span>
-        <span>Portfolio includes illustrative concept studies, not commissioned projects.</span>
+        <span>Our work includes illustrative concept studies, not commissioned projects.</span>
         <Link to="/contact">Start a project <ArrowUpRight aria-hidden="true" size={13} /></Link>
       </div>
     </footer>

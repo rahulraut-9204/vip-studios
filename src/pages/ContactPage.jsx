@@ -1,251 +1,282 @@
 import { ArrowUpRight, Mail, MessageCircle, Phone } from "lucide-react";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import { trackEvent } from "../data/analytics.js";
 import { contactConfig, getWhatsAppHref } from "../data/contact.js";
-import { serviceAreas } from "../data/services.js";
+import { serviceOfferings } from "../data/services.js";
 
-function createEmailBody({ name, email, phone, company, service, timeline, project }) {
+const goals = [
+  "Brand awareness",
+  "Lead generation",
+  "Sales",
+  "Education",
+  "Personal branding",
+  "Audience growth",
+  "Product launch",
+  "Other",
+];
+
+function createEmailBody(data) {
   return [
-    `Name: ${name}`,
-    `Reply email: ${email}`,
-    `Phone / WhatsApp: ${phone}`,
-    `Company / brand: ${company || "Not provided"}`,
-    `Service: ${service}`,
-    `Expected timeline: ${timeline || "Not provided"}`,
+    `Name: ${data.name}`,
+    `Company / brand: ${data.company || "Not provided"}`,
+    `Email: ${data.email || "Not provided"}`,
+    `Phone / WhatsApp: ${data.phone || "Not provided"}`,
+    `Website / Instagram: ${data.social || "Not provided"}`,
+    `Service: ${data.service || "Not selected"}`,
+    `Number of videos: ${data.videoCount || "Not provided"}`,
+    `Video type: ${data.videoType || "Not provided"}`,
+    `Expected duration: ${data.duration || "Not provided"}`,
+    `Deadline: ${data.deadline || "Not provided"}`,
+    `Budget range: ${data.budget || "Not provided"}`,
+    `Project goal: ${data.goal || "Not provided"}`,
+    `Reference links: ${data.references || "Not provided"}`,
     "",
-    "Project idea:",
-    project,
+    "Project brief:",
+    data.requirements || "Not provided",
   ].join("\n");
 }
 
 export default function ContactPage() {
   const [status, setStatus] = useState("");
   const [searchParams] = useSearchParams();
-  const requestedService = searchParams.get("service");
-  const selectedService = serviceAreas.some(
-    (service) => service.enquiryValue === requestedService,
-  )
+  const requestedService = searchParams.get("service") || "";
+  const validService = serviceOfferings.some((service) => service.enquiryValue === requestedService)
     ? requestedService
     : "";
+  const whatsAppHref = getWhatsAppHref(
+    "Hi VIP StudioS, I'd like to discuss a project. I'll share the brief and requirements here.",
+  );
 
   function handleSubmit(event) {
     event.preventDefault();
     setStatus("");
 
-    if (!contactConfig.email) {
-      setStatus(
-        "Enquiry email is not configured yet. Add a verified public email in VITE_PUBLIC_EMAIL before launch.",
-      );
+    const form = event.currentTarget;
+    const fields = new FormData(form);
+    if (String(fields.get("websiteTrap") || "").trim()) return;
+    if (!form.reportValidity()) {
+      setStatus("Check the required fields and correct any invalid details.");
       return;
     }
 
-    const formData = new FormData(event.currentTarget);
-    const name = String(formData.get("name") ?? "").trim();
-    const email = String(formData.get("email") ?? "").trim();
-    const phone = String(formData.get("phone") ?? "").trim();
-    const company = String(formData.get("company") ?? "").trim();
-    const service = String(formData.get("service") ?? "").trim();
-    const timeline = String(formData.get("timeline") ?? "").trim();
-    const project = String(formData.get("project") ?? "").trim();
-    const nameField = event.currentTarget.elements.namedItem("name");
-    const projectField = event.currentTarget.elements.namedItem("project");
-    const phoneField = event.currentTarget.elements.namedItem("phone");
+    const data = Object.fromEntries(
+      [
+        "name",
+        "company",
+        "email",
+        "phone",
+        "social",
+        "service",
+        "videoCount",
+        "videoType",
+        "duration",
+        "deadline",
+        "budget",
+        "goal",
+        "references",
+        "requirements",
+      ].map((key) => [key, String(fields.get(key) || "").trim()]),
+    );
 
-    if (!name) {
-      nameField.setCustomValidity("Enter your name to continue.");
-      nameField.reportValidity();
-      setStatus("Please add your name to continue.");
+    const emailField = form.elements.namedItem("email");
+    const phoneField = form.elements.namedItem("phone");
+    if (!data.email && !data.phone) {
+      setStatus("Add an email address or phone number so the studio can reply.");
+      emailField.setCustomValidity("Enter an email or phone number.");
+      phoneField.setCustomValidity("Enter an email or phone number.");
+      emailField.reportValidity();
       return;
     }
-    nameField.setCustomValidity("");
-
-    if (!project) {
-      projectField.setCustomValidity("Add a short description of your project.");
-      projectField.reportValidity();
-      setStatus("Please describe your project in a few words.");
-      return;
-    }
-    projectField.setCustomValidity("");
-
-    if (phone.replace(/\D/g, "").length < 7) {
-      phoneField.setCustomValidity("Enter a phone or WhatsApp number with at least 7 digits.");
-      phoneField.reportValidity();
-      setStatus("Please enter a valid phone or WhatsApp number to continue.");
-      return;
-    }
+    emailField.setCustomValidity("");
     phoneField.setCustomValidity("");
+    if (data.phone && data.phone.replace(/\D/g, "").length < 7) {
+      phoneField.setCustomValidity("Enter at least 7 digits, or clear the phone field.");
+      phoneField.reportValidity();
+      setStatus("Check the phone number or clear it and leave an email address instead.");
+      return;
+    }
 
+    if (!contactConfig.email) {
+      setStatus("Email enquiries are not configured. Please use WhatsApp if available.");
+      return;
+    }
+
+    const subject = `Project brief from ${data.name}`;
     const params = new URLSearchParams({
-      subject: `Project enquiry from ${name}`,
-      body: createEmailBody({ name, email, phone, company, service, timeline, project }),
+      subject,
+      body: createEmailBody(data),
     });
     setStatus(
-      "Your email app should open with a draft. Review and send it there to complete your enquiry.",
+      "Your email app should open with a draft. Review it and press Send to deliver your brief; this website does not store or submit the form.",
     );
+    trackEvent("project_brief_draft_opened", { service_name: data.service });
     window.location.href = `mailto:${contactConfig.email}?${params.toString()}`;
   }
 
-  const whatsAppHref = getWhatsAppHref();
+  function clearContactValidation(event) {
+    const form = event.currentTarget.form;
+    form.elements.namedItem("email").setCustomValidity("");
+    form.elements.namedItem("phone").setCustomValidity("");
+  }
 
   return (
-    <section className="page-section page-gutter contact-page">
-      <div className="contact-grid">
-        <div className="contact-copy">
+    <section className="studio-page studio-contact-page">
+      <div className="studio-contact-layout">
+        <div className="studio-contact-copy">
+          <p className="studio-location">PUNE · WORKING ACROSS INDIA</p>
           <h1>
-            Let&apos;s make
+            Tell us about
             <br />
-            something
-            <br />
-            <span>move.</span>
+            your <span>project.</span>
           </h1>
-          <p className="page-lede">
-            Tell us what your social accounts need, what you want to film, or
-            where a stronger edit could take you.
+          <p>
+            A little context helps us understand what you are making and what
+            the right next step might be.
           </p>
-          <div className="contact-channels">
-            <div className="contact-channel">
-              <Mail aria-hidden="true" size={18} />
-              <div>
-                <span>Email</span>
-                {contactConfig.email ? (
-                  <a href={`mailto:${contactConfig.email}`}>{contactConfig.email}</a>
-                ) : (
-                  <span className="contact-pending">Email contact unavailable</span>
-                )}
-              </div>
+          <div className="studio-contact-methods">
+            <div>
+              <Mail aria-hidden="true" size={17} />
+              <span>Email</span>
+              {contactConfig.email ? (
+                <a href={`mailto:${contactConfig.email}`}>{contactConfig.email}</a>
+              ) : (
+                <span className="studio-contact-unavailable">Email not configured</span>
+              )}
             </div>
             {contactConfig.phoneNumber && (
-              <div className="contact-channel">
-                <Phone aria-hidden="true" size={18} />
-                <div>
-                  <span>Phone</span>
-                  <a href={`tel:+${contactConfig.phoneNumber}`}>{contactConfig.phoneDisplay}</a>
-                </div>
+              <div>
+                <Phone aria-hidden="true" size={17} />
+                <span>Phone</span>
+                <a href={`tel:+${contactConfig.phoneNumber}`}>{contactConfig.phoneDisplay}</a>
               </div>
             )}
-            <div className="contact-channel">
-              <MessageCircle aria-hidden="true" size={18} />
-              <div>
-                <span>WhatsApp</span>
-                {whatsAppHref ? (
-                  <a href={whatsAppHref} rel="noreferrer" target="_blank">
-                    Open a conversation <ArrowUpRight aria-hidden="true" size={13} />
-                  </a>
-                ) : (
-                  <span className="contact-pending">Number to be supplied</span>
-                )}
-              </div>
+            <div>
+              <MessageCircle aria-hidden="true" size={17} />
+              <span>WhatsApp</span>
+              {whatsAppHref ? (
+                <a href={whatsAppHref} rel="noreferrer" target="_blank">
+                  Start a conversation <ArrowUpRight aria-hidden="true" size={13} />
+                </a>
+              ) : (
+                <span className="studio-contact-unavailable">Number not configured</span>
+              )}
             </div>
           </div>
         </div>
 
-        <form className="enquiry-form" onSubmit={handleSubmit}>
-          <div className="form-heading">
-            <span className="story-label">TELL US ABOUT YOUR PROJECT</span>
-            <span className="form-status-dot" aria-hidden="true" />
+        <form className="studio-brief-form" noValidate onSubmit={handleSubmit}>
+          <div className="studio-form-heading">
+            <h2>Project brief</h2>
+            <p>Required fields are marked. Share only what you know so far.</p>
           </div>
           <label>
-            <span>
-              Your name <span aria-hidden="true" className="field-required">*</span>
-            </span>
-            <input
-              autoComplete="name"
-              maxLength={100}
-              name="name"
-              onChange={(event) => event.currentTarget.setCustomValidity("")}
-              placeholder="Name"
-              required
-            />
+            Name <span aria-hidden="true">*</span>
+            <input autoComplete="name" maxLength={100} name="name" required />
           </label>
-          <div className="form-field-pair">
+          <div className="studio-form-pair">
             <label>
-              <span>
-                Your email <span aria-hidden="true" className="field-required">*</span>
-              </span>
+              Company / brand
+              <input autoComplete="organization" maxLength={120} name="company" />
+            </label>
+            <label>
+              Website / Instagram
+              <input autoComplete="url" maxLength={200} name="social" placeholder="https://" />
+            </label>
+          </div>
+          <div className="studio-form-pair">
+            <label>
+              Email
               <input
                 autoComplete="email"
                 maxLength={254}
                 name="email"
-                placeholder="you@example.com"
-                required
+                onChange={clearContactValidation}
                 type="email"
               />
             </label>
             <label>
-              <span>
-                Phone / WhatsApp <span aria-hidden="true" className="field-required">*</span>
-              </span>
+              Phone / WhatsApp
               <input
                 autoComplete="tel"
                 maxLength={30}
-                minLength={7}
                 name="phone"
-                onChange={(event) => event.currentTarget.setCustomValidity("")}
-                placeholder="+91 00000 00000"
-                required
+                onChange={clearContactValidation}
                 type="tel"
               />
             </label>
           </div>
+          <p className="studio-field-hint">Add at least one reply method: email or phone.</p>
           <label>
-            <span>
-              Company / brand <span className="field-optional">(optional)</span>
-            </span>
-            <input autoComplete="organization" maxLength={120} name="company" placeholder="Company or brand name" />
-          </label>
-          <label>
-            <span>
-              What do you need? <span aria-hidden="true" className="field-required">*</span>
-            </span>
-            <select defaultValue={selectedService} key={selectedService} name="service" required>
-              <option disabled value="">Choose a service</option>
-              {serviceAreas.map((service) => (
-                <option key={service.id} value={service.enquiryValue}>
-                  {service.label}
-                </option>
+            Service required <span aria-hidden="true">*</span>
+            <select defaultValue={validService} name="service" required>
+              <option value="">Choose a service</option>
+              {serviceOfferings.map((service) => (
+                <option key={service.slug} value={service.enquiryValue}>{service.title}</option>
               ))}
-              <option value="A mix of social and video services">
-                A mix of services
-              </option>
+              <option value="A mix of services">A mix of services</option>
               <option value="Not sure yet">Not sure yet</option>
             </select>
           </label>
+          <div className="studio-form-pair">
+            <label>
+              Number of videos
+              <input maxLength={80} name="videoCount" placeholder="If known" />
+            </label>
+            <label>
+              Video type
+              <select defaultValue="" name="videoType">
+                <option value="">Choose a format</option>
+                <option>Short-form / Reels</option>
+                <option>YouTube / long-form</option>
+                <option>Podcast</option>
+                <option>Corporate / brand</option>
+                <option>Social media content</option>
+                <option>Other / not sure</option>
+              </select>
+            </label>
+          </div>
+          <div className="studio-form-pair">
+            <label>
+              Expected duration
+              <input maxLength={80} name="duration" placeholder="For example, 30 seconds" />
+            </label>
+            <label>
+              Deadline
+              <input maxLength={100} name="deadline" placeholder="Date or preferred timing" />
+            </label>
+          </div>
+          <div className="studio-form-pair">
+            <label>
+              Budget range
+              <input maxLength={100} name="budget" placeholder="Optional; to be discussed is fine" />
+            </label>
+            <label>
+              Project goal
+              <select defaultValue="" name="goal">
+                <option value="">Choose a goal</option>
+                {goals.map((goal) => <option key={goal}>{goal}</option>)}
+              </select>
+            </label>
+          </div>
           <label>
-            <span>
-              Expected timeline <span className="field-optional">(optional)</span>
-            </span>
-            <select defaultValue="" name="timeline">
-              <option value="">Choose a timeline</option>
-              <option value="As soon as possible">As soon as possible</option>
-              <option value="Within 2–4 weeks">Within 2–4 weeks</option>
-              <option value="Within 1–3 months">Within 1–3 months</option>
-              <option value="Flexible / to discuss">Flexible / to discuss</option>
-            </select>
+            Reference links
+            <textarea maxLength={1000} name="references" placeholder="Paste links to examples or relevant material" rows={2} />
           </label>
           <label>
-            <span>
-              Project description <span aria-hidden="true" className="field-required">*</span>
-            </span>
-            <textarea
-              maxLength={2000}
-              name="project"
-              onChange={(event) => event.currentTarget.setCustomValidity("")}
-              placeholder="A few words about your account, idea, shoot, or edit..."
-              required
-              rows="5"
-            />
+            Additional requirements
+            <textarea maxLength={3000} name="requirements" placeholder="What should the content help you communicate?" rows={5} />
           </label>
-          <button className="button button-gold form-submit" type="submit">
-            Continue by email <ArrowUpRight aria-hidden="true" size={17} />
+          <label aria-hidden="true" className="studio-trap-field" tabIndex="-1">
+            Website
+            <input autoComplete="off" name="websiteTrap" tabIndex="-1" />
+          </label>
+          <button className="button button-gold studio-submit" type="submit">
+            Open project brief <ArrowUpRight aria-hidden="true" size={17} />
           </button>
-          <p aria-live="polite" className="form-status" role="status">
-            {status || "This opens an email draft on your device. The site does not store or send your details."}
+          <p aria-live="polite" className="studio-form-status" role="status">
+            {status || "Your device opens an email draft for you to review and send. The site does not submit or retain the brief."}
           </p>
-          {!contactConfig.email && (
-            <p className="form-config-note">
-              Email enquiries are unavailable. You can still contact the studio on WhatsApp.
-            </p>
-          )}
         </form>
       </div>
     </section>

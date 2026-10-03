@@ -1,12 +1,13 @@
-import { ArrowUpRight, Menu, X } from "lucide-react";
+import { ArrowUpRight, Menu, MessageCircle, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
+import { getWhatsAppHref } from "../data/contact.js";
 import Brand from "./Brand.jsx";
 
 const links = [
   { label: "Home", to: "/" },
   { label: "Services", to: "/services" },
-  { label: "Portfolio", to: "/work" },
+  { label: "Our Work", to: "/work" },
   { label: "About", to: "/about" },
   { label: "Contact", to: "/contact" },
 ];
@@ -15,6 +16,7 @@ export default function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuToggleRef = useRef(null);
   const location = useLocation();
+  const whatsAppHref = getWhatsAppHref();
 
   useEffect(() => {
     setMenuOpen(false);
@@ -38,6 +40,18 @@ export default function SiteHeader() {
     <header className="site-header">
       <div className="header-inner">
         <Brand onNavigate={() => setMenuOpen(false)} />
+        {whatsAppHref && (
+          <a
+            aria-label="Message VIP StudioS on WhatsApp"
+            className="header-whatsapp"
+            href={whatsAppHref}
+            rel="noreferrer"
+            target="_blank"
+          >
+            <MessageCircle aria-hidden="true" size={17} />
+            <span>WhatsApp</span>
+          </a>
+        )}
         <button
           aria-controls="primary-navigation"
           aria-expanded={menuOpen}

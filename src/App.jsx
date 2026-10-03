@@ -1,25 +1,30 @@
+import { lazy, Suspense } from "react";
 import { Route, Routes } from "react-router-dom";
 import SiteShell from "./components/SiteShell.jsx";
-import AboutPage from "./pages/AboutPage.jsx";
-import ContactPage from "./pages/ContactPage.jsx";
-import HomePage from "./pages/HomePage.jsx";
-import NotFoundPage from "./pages/NotFoundPage.jsx";
-import ProjectPage from "./pages/ProjectPage.jsx";
-import ServicesPage from "./pages/ServicesPage.jsx";
-import WorkPage from "./pages/WorkPage.jsx";
+const AboutPage = lazy(() => import("./pages/AboutPage.jsx"));
+const ContactPage = lazy(() => import("./pages/ContactPage.jsx"));
+const HomePage = lazy(() => import("./pages/HomePage.jsx"));
+const NotFoundPage = lazy(() => import("./pages/NotFoundPage.jsx"));
+const ProjectPage = lazy(() => import("./pages/ProjectPage.jsx"));
+const ServicesPage = lazy(() => import("./pages/ServicesPage.jsx"));
+const ServiceDetailPage = lazy(() => import("./pages/ServiceDetailPage.jsx"));
+const WorkPage = lazy(() => import("./pages/WorkPage.jsx"));
 
 export default function App() {
   return (
-    <Routes>
-      <Route element={<SiteShell />}>
-        <Route index element={<HomePage />} />
-        <Route path="services" element={<ServicesPage />} />
-        <Route path="work" element={<WorkPage />} />
-        <Route path="work/:slug" element={<ProjectPage />} />
-        <Route path="about" element={<AboutPage />} />
-        <Route path="contact" element={<ContactPage />} />
-        <Route path="*" element={<NotFoundPage />} />
-      </Route>
-    </Routes>
+    <Suspense fallback={<div aria-live="polite" className="studio-route-loading">Loading page…</div>}>
+      <Routes>
+        <Route element={<SiteShell />}>
+          <Route index element={<HomePage />} />
+          <Route path="services" element={<ServicesPage />} />
+          <Route path="services/:serviceSlug" element={<ServiceDetailPage />} />
+          <Route path="work" element={<WorkPage />} />
+          <Route path="work/:slug" element={<ProjectPage />} />
+          <Route path="about" element={<AboutPage />} />
+          <Route path="contact" element={<ContactPage />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Route>
+      </Routes>
+    </Suspense>
   );
 }
