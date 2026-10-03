@@ -2,6 +2,7 @@ export const serviceAreas = [
   {
     id: "social",
     label: "Social media",
+    enquiryValue: "Social strategy, planning & account management",
     title: "Stay in the conversation.",
     description:
       "A considered social presence, planned and managed from the first idea to the post going live.",
@@ -15,6 +16,7 @@ export const serviceAreas = [
   {
     id: "shoot",
     label: "Video shoots",
+    enquiryValue: "Video shoots",
     title: "Give the idea a frame.",
     description:
       "Video shoots shaped around what you want to say, who needs to see it, and where it will live.",
@@ -28,6 +30,7 @@ export const serviceAreas = [
   {
     id: "edit",
     label: "Professional editing",
+    enquiryValue: "Professional editing",
     title: "Make every second count.",
     description:
       "Thoughtful edits that find the pace, finish, and format for your story and its audience.",

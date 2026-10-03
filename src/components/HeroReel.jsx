@@ -51,10 +51,10 @@ export default function HeroReel() {
           </p>
           <div className="hero-actions">
             <Link className="button button-gold" to="/contact">
-              Plan a project <ArrowUpRight aria-hidden="true" size={17} />
+              Start a project <ArrowUpRight aria-hidden="true" size={17} />
             </Link>
-            <Link className="text-link" to="/services">
-              Explore services <ArrowUpRight aria-hidden="true" size={16} />
+            <Link className="text-link" to="/work">
+              View our work <ArrowUpRight aria-hidden="true" size={16} />
             </Link>
           </div>
           <div className="hero-promise">

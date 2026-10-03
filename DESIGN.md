@@ -114,7 +114,7 @@ Controls, fields, project frames, and dividers are square-edged with a restraine
 
 ### Navigation and actions
 
-The sticky header is compact and quiet, with a clear route list and a visible enquiry action. Primary actions use gold with dark text; text links remain separate and clearly named. Preserve a visible 2px focus ring with offset.
+The sticky header is compact and quiet, with Home, Services, Portfolio, About, and Contact routes plus a visible Start a project action. The mobile menu uses a large touch target and closes on navigation or Escape. Primary actions use gold with dark text; text links remain separate and clearly named. Preserve a visible 2px focus ring with offset.
 
 ### Hero media selector and concept work
 
@@ -126,7 +126,11 @@ Service rows pair category, actual service description, and a direct path to det
 
 ### Enquiry fields
 
-Keep labels outside square-edged, high-contrast fields. Email and WhatsApp destinations remain visibly unconfigured until verified values are supplied. The form opens a local email draft and must not imply that data was submitted to a server.
+Keep labels outside square-edged, high-contrast fields. The enquiry form collects name, email, phone/WhatsApp, requested service, and project description, with optional brand and timeline. Email and WhatsApp values come from build-time environment variables. The form opens a local email draft and must not imply that data was submitted to a server. The persistent WhatsApp action is shown only when a valid destination is configured.
+
+### Portfolio and proof
+
+Portfolio entries remain explicitly labeled illustrative concept studies until approved client work is supplied. Project pages link to related concepts, but do not invent client names, dates, commissioned work, testimonials, or outcomes. No video preview is enabled without an approved studio video asset.
 
 ## Do's and Don'ts
 

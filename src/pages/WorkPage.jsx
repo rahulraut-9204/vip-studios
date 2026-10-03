@@ -1,4 +1,6 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { ArrowUpRight } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useMemo, useState } from "react";
 import ProjectCard from "../components/ProjectCard.jsx";
 import { projectCategories, projects } from "../data/projects.js";
@@ -61,10 +63,12 @@ export default function WorkPage() {
           ))}
         </AnimatePresence>
       </div>
-      <p className="replace-notice">
-        Launch note: replace concept names, descriptions, and stock images with
-        verified, approved portfolio material.
-      </p>
+      <div className="work-inquiry">
+        <p>These are visual directions, not client case studies. Bring us a brief and we can shape one around your story.</p>
+        <Link className="button button-gold" to="/contact">
+          Start a project <ArrowUpRight aria-hidden="true" size={17} />
+        </Link>
+      </div>
     </section>
   );
 }

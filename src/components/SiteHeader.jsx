@@ -1,21 +1,38 @@
 import { ArrowUpRight, Menu, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import Brand from "./Brand.jsx";
 
 const links = [
-  { label: "What we do", to: "/services" },
-  { label: "Concepts", to: "/work" },
-  { label: "Studio", to: "/about" },
+  { label: "Home", to: "/" },
+  { label: "Services", to: "/services" },
+  { label: "Portfolio", to: "/work" },
+  { label: "About", to: "/about" },
+  { label: "Contact", to: "/contact" },
 ];
 
 export default function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const menuToggleRef = useRef(null);
   const location = useLocation();
 
   useEffect(() => {
     setMenuOpen(false);
   }, [location.pathname]);
+
+  useEffect(() => {
+    if (!menuOpen) return undefined;
+
+    function closeOnEscape(event) {
+      if (event.key === "Escape") {
+        setMenuOpen(false);
+        menuToggleRef.current?.focus();
+      }
+    }
+
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [menuOpen]);
 
   return (
     <header className="site-header">
@@ -27,6 +44,7 @@ export default function SiteHeader() {
           aria-label={menuOpen ? "Close navigation" : "Open navigation"}
           className="menu-toggle"
           onClick={() => setMenuOpen((open) => !open)}
+          ref={menuToggleRef}
           type="button"
         >
           {menuOpen ? <X size={22} /> : <Menu size={22} />}
@@ -41,6 +59,7 @@ export default function SiteHeader() {
               className={({ isActive }) =>
                 `nav-link${isActive ? " is-active" : ""}`
               }
+              end={link.to === "/"}
               key={link.to}
               onClick={() => setMenuOpen(false)}
               to={link.to}
@@ -53,7 +72,7 @@ export default function SiteHeader() {
             onClick={() => setMenuOpen(false)}
             to="/contact"
           >
-            Let&apos;s talk <ArrowUpRight aria-hidden="true" size={15} />
+            Start a project <ArrowUpRight aria-hidden="true" size={15} />
           </Link>
         </nav>
       </div>

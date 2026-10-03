@@ -1,13 +1,17 @@
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import NotFoundPage from "./NotFoundPage.jsx";
-import { getProjectBySlug } from "../data/projects.js";
+import ProjectCard from "../components/ProjectCard.jsx";
+import { getProjectBySlug, projects } from "../data/projects.js";
 
 export default function ProjectPage() {
   const { slug } = useParams();
   const project = getProjectBySlug(slug);
 
   if (!project) return <NotFoundPage />;
+  const relatedProjects = projects
+    .filter((item) => item.slug !== project.slug)
+    .slice(0, 2);
 
   return (
     <article className="project-detail page-gutter">
@@ -22,6 +26,7 @@ export default function ProjectPage() {
         <div className="project-meta">
           <span>{project.category}</span>
           <span>{project.format}</span>
+          <span>Illustrative concept study</span>
         </div>
       </div>
       <figure className="project-detail-visual">
@@ -33,8 +38,8 @@ export default function ProjectPage() {
           width="1800"
         />
         <figcaption>
-          <span>Illustrative concept image</span>
-          <span>Replace before launch</span>
+          <span>Illustrative stock image</span>
+          <span>Not a commissioned project</span>
         </figcaption>
       </figure>
       <div className="project-story">
@@ -51,6 +56,19 @@ export default function ProjectPage() {
           </p>
         </div>
       </div>
+      <section aria-labelledby="related-projects-title" className="related-projects">
+        <div className="related-projects-heading">
+          <h2 id="related-projects-title">More visual directions.</h2>
+          <Link className="text-link" to="/work">
+            View all concepts <ArrowUpRight aria-hidden="true" size={16} />
+          </Link>
+        </div>
+        <div className="related-projects-grid">
+          {relatedProjects.map((relatedProject, index) => (
+            <ProjectCard index={index} key={relatedProject.slug} project={relatedProject} />
+          ))}
+        </div>
+      </section>
       <div className="project-next">
         <span className="story-label">HAVE A BRIEF LIKE THIS?</span>
         <Link className="button button-gold" to="/contact">

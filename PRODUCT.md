@@ -29,7 +29,7 @@ Prospective clients discover the site, understand the social and video offer, vi
 - Preferred implementation: React, Vite, JavaScript, and Tailwind CSS; Motion and Lucide may be used selectively.
 - Start with static content and data.
 - Social-media strategy, content planning, publishing, account management, video shoots, and professional editing are confirmed services.
-- WhatsApp or public enquiry contact details are not yet available; use clearly marked placeholders until supplied.
+- Public enquiry details are configured from build-time environment variables; do not hardcode private values.
 - Accounts, payments, CRM, and app-like features are out of scope.
 
 ## Brand Commitments
@@ -42,7 +42,7 @@ Prospective clients discover the site, understand the social and video offer, vi
 
 ## Evidence on Hand
 
-Portfolio entries and stock imagery in the project are illustrative concepts, not verified client work. No testimonials, client identities, case-study results, team biographies, or public contact details are available. Keep concept work disclosed and never invent testimonials or performance claims.
+Portfolio entries and stock imagery in the project are illustrative concepts, not verified client work. No testimonials, client identities, case-study results, or team biographies are available. The client has confirmed substantial video-editing experience but no duration or project count. Keep concept work disclosed and never invent testimonials or performance claims.
 
 ## Product Principles
 
@@ -58,4 +58,4 @@ Follow foundational web accessibility practices, including semantic structure, k
 ## Open Decisions
 
 - Confirm platform-specific social deliverables, production approach, and geographic scope.
-- Supply verified portfolio material, brand assets, studio details, and public contact details before launch.
+- Supply approved portfolio material and brand assets; provide team or studio details if they should appear in the About page.

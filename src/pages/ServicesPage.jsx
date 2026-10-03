@@ -25,6 +25,7 @@ export default function ServicesPage() {
         {serviceAreas.map((service, index) => (
           <motion.article
             className={`service-detail-row service-detail-${service.id}`}
+            id={`service-${service.id}`}
             key={service.id}
             initial={reduceMotion ? false : { opacity: 0, y: 28 }}
             transition={reduceMotion ? { duration: 0 } : { ...spring, delay: index * 0.07 }}
@@ -35,6 +36,13 @@ export default function ServicesPage() {
             <div className="service-detail-main">
               <h2>{service.title}</h2>
               <p>{service.description}</p>
+              <Link
+                className="service-enquire-link"
+                to={`/contact?service=${encodeURIComponent(service.enquiryValue)}`}
+              >
+                Enquire about {service.label.toLowerCase()}{" "}
+                <ArrowUpRight aria-hidden="true" size={15} />
+              </Link>
             </div>
             <ul>
               {service.deliverables.map((deliverable) => (

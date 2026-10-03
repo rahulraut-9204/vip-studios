@@ -25,16 +25,17 @@ export default function AboutPage() {
           <figcaption>Illustrative concept image / replace with approved studio photography</figcaption>
         </figure>
         <div className="about-copy">
-          <h2>Make good work. Keep showing up.</h2>
-          <span className="story-label">THE STUDIO STORY IS STILL TO COME</span>
+          <h2>Good work starts before the edit.</h2>
+          <span className="story-label">ONE CONNECTED CREATIVE PROCESS</span>
           <p>
-            The people behind VIP StudioS, the studio&apos;s location, and its
-            day-to-day working approach have not yet been supplied. This page
-            is ready for those real details.
+            VIP StudioS brings social-media management, video shoots, and
+            professional editing into one connected offer. Substantial
+            hands-on editing experience informs a thoughtful approach to pace,
+            detail, and the shape of each story.
           </p>
           <p className="replace-notice">
-            No team biographies, client names, awards, or results are invented
-            in this preview.
+            Every project starts with the brief: where the story belongs, who
+            it needs to reach, and what it needs to say.
           </p>
           <Link className="text-link" to="/contact">
             Start with your brief <ArrowUpRight aria-hidden="true" size={16} />

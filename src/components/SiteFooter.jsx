@@ -1,9 +1,20 @@
 import { ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { contactConfig } from "../data/contact.js";
+import { contactConfig, getWhatsAppHref } from "../data/contact.js";
+import { serviceAreas } from "../data/services.js";
 import Brand from "./Brand.jsx";
 
+const footerLinks = [
+  { label: "Home", to: "/" },
+  { label: "Services", to: "/services" },
+  { label: "Portfolio", to: "/work" },
+  { label: "About", to: "/about" },
+  { label: "Contact", to: "/contact" },
+];
+
 export default function SiteFooter() {
+  const whatsAppHref = getWhatsAppHref();
+
   return (
     <footer className="site-footer">
       <div className="footer-main">
@@ -12,25 +23,53 @@ export default function SiteFooter() {
           <Link className="button button-gold" to="/contact">
             Tell us about it <ArrowUpRight aria-hidden="true" size={16} />
           </Link>
+          <p>Social, shot &amp; edited.</p>
+        </div>
+        <div className="footer-group">
+          <h3>Explore</h3>
+          <nav aria-label="Footer navigation" className="footer-link-list">
+            {footerLinks.map((link) => (
+              <Link key={link.to} to={link.to}>{link.label}</Link>
+            ))}
+          </nav>
+        </div>
+        <div className="footer-group">
+          <h3>Services</h3>
+          <ul className="footer-link-list">
+            {serviceAreas.map((service) => (
+              <li key={service.id}>
+                <Link to={`/services#service-${service.id}`}>{service.label}</Link>
+              </li>
+            ))}
+          </ul>
         </div>
         <div className="footer-details">
           <Brand />
-          <p>Social, shot &amp; edited.</p>
           {contactConfig.email ? (
             <a className="footer-contact" href={`mailto:${contactConfig.email}`}>
               {contactConfig.email}
             </a>
           ) : (
             <span className="footer-contact footer-placeholder">
-              Public contact details to be added
+              Email contact unavailable
             </span>
+          )}
+          {contactConfig.phoneNumber && (
+            <a className="footer-contact" href={`tel:+${contactConfig.phoneNumber}`}>
+              {contactConfig.phoneDisplay}
+            </a>
+          )}
+          {whatsAppHref && (
+            <a className="footer-contact" href={whatsAppHref} rel="noreferrer" target="_blank">
+              WhatsApp <ArrowUpRight aria-hidden="true" size={13} />
+            </a>
           )}
         </div>
       </div>
       <div className="footer-bottom">
-        <span>VIP StudioS</span>
-        <span>Concept imagery shown · Real work coming soon</span>
-        <Link to="/contact">Enquire <ArrowUpRight aria-hidden="true" size={13} /></Link>
+        <span>© {new Date().getFullYear()} VIP StudioS</span>
+        <span>Portfolio includes illustrative concept studies, not commissioned projects.</span>
+        <Link to="/contact">Start a project <ArrowUpRight aria-hidden="true" size={13} /></Link>
       </div>
     </footer>
   );
