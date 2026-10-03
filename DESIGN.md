@@ -1,31 +1,31 @@
 ---
 name: VIP StudioS
-description: Kinetic-cut creative for social strategy and video production.
+description: A connected content canvas for social strategy and video production.
 colors:
-  ink: "#090909"
-  ink-raised: "#121212"
-  ink-soft: "#1d1c1a"
-  white: "#f8f7f2"
-  white-dim: "#cbc9c0"
-  muted: "#a3a095"
-  gold: "#d9b85f"
-  gold-bright: "#f2d77b"
-  gold-deep: "#987b34"
-  line: "rgba(248, 247, 242, 0.18)"
-  line-gold: "rgba(217, 184, 95, 0.48)"
+  ink: "#080808"
+  ink-raised: "#111110"
+  ink-soft: "#1b1a18"
+  white: "#f7f6f2"
+  white-dim: "#d2d0c8"
+  muted: "#a7a49a"
+  gold: "#c9ad69"
+  gold-bright: "#e4cd91"
+  gold-deep: "#765f37"
+  line: "rgba(247, 246, 242, 0.15)"
+  line-gold: "rgba(201, 173, 105, 0.42)"
 typography:
   display:
-    fontFamily: "Archivo Black, Arial Black, sans-serif"
-    fontSize: "clamp(5.2rem, 11.3vw, 10.5rem)"
-    fontWeight: 400
-    lineHeight: 0.81
-    letterSpacing: "-0.095em"
+    fontFamily: "Manrope, Arial, sans-serif"
+    fontSize: "clamp(3.8rem, 7vw, 6.7rem)"
+    fontWeight: 800
+    lineHeight: 0.94
+    letterSpacing: "-0.075em"
   headline:
-    fontFamily: "Archivo Black, Arial Black, sans-serif"
-    fontSize: "clamp(3.2rem, 6.4vw, 6.8rem)"
-    fontWeight: 400
-    lineHeight: 0.86
-    letterSpacing: "-0.09em"
+    fontFamily: "Manrope, Arial, sans-serif"
+    fontSize: "clamp(2.8rem, 5.5vw, 5.3rem)"
+    fontWeight: 800
+    lineHeight: 0.99
+    letterSpacing: "-0.075em"
   body:
     fontFamily: "Manrope, Arial, sans-serif"
     fontSize: "1rem"
@@ -38,8 +38,8 @@ typography:
     lineHeight: 1.5
     letterSpacing: "0.11em"
 rounded:
-  sharp: "0px"
-  signal: "50%"
+  sharp: "2px"
+  signal: "2px"
 spacing:
   page-gutter: "clamp(1.25rem, 5.5vw, 6rem)"
   page-width: "1480px"
@@ -49,8 +49,8 @@ components:
     textColor: "{colors.ink}"
     typography: "{typography.body}"
     rounded: "{rounded.sharp}"
-    padding: "0.85rem 1.25rem"
-    height: "54px"
+    padding: "0.8rem 1.1rem"
+    height: "50px"
   button-primary-hover:
     backgroundColor: "{colors.gold-bright}"
   button-light:
@@ -58,8 +58,8 @@ components:
     textColor: "{colors.ink}"
     typography: "{typography.body}"
     rounded: "{rounded.sharp}"
-    padding: "0.85rem 1.25rem"
-    height: "54px"
+    padding: "0.8rem 1.1rem"
+    height: "50px"
   project-image:
     backgroundColor: "{colors.ink-soft}"
     rounded: "{rounded.sharp}"
@@ -67,79 +67,77 @@ components:
 
 ## Overview
 
-**Creative North Star: "Kinetic-cut editorial."**
+**Creative North Star: "Connected content canvas."**
 
-The site treats the headline as the set: huge compressed type establishes the message while an image frame cuts into its field. Warm white and black hold the composition; gold marks the active phrase, primary action, and moving-image accents. Social strategy and production are presented as one continuous content practice, not as separate service silos.
+VIP StudioS turns social planning and video production into one coherent creative offer. The interface uses a modular composition of image, message, and service controls: a visitor can move between Social, Shoot, and Edit in the hero, then follow the same path down the page to services, disclosed concept work, and enquiry.
 
-**The first-view rule:** make the offer and enquiry action legible immediately, then let visitors switch the hero image between social, shoot, and edit. Below it, varied typographic, image, and open-list sections carry the same plan-to-publish story. Every current portfolio and studio photograph is illustrative and identified as such.
+**The first-view rule:** the offer and project action are visible beside one decisive image. Three labeled controls expose the studio's social and production range. Do not bury the enquiry action in the footer or make illustrative concept images look commissioned.
 
 ## Colors
 
-The stage is near-black; warm white carries high-priority reading. Gold is reserved for action, emphasis, and selected states. Raised ink planes and fine rules separate content without building a stack of cards.
+The dark media canvas lets imagery hold attention; porcelain sections provide a clear reading interval; brushed gold marks active states and actions rather than implying performance.
 
-- **Ink** (`#090909`): page ground and dark image overlays.
-- **Raised Ink** (`#121212`) and **Soft Ink** (`#1d1c1a`): secondary planes and image backing.
-- **Warm White** (`#f8f7f2`): primary type and light actions.
-- **Dim White** (`#cbc9c0`) and **Muted** (`#a3a095`): supporting copy, metadata, and captions.
-- **Gold** (`#d9b85f`): primary action and selected words.
-- **Bright Gold** (`#f2d77b`): hover and keyboard focus.
-- **Deep Gold** (`#987b34`): restrained tonal support.
-- **Hairlines** (`rgba(248, 247, 242, 0.18)` and `rgba(217, 184, 95, 0.48)`): quiet boundaries and active stage edges.
+- **Ink** (`#080808`): media-led hero, process sections, navigation, and footer.
+- **Raised Ink** (`#111110`) and **Soft Ink** (`#1b1a18`): controls and media frames.
+- **Porcelain** (`#f7f6f2`): primary type and light action surfaces.
+- **Dim White** (`#d2d0c8`) and **Muted** (`#a7a49a`): supporting copy and metadata on dark fields.
+- **Gold** (`#c9ad69`): primary action, active selector, and short emphasis.
+- **Bright Gold** (`#e4cd91`): hover and keyboard focus.
+- **Deep Gold** (`#765f37`): accessible gold text on light surfaces.
+- **Hairlines** (`rgba(247, 246, 242, 0.15)` and `rgba(201, 173, 105, 0.42)`): separation and selection.
 
-Keep gold selective. Do not make whole sections gold or use it as an unverified performance signal.
+Keep gold selective. Use ink, porcelain, and gold in alternating fields instead of turning full sections into gold panels.
 
 ## Typography
 
-- **Display:** Archivo Black, used at its available regular face, with tight tracking and compressed line-height. The homepage statement may scale from `5.2rem` to `10.5rem`.
-- **Page headlines:** Archivo Black, fluid from `3.2rem` to `6.8rem`, with compact line-height.
-- **Reading and controls:** Manrope, 1rem body size and 1.55 line-height; keep paragraph measures comfortable.
-- **Labels:** Manrope, compact, bold, uppercase, and tracked. Do not introduce a mono face as decoration.
+- **Display and page headlines:** Manrope 800, fluid sizing, negative tracking, and compact but readable line-height.
+- **Body and controls:** Manrope 400–700, with comfortable paragraph measures and explicit control labels.
+- **Metadata:** Manrope 700–800, small and tracked only when it carries useful context.
 
-Let display type supply the energy; supporting text remains easy to read and actions retain clear labels.
+Avoid the former oversized all-caps display treatment. The hierarchy comes from weight, scale, and spacing rather than decorative typefaces.
 
 ## Layout
 
-Use a centered 1480px frame with `clamp(1.25rem, 5.5vw, 6rem)` page gutters. The desktop hero pairs an oversized typographic field with a large, offset image stage; on narrow screens, stack the offer and actions before the image, and move its concept disclosure to the top of the frame so it stays visible without deep scrolling. Do not preserve desktop overlap when it makes mobile type collide.
+Use a centered 1480px frame and fluid page gutters. The desktop hero balances a left-aligned offer with a wide image stage and three compact image-led selectors. On mobile, stack the offer before the image; keep all service selectors visible and usable without horizontal scrolling.
 
-Service rows, the plan/shoot/edit/publish sequence, and the concept gallery vary density and rhythm rather than repeating a uniform card grid. At 1000px, 760px, and 480px, reduce gutters and progressively collapse multi-column compositions. Keep navigation, filters, and image selectors operable without horizontal scrolling.
+Alternate media-dark sections with porcelain reading surfaces. Services remain open rows, the plan-to-publish sequence remains a meaningful numbered progression, and the concept gallery retains an asymmetrical image rhythm instead of a generic uniform tile grid.
 
 ## Elevation & Depth
 
-Depth comes from tonal ink changes, a restrained radial wash, image overlays, and offset gold stage edges. Avoid generic card shadows. Motion includes a short hero reveal, image crossfades, one continuous process ticker, and staggered in-view content reveals. Respect `prefers-reduced-motion` in both CSS and Motion interactions; important content is visible without animation.
+Use tonal ink surfaces, real image contrast, thin rules, and one modest offset edge on the active hero media. Do not use glass, glow, or decorative blur. The hero image transition and selector state carry the authored motion; in-view reveals stay brief and content remains readable with reduced motion enabled.
 
 ## Shapes
 
-Buttons, fields, project frames, and dividers are square-edged. The floating gold hero marker may be circular as a deliberate signal shape. Use thin rules to frame image-led content, not to box every paragraph or service.
+Controls, fields, project frames, and dividers are square-edged with a restrained 2px radius where interaction benefits from it. The brand mark is a fine-line V/S monogram. Gold does not become a decorative border on every component.
 
 ## Components
 
-### Actions and navigation
+### Navigation and actions
 
-Primary actions use a gold fill and ink text; light actions reverse the contrast. Both are at least 54px tall and lift briefly on hover. Links use short directional icons where they improve wayfinding. Keep a visible 2px gold keyboard-focus ring with a 4px offset. The sticky header uses quiet white navigation; on mobile, retain a clear menu button and expanded route list.
+The sticky header is compact and quiet, with a clear route list and a visible enquiry action. Primary actions use gold with dark text; text links remain separate and clearly named. Preserve a visible 2px focus ring with offset.
 
-### Image stage and project cards
+### Hero media selector and concept work
 
-Crop local WebP imagery within square-edged frames. The hero caption, concept disclosure, selected image, and active Shoot / Edit / Social control stay synchronized. Project cards keep caption and category close to the image. Clearly disclose stock imagery as illustrative concept work, never as commissioned studio work.
+The hero selectors are real buttons and expose Social, Shoot, and Edit with matching illustrative thumbnails. The active image, caption, and concept disclosure stay synchronized. All portfolio concept cards retain the “Concept work” label and are not presented as client results.
 
-### Service rows and journey
+### Services and journey
 
-Service areas use open horizontal rows with a concise label, clear benefit, and direct route to service details. The content journey uses numbered steps only because Plan, Shoot, Edit, and Publish are a meaningful sequence.
+Service rows pair category, actual service description, and a direct path to details. Plan, Shoot, Edit, and Publish are shown as an ordered service flow, not fabricated performance milestones.
 
 ### Enquiry fields
 
-Keep labels outside dark, square-edged fields. Maintain high-contrast text, visible focus, and native input affordances. Do not imply an enquiry was sent when the configured email or WhatsApp destination is unavailable.
+Keep labels outside square-edged, high-contrast fields. Email and WhatsApp destinations remain visibly unconfigured until verified values are supplied. The form opens a local email draft and must not imply that data was submitted to a server.
 
 ## Do's and Don'ts
 
 ### Do
 
-- **Do** make strategy, publishing/account management, shoots, and professional editing recognizable in the first visit.
-- **Do** pair one decisive image with large type, then vary the page's pace below the hero.
-- **Do** use motion to reveal content and communicate image selection, with a reduced-motion path.
-- **Do** keep illustrative concept imagery and all unverified studio details explicitly disclosed.
+- Make social strategy, planning, publishing, account management, shoots, and professional editing clear within seconds.
+- Use the connected content canvas to link image selection, service detail, concept examples, and enquiry.
+- Preserve reduced-motion behavior, visible keyboard focus, responsive controls, and clear concept disclosures.
 
 ### Don't
 
-- **Don't** revive the former score-console language, monospaced instrumentation, or a dated film-stock treatment.
-- **Don't** invent client work, testimonials, team details, metrics, audience growth, or guaranteed outcomes.
-- **Don't** use animation, overlap, or the gold palette to obscure the enquiry path or readable copy.
+- Return to oversized kinetic typography, endless ticker motion, or the previous orbit/sticker decorations.
+- Invent clients, testimonials, team details, metrics, audience growth, or guaranteed outcomes.
+- Use gold as an unverified success signal or add interface-like controls that do not perform an action.

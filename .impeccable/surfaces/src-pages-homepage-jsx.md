@@ -6,19 +6,19 @@ related_targets: ["src/components/HeroReel.jsx","src/pages/WorkPage.jsx","src/pa
 ---
 
 ## Scope and visitor mode
-Homepage for a video-studio portfolio and lead-generation site. Persuade visitors to inspect the work and take a first step toward enquiry.
+Homepage for VIP StudioS, a video and social-media studio. Persuade brands, businesses, and agencies to understand the connected offer, inspect concept work, and start an enquiry.
 
 ## Audience, job, and action
-Brands, businesses, and agencies assessing a production partner. Show what VIP StudioS offers, direct visitors to concept work and services, and make starting an enquiry obvious.
+Prospective clients need a clear view of social strategy, planning, publishing, account management, video shoots, and professional editing. Lead them from the offer to services and illustrative work, then to contact.
 
 ## Proof and content
-Lead with the oversized "Make your feed move" statement and a selectable, locally bundled image stage for shoot, edit, and social concepts. Label all illustrative stock imagery as concept work. Replace it with approved work and verified service/studio details when supplied.
+The hero pairs the "Stories, in motion." headline with a selectable local image stage for Social, Shoot, and Edit. The next sections clarify services and the Plan/Shoot/Edit/Publish process before showing clearly disclosed concept studies. Do not imply that stock images are commissioned work.
 
 ## Constraints
-Use the kinetic-cut editorial identity: near-black, warm white, gold, oversized Archivo Black display type, and Manrope reading type. Stay responsive, keyboard-accessible, and respectful of reduced-motion preferences. Do not invent clients, testimonials, awards, specializations, or outcomes. The contact form opens a local email draft and needs a verified public address to deliver enquiries.
+Use a connected content canvas with carbon black, porcelain white, and restrained brushed gold; Manrope typography, modular media, accessible controls, reduced-motion support, and responsive layouts. Preserve factual service descriptions, concept disclosures, enquiry behavior, SEO, and accessibility. Do not invent clients, testimonials, awards, metrics, or guaranteed outcomes. Email and WhatsApp remain placeholders until verified details are supplied.
 
 ## Direction and memorable moment
-Kinetic-cut editorial: the visitor sees the oversized statement collide with a photographic service frame, switches between social, shoot, and edit, then follows the same visual thread toward enquiry.
+Connected content canvas: visitors switch the hero between Social, Shoot, and Edit, then follow that same service range through service rows, the publishing process, concept work, and enquiry. Gold marks the active image and action; it is not a performance indicator.
 
 ## Unresolved decisions
-Verified portfolio assets, actual service list and production approach, studio details, geographic scope, and public email/WhatsApp contact information.
+Approved portfolio imagery and client permissions, studio details, geography, exact production approach, and public email/WhatsApp contact details.

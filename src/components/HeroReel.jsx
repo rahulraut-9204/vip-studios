@@ -1,13 +1,28 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { ArrowDown, ArrowUpRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { projects } from "../data/projects.js";
 
 const moments = [
-  { id: "social", label: "Social", image: projects[0] },
-  { id: "shoot", label: "Shoot", image: projects[3] },
-  { id: "edit", label: "Edit", image: projects[2] },
+  {
+    id: "social",
+    label: "Social",
+    detail: "Plan the presence",
+    image: projects[0],
+  },
+  {
+    id: "shoot",
+    label: "Shoot",
+    detail: "Capture the moment",
+    image: projects[3],
+  },
+  {
+    id: "edit",
+    label: "Edit",
+    detail: "Shape the final cut",
+    image: projects[2],
+  },
 ];
 
 const spring = { type: "spring", stiffness: 120, damping: 22 };
@@ -18,12 +33,6 @@ export default function HeroReel() {
 
   return (
     <section aria-labelledby="home-title" className="hero-reel page-gutter">
-      <div className="hero-orbit" aria-hidden="true" />
-      <div className="hero-overline">
-        <span>VIP StudioS</span>
-        <span>Social, shot &amp; edited.</span>
-      </div>
-
       <div className="hero-composition">
         <motion.div
           animate={{ opacity: 1, y: 0 }}
@@ -32,26 +41,26 @@ export default function HeroReel() {
           transition={reduceMotion ? { duration: 0 } : { ...spring, delay: 0.08 }}
         >
           <h1 id="home-title">
-            Make your
+            Stories,
             <br />
-            feed <span>move.</span>
+            <span>in motion.</span>
           </h1>
           <p className="hero-offer">
-            Social strategy, content planning, publishing and account
-            management—paired with video shoots and professional editing.
+            We plan and manage your social presence, then produce the video
+            that brings your ideas to life—from shoot to final edit.
           </p>
           <div className="hero-actions">
             <Link className="button button-gold" to="/contact">
-              Let&apos;s make something <ArrowUpRight aria-hidden="true" size={17} />
+              Plan a project <ArrowUpRight aria-hidden="true" size={17} />
             </Link>
             <Link className="text-link" to="/services">
-              Explore what we do <ArrowDown aria-hidden="true" size={16} />
+              Explore services <ArrowUpRight aria-hidden="true" size={16} />
             </Link>
           </div>
-          <p className="hero-note">
-            A consistent, considered presence—without promises of overnight
-            growth.
-          </p>
+          <div className="hero-promise">
+            <span aria-hidden="true" className="hero-promise-mark" />
+            <p>One creative partner, from the first plan to the final post.</p>
+          </div>
         </motion.div>
 
         <motion.div
@@ -71,7 +80,10 @@ export default function HeroReel() {
                 loading="eager"
                 fetchPriority="high"
                 src={activeMoment.image.image}
-                transition={{ duration: reduceMotion ? 0 : 0.42, ease: [0.22, 1, 0.36, 1] }}
+                transition={{
+                  duration: reduceMotion ? 0 : 0.42,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
               />
             </AnimatePresence>
             <span aria-hidden="true" className="reel-flash" />
@@ -79,12 +91,17 @@ export default function HeroReel() {
               <span>ILLUSTRATIVE CONCEPT / NOT CLIENT WORK</span>
               <strong>{activeMoment.image.title}</strong>
             </div>
-            <span aria-hidden="true" className="reel-frame-mark reel-frame-mark-top" />
-            <span aria-hidden="true" className="reel-frame-mark reel-frame-mark-bottom" />
+            <span aria-hidden="true" className="reel-frame-index">
+              V/S — 01
+            </span>
           </div>
 
-          <div aria-label="Explore our services" className="reel-controls" role="group">
-            {moments.map((moment) => (
+          <div
+            aria-label="Explore our services"
+            className="reel-controls"
+            role="group"
+          >
+            {moments.map((moment, index) => (
               <button
                 aria-pressed={activeMoment.id === moment.id}
                 className={`reel-control${activeMoment.id === moment.id ? " is-active" : ""}`}
@@ -92,28 +109,36 @@ export default function HeroReel() {
                 onClick={() => setActiveMoment(moment)}
                 type="button"
               >
-                <span>{moment.label}</span>
-                <span aria-hidden="true" className="reel-control-line" />
+                <img alt="" className="reel-control-image" src={moment.image.image} />
+                <span className="reel-control-copy">
+                  <span className="reel-control-index">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <span className="reel-control-label">{moment.label}</span>
+                  <span className="reel-control-detail">{moment.detail}</span>
+                </span>
+                <ArrowUpRight
+                  aria-hidden="true"
+                  className="reel-control-arrow"
+                  size={15}
+                />
               </button>
             ))}
           </div>
-          <motion.div
-            animate={reduceMotion ? undefined : { y: [0, -8, 0] }}
-            className="hero-sticker"
-            transition={{ duration: 3.4, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <span>STORY</span>
-            <span>×</span>
-            <span>STRATEGY</span>
-          </motion.div>
         </motion.div>
       </div>
 
       <div className="hero-base">
-        <span>STRATEGY / SHOOT / EDIT / PUBLISH</span>
+        <span>STRATEGY</span>
+        <span aria-hidden="true">/</span>
+        <span>SHOOT</span>
+        <span aria-hidden="true">/</span>
+        <span>EDIT</span>
+        <span aria-hidden="true">/</span>
+        <span>PUBLISH</span>
         <span className="hero-base-rule" />
         <Link to="/services">
-          One creative partner <ArrowUpRight aria-hidden="true" size={15} />
+          How we work <ArrowUpRight aria-hidden="true" size={15} />
         </Link>
       </div>
     </section>

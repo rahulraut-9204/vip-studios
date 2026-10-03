@@ -15,27 +15,23 @@ export default function HomePage() {
     <>
       <HeroReel />
 
-      <div aria-hidden="true" className="motion-ticker">
-        <motion.div
-          animate={reduceMotion ? undefined : { x: ["0%", "-50%"] }}
-          className="motion-ticker-track"
-          transition={{ duration: 28, ease: "linear", repeat: Infinity }}
+      <div className="service-signal">
+        <ul
+          aria-label="VIP StudioS services"
+          className="service-signal-inner page-gutter"
         >
-          {[0, 1].map((copy) => (
-            <span className="motion-ticker-set" key={copy}>
-              {["PLAN", "SHOOT", "EDIT", "PUBLISH", "MANAGE"].map((label) => (
-                <span className="motion-ticker-word" key={label}>
-                  {label}<i />
-                </span>
-              ))}
-            </span>
+          {["Plan", "Shoot", "Edit", "Publish", "Manage"].map((label) => (
+            <li className="service-signal-step" key={label}>
+              {label}
+              <i aria-hidden="true" />
+            </li>
           ))}
-        </motion.div>
+        </ul>
       </div>
 
       <section
         aria-labelledby="services-title"
-        className="services-overview page-gutter"
+        className="services-overview page-gutter surface-light"
       >
         <div className="section-lead">
           <h2 id="services-title">
@@ -70,8 +66,8 @@ export default function HomePage() {
               >
                 <ArrowUpRight aria-hidden="true" size={22} />
               </Link>
-                <span className="service-choreo-glyph" aria-hidden="true">
-                  {service.id === "social" ? "S" : service.id === "shoot" ? "V" : "E"}
+              <span className="service-choreo-glyph" aria-hidden="true">
+                {service.id === "social" ? "S" : service.id === "shoot" ? "V" : "E"}
               </span>
             </motion.article>
           ))}
@@ -95,7 +91,8 @@ export default function HomePage() {
               content still feels like it belongs to you.
             </p>
             <Link className="text-link" to="/services">
-              See the full service mix <ArrowUpRight aria-hidden="true" size={16} />
+              See the full service mix{" "}
+              <ArrowUpRight aria-hidden="true" size={16} />
             </Link>
           </div>
 
@@ -123,7 +120,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section aria-labelledby="work-title" className="work-showcase page-gutter">
+      <section
+        aria-labelledby="work-title"
+        className="work-showcase page-gutter surface-light"
+      >
         <div className="showcase-heading">
           <div>
             <h2 id="work-title">Ideas in <span>motion.</span></h2>
@@ -153,9 +153,8 @@ export default function HomePage() {
 
       <section className="manifesto-band" aria-label="Creative approach">
         <div className="manifesto-track" aria-hidden="true">
-          <span>Plan with purpose.</span>
-          <span>Make it move.</span>
-          <span>Show up well.</span>
+          <span>Good ideas,</span>
+          <span>made real.</span>
         </div>
         <p>
           Strategy gives it direction. Video gives it a face. Consistency gives
@@ -174,7 +173,9 @@ export default function HomePage() {
             Start a conversation <ArrowUpRight aria-hidden="true" size={17} />
           </Link>
         </div>
-        <div aria-hidden="true" className="closing-cta-mark">V/S</div>
+        <div aria-hidden="true" className="closing-cta-mark">
+          V/S
+        </div>
       </section>
     </>
   );
