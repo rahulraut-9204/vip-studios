@@ -7,6 +7,7 @@ const ContactPage = lazy(() => import("./pages/ContactPage.jsx"));
 const HomePage = lazy(() => import("./pages/HomePage.jsx"));
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage.jsx"));
 const ProjectPage = lazy(() => import("./pages/ProjectPage.jsx"));
+const ProcessPage = lazy(() => import("./pages/ProcessPage.jsx"));
 const ServicesPage = lazy(() => import("./pages/ServicesPage.jsx"));
 const ServiceDetailPage = lazy(() => import("./pages/ServiceDetailPage.jsx"));
 const WorkPage = lazy(() => import("./pages/WorkPage.jsx"));
@@ -22,6 +23,7 @@ export default function App() {
           <Route path="services/:serviceSlug" element={<ServiceDetailPage />} />
           <Route path="work" element={<WorkPage />} />
           <Route path="work/:slug" element={<ProjectPage />} />
+          <Route path="process" element={<ProcessPage />} />
           <Route path="about" element={<AboutPage />} />
           <Route path="contact" element={<ContactPage />} />
           <Route path="*" element={<NotFoundPage />} />

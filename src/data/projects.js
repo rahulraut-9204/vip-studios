@@ -7,7 +7,7 @@ export const projects = [
   {
     slug: "feed-in-motion",
     title: "Feed in Motion",
-    category: "Social",
+    category: "Social media",
     format: "Concept short-form direction",
     year: "Concept",
     image: socialImage,
@@ -23,7 +23,7 @@ export const projects = [
   {
     slug: "product-in-focus",
     title: "Product in Focus",
-    category: "Video shoots",
+    category: "Video",
     format: "Concept product shoot",
     year: "Concept",
     image: productImage,
@@ -39,7 +39,7 @@ export const projects = [
   {
     slug: "the-long-take",
     title: "The Long Take",
-    category: "Editing",
+    category: "Video",
     format: "Concept edit study",
     year: "Concept",
     image: editingImage,
@@ -55,7 +55,7 @@ export const projects = [
   {
     slug: "behind-the-frame",
     title: "Behind the Frame",
-    category: "Video shoots",
+    category: "Video",
     format: "Concept shoot treatment",
     year: "Concept",
     image: cameraImage,
@@ -70,7 +70,15 @@ export const projects = [
   },
 ];
 
-export const projectCategories = ["All", "Social", "Video shoots", "Editing"];
+export const projectCategories = [
+  "All",
+  "Social media",
+  "Video",
+  "Reels",
+  "Podcast",
+  "YouTube",
+  "Branding",
+];
 
 export function getProjectBySlug(slug) {
   return projects.find((project) => project.slug === slug);

@@ -8,6 +8,7 @@ const footerLinks = [
   { label: "Home", to: "/" },
   { label: "Services", to: "/services" },
   { label: "Work", to: "/work" },
+  { label: "Process", to: "/process" },
   { label: "About", to: "/about" },
   { label: "Contact", to: "/contact" },
 ];
@@ -19,12 +20,12 @@ export default function SiteFooter() {
     <footer className="site-footer">
       <div className="footer-main">
         <div className="footer-intro">
-          <h2>Got an idea?<br />Let&apos;s give it a life.</h2>
+          <h2>Content.<br />Creativity.<br />Growth.</h2>
           <Link className="button button-gold" to="/contact">
-            Tell us about it <ArrowUpRight aria-hidden="true" size={16} />
+            Let&apos;s grow your brand <ArrowUpRight aria-hidden="true" size={16} />
           </Link>
-          <p>Social, shot &amp; edited.</p>
-          <p className="footer-service-area">Pune, Maharashtra · Serving clients across India</p>
+          <p>One partner for your digital content journey.</p>
+          <p className="footer-service-area">Pune, Maharashtra · Working across India</p>
         </div>
         <div className="footer-group">
           <h3>Explore</h3>

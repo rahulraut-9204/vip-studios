@@ -105,15 +105,15 @@ export default function ContactPage() {
     <section className="studio-page studio-contact-page">
       <div className="studio-contact-layout">
         <div className="studio-contact-copy">
-          <p className="studio-location">PUNE · WORKING ACROSS INDIA</p>
+          <p className="studio-location">CONTENT · SOCIAL · VIDEO · DIGITAL</p>
           <h1>
             Tell us about
             <br />
             your <span>project.</span>
           </h1>
           <p>
-            A little context helps us understand what you are making and what
-            the right next step might be.
+            Tell us what you want to create, manage or improve. A little context
+            helps us shape the right scope and next step.
           </p>
           <div className="studio-contact-methods">
             <div>
@@ -201,12 +201,14 @@ export default function ContactPage() {
           </label>
           <div className="studio-form-pair">
             <label>
-              Video type
+              Content format
               <select defaultValue="" name="videoType">
                 <option value="">Choose a format</option>
-                <option>Short-form video</option>
+                <option>Reels / short-form video</option>
+                <option>YouTube video</option>
+                <option>Podcast episode</option>
+                <option>Brand or campaign content</option>
                 <option>Long-form video</option>
-                <option>Social media content</option>
                 <option>Other / not sure</option>
               </select>
             </label>

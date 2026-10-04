@@ -12,14 +12,14 @@ const siteOrigin = "https://vip-studios.pages.dev";
 
 const pageMetadata = {
   "/": {
-    title: "Social Media Management & Video Production in Pune | VIP StudioS",
+    title: "Content, Social Media & Video Production in Pune | VIP StudioS",
     description:
-      "Pune-based social media management, video shoots and professional editing for brands and businesses. Plan, produce and publish content across India.",
+      "Social media management, video production, editing, podcasts and YouTube support for businesses. Build your digital content journey with VIP StudioS.",
   },
   "/services": {
-    title: "Social Media, Video Shoots & Editing | VIP StudioS",
+    title: "Social Media, Video, Podcast & YouTube Services | VIP StudioS",
     description:
-      "Social media strategy, content planning, publishing and account management, plus video shoots and professional editing in Pune and across India.",
+      "Explore social media management, video production and editing, podcast production, YouTube management, content creation and brand content.",
   },
   "/work": {
     title: "Portfolio concepts — VIP StudioS",
@@ -29,7 +29,12 @@ const pageMetadata = {
   "/about": {
     title: "The studio — VIP StudioS",
     description:
-      "VIP StudioS is a Pune-based creative video and content studio working with businesses, brands and creators across India.",
+      "Meet VIP StudioS: a creative and digital team connecting social media, content, video production and digital execution for businesses.",
+  },
+  "/process": {
+    title: "Our Process — VIP StudioS",
+    description:
+      "See how VIP StudioS takes a project from discovery and strategy through content creation, editing, publishing and review.",
   },
   "/contact": {
     title: "Start a conversation — VIP StudioS",
@@ -115,6 +120,7 @@ function applyRouteMetadata(pathname, project, service, pendingProject = false) 
       ({
         "/services": "Services",
         "/work": "Our Work",
+        "/process": "Process",
         "/about": "About",
         "/contact": "Contact",
       }[normalizedPath] || "Page");

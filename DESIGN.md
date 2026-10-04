@@ -1,6 +1,6 @@
 ---
 name: VIP StudioS
-description: A cinematic moving frame for social strategy and video production.
+description: A cinematic content journey for social strategy, production and digital growth.
 colors:
   ink: "#0a0a0a"
   ink-raised: "#141414"
@@ -8,9 +8,9 @@ colors:
   white: "#f5f5f5"
   white-dim: "#d0d0d0"
   muted: "#a0a0a0"
-  orange: "#FFA000"
-  orange-hover: "#FFB52E"
-  orange-on-light: "#8A4B00"
+  yellow: "#FFD21C"
+  yellow-hover: "#FFE15C"
+  yellow-on-light: "#785900"
   porcelain: "#f5f3ed"
   ink-on-light: "#141414"
   line: "#2a2a2a"
@@ -47,14 +47,14 @@ spacing:
   page-width: "1480px"
 components:
   button-primary:
-    backgroundColor: "{colors.orange}"
+    backgroundColor: "{colors.yellow}"
     textColor: "{colors.ink}"
     typography: "{typography.body}"
     rounded: "{rounded.pill}"
     padding: "0.8rem 1.1rem"
     height: "50px"
   button-primary-hover:
-    backgroundColor: "{colors.orange-hover}"
+    backgroundColor: "{colors.yellow-hover}"
   button-light:
     backgroundColor: "{colors.white}"
     textColor: "{colors.ink}"
@@ -71,25 +71,25 @@ components:
 
 **Creative North Star: "The moving frame."**
 
-VIP StudioS pairs social media management, video shoots, and professional editing. A vivid orange action color, editorial imagery, confident typography, and a compact scroll-reactive header create a distinct identity grounded in the supplied logo. A visitor moves from the offer to its three confirmed services, disclosed concept work, and a straightforward enquiry.
+VIP StudioS connects strategy, content, production, publishing and management as one practical digital-content partner. Cinematic black and white, a selective signature yellow accent, confident typography and a compact scroll-reactive header create an identity grounded in the supplied logo. Visitors understand the complete service range, see owner-supplied business details and clearly labeled concept work, then start an enquiry.
 
-**The first-view rule:** the offer and project action are visible beside one decisive image. Three labeled controls expose the studio's social and production range. Do not bury the enquiry action in the footer or make illustrative concept images look commissioned.
+**The first-view rule:** the full content and growth offer and project action are visible beside one selectable, explicitly illustrative production image. Do not bury the enquiry action in the footer or make stock concepts look commissioned.
 
 ## Colors
 
-The dark media canvas lets imagery hold attention; porcelain sections provide a clear reading interval; vivid orange marks active states and actions rather than implying performance.
+The dark media canvas lets imagery hold attention; porcelain sections provide a clear reading interval; signature yellow marks active states and actions rather than implying performance.
 
 - **Ink** (`#0a0a0a`): media-led hero, process sections, navigation, and footer.
 - **Raised Ink** (`#141414`) and **Soft Ink** (`#1e1e1e`): controls and media frames.
 - **Porcelain** (`#f5f3ed`): reading sections and light action surfaces.
 - **Dim White** (`#d0d0d0`) and **Muted** (`#a0a0a0`): supporting copy and metadata on dark fields.
-- **Orange** (`#FFA000`): primary action, active selector, and short emphasis on dark surfaces.
-- **Orange hover** (`#FFB52E`): hover and keyboard focus on dark surfaces.
-- **Orange on light** (`#8A4B00`): readable accent text on porcelain surfaces.
+- **Signature yellow** (`#FFD21C`): primary action, active selector, important figures and brief emphasis on dark surfaces.
+- **Yellow hover** (`#FFE15C`): hover and keyboard focus on dark surfaces.
+- **Yellow on light** (`#785900`): readable accent text on porcelain surfaces.
 - **Ink on light** (`#141414`): copy, focus, and controls on porcelain sections.
 - **Hairlines** (`#2a2a2a`): separation on dark surfaces; use a dark translucent rule on light fields.
 
-Keep orange selective. Use ink and porcelain as the reading surfaces; reserve the full orange field for the final project invitation.
+Keep yellow selective. Use ink and porcelain as the reading surfaces; reserve the full yellow field for the final project invitation.
 
 ## Typography
 
@@ -101,9 +101,9 @@ Avoid the former oversized all-caps display treatment. The hierarchy comes from 
 
 ## Layout
 
-Use a centered 1480px frame and fluid page gutters. The desktop hero balances a left-aligned offer with a wide image stage and three compact image-led selectors. On mobile, stack the offer before the image; keep all service selectors visible and usable without horizontal scrolling.
+Use a centered 1480px frame and fluid page gutters. The desktop hero balances a three-line content-and-growth offer with a wide image stage and three compact image-led selectors. On mobile, stack the offer before the image; keep all service selectors visible and usable without horizontal scrolling.
 
-Use a direct page sequence: clear offer, three confirmed services, disclosed concept work, project process, short FAQ, and enquiry. Alternate media-dark sections with porcelain reading surfaces; at narrow viewports, stack the service rows and process without horizontal scrolling.
+Use a direct page sequence: full service offer, owner-supplied business facts, service grid, disclosed concept work, differentiators, six-stage project process, content ecosystem, studio introduction, FAQ and enquiry. Alternate media-dark sections with porcelain reading surfaces; at narrow viewports, stack service rows and process steps without horizontal scrolling.
 
 ## Elevation & Depth
 
@@ -111,13 +111,13 @@ Use tonal ink surfaces, real image contrast, thin rules, and one modest offset e
 
 ## Shapes
 
-Controls use an 8px radius, cards use a 14px radius, and the navigation and primary actions use a pill shape. The brand is grounded in the supplied logo. Orange does not become a decorative border on every component.
+Controls use an 8px radius, cards use a 14px radius, and the navigation and primary actions use a pill shape. The brand is grounded in the supplied logo. Yellow does not become a decorative border on every component.
 
 ## Components
 
 ### Navigation and actions
 
-The sticky header contracts into a centered island on scroll and expands on hover/focus; an explicit control can keep it open. Its Home, Services, Work, About, and Contact links remain keyboard-accessible. The mobile menu uses a large touch target and closes on navigation or Escape. Primary actions use orange with dark text. Preserve a visible 2px focus ring with offset.
+The sticky header contracts into a centered island on scroll and expands on hover/focus; an explicit control can keep it open. Its Home, Services, Work, Process, About, and Contact links remain keyboard-accessible. The mobile menu uses a large touch target and closes on navigation or Escape. Primary actions use signature yellow with dark text. Preserve a visible 2px focus ring with offset.
 
 ### Hero media selector and concept work
 
@@ -125,7 +125,7 @@ The hero selectors are real buttons and expose Social, Shoot, and Edit with matc
 
 ### Services and journey
 
-Service rows describe social media management, video shoots, and professional editing. The project steps name the brief, planning, creation, and delivery rather than implying performance milestones.
+Service pages cover social media management, video and podcast production, editing, YouTube management, content creation, digital growth and brand content. The process names discovery, strategy, creation, editing, publishing and review without implying guaranteed performance milestones.
 
 ### Enquiry fields
 
@@ -133,13 +133,13 @@ Keep labels outside rounded, high-contrast fields. The enquiry form collects nam
 
 ### Portfolio and proof
 
-Portfolio entries remain explicitly labeled illustrative concept studies until approved client work is supplied. Project pages link to related concepts, but do not invent client names, dates, commissioned work, testimonials, or outcomes. No video preview is enabled without an approved studio video asset.
+Portfolio entries remain explicitly labeled illustrative concept studies until approved client work is supplied. Project pages link to related concepts, but do not invent client names, dates, commissioned work, testimonials, or outcomes. Business metrics are identified as supplied by VIP StudioS. No video preview is enabled without an approved studio video asset.
 
 ## Do's and Don'ts
 
 ### Do
 
-- Make social strategy, planning, publishing, account management, shoots, and professional editing clear within seconds.
+- Make the complete content journey and eight service areas clear within seconds.
 - Use the connected content canvas to link image selection, service detail, concept examples, and enquiry.
 - Preserve reduced-motion behavior, visible keyboard focus, responsive controls, and clear concept disclosures.
 
@@ -147,4 +147,4 @@ Portfolio entries remain explicitly labeled illustrative concept studies until a
 
 - Return to oversized kinetic typography, endless ticker motion, or decorative route markers that interrupt the content flow.
 - Invent clients, testimonials, team details, metrics, audience growth, or guaranteed outcomes.
-- Use orange as an unverified success signal or add interface-like controls that do not perform an action.
+- Use yellow as an unverified success signal or add interface-like controls that do not perform an action.

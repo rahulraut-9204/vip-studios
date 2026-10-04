@@ -21,17 +21,17 @@ export default function WorkPage() {
   return (
     <section className="studio-page studio-work-page">
       <div className="studio-page-intro">
-        <p className="studio-location">VISUAL DIRECTIONS · CONCEPT STUDIES</p>
-        <h1>Frames for<br /><span>the story.</span></h1>
+        <p className="studio-location">VIDEO · SOCIAL · CONTENT</p>
+        <h1>Our work<br /><span>starts with an idea.</span></h1>
         <p>
           {projects.length > 0 && projects.every((project) => project.concept)
             ? "Explore illustrative directions for social and video. These studies use stock imagery; they are not client projects or proof of delivered results."
-            : "Explore selected work and visual directions for social and video. Each project is identified clearly, with no invented results or client claims."}
+            : "Explore selected work and visual directions. Each project is identified clearly, with no invented results or client claims."}
         </p>
       </div>
 
       <div className="work-toolbar studio-work-toolbar">
-        <div aria-label="Filter concept projects" className="filter-list" role="group">
+        <div aria-label="Filter visual studies by category" className="filter-list" role="group">
           {projectCategories.map((category) => (
             <button
               aria-pressed={activeCategory === category}
@@ -46,7 +46,7 @@ export default function WorkPage() {
         </div>
         <span className="work-count" aria-live="polite">
           {String(visibleProjects.length).padStart(2, "0")}{" "}
-          {visibleProjects.length > 0 && visibleProjects.every((project) => project.concept)
+          {visibleProjects.length === 0 || visibleProjects.every((project) => project.concept)
             ? "CONCEPT STUDIES"
             : "PROJECTS"}
         </span>
@@ -56,7 +56,12 @@ export default function WorkPage() {
         {isLoading && <p aria-live="polite" className="studio-content-loading">Loading project work…</p>}
         {error && <p className="studio-content-error" role="alert">Project work could not be loaded: {error}</p>}
         {!isLoading && !error && visibleProjects.length === 0 && (
-          <p className="studio-content-empty">There are no published projects yet. <Link to="/contact">Tell us about your project.</Link></p>
+          <p className="studio-content-empty">
+            {activeCategory === "All"
+              ? "There are no published projects yet."
+              : `There are no concept studies in ${activeCategory} yet.`}{" "}
+            <Link to="/contact">Tell us about your project.</Link>
+          </p>
         )}
         <AnimatePresence initial={false} mode="popLayout">
           {visibleProjects.map((project, index) => (
@@ -75,7 +80,7 @@ export default function WorkPage() {
         </AnimatePresence>
       </div>
       <div className="work-inquiry">
-        <p>These are visual directions, not client case studies. Bring us a brief and we can shape one around your story.</p>
+        <p>These are visual directions, not client case studies. Share a brief and we can shape an approach around your story.</p>
         <Link className="button button-gold" to="/contact">
           Start a project <ArrowUpRight aria-hidden="true" size={17} />
         </Link>

@@ -1,30 +1,44 @@
-import { ArrowUpRight } from "lucide-react";
+import {
+  ArrowUpRight,
+  Camera,
+  Clapperboard,
+  Instagram,
+  Mic2,
+  Scissors,
+  TrendingUp,
+  Youtube,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import HeroReel from "../components/HeroReel.jsx";
+import ProcessTimeline from "../components/ProcessTimeline.jsx";
 import ProjectCard from "../components/ProjectCard.jsx";
+import { getWhatsAppHref } from "../data/contact.js";
+import { projects } from "../data/projects.js";
+import { serviceOfferings, studioFacts, studioReasons } from "../data/services.js";
 import usePublishedProjects from "../hooks/usePublishedProjects.js";
-import { contentJourney, serviceOfferings } from "../data/services.js";
+
+const serviceIcons = [Instagram, Camera, Scissors, Mic2, Youtube, Clapperboard, TrendingUp, Camera];
 
 const faqs = [
   {
-    question: "What does social media management include?",
+    question: "What can VIP StudioS help with?",
     answer:
-      "Social media strategy, content planning, publishing and account management. Platforms and ongoing scope are discussed in your brief.",
+      "Social media management, video production and editing, podcast production, YouTube management, content creation, digital growth and brand content.",
   },
   {
-    question: "Can you shoot videos and edit existing footage?",
+    question: "Can I book only one service?",
     answer:
-      "Yes. Video shoots and professional editing are available. Share whether you need production, editing for footage you already have, or both.",
+      "Yes. Start with the service you need, or tell us about a wider project. The scope and deliverables are agreed before work begins.",
   },
   {
-    question: "How are timing and pricing decided?",
+    question: "Do you guarantee audience or business growth?",
     answer:
-      "Timing, deliverables and pricing depend on the project requirements. They are confirmed after the brief is reviewed; no fixed package rates or turnaround promises are listed here.",
+      "No specific audience, reach or business result can be guaranteed. Strategy and content are shaped around your goals, and available performance information can guide future work.",
   },
   {
-    question: "How do I start?",
+    question: "How do I get started?",
     answer:
-      "Send a short project brief by email or WhatsApp. The website opens an email draft on your device; it does not store or submit form details to a server.",
+      "Share a short project brief by email or WhatsApp. The enquiry form opens an email draft for you to review and send; this website does not store or submit the details.",
   },
 ];
 
@@ -48,146 +62,286 @@ function FaqSchema() {
 }
 
 export default function HomePage() {
-  const { projects, isLoading: projectsLoading, error: projectsError } = usePublishedProjects();
+  const { projects: publishedProjects, isLoading, error } = usePublishedProjects();
   const homeProjects = [
-    ...projects.filter((project) => project.featured),
-    ...projects.filter((project) => !project.featured),
+    ...publishedProjects.filter((project) => project.featured),
+    ...publishedProjects.filter((project) => !project.featured),
   ].slice(0, 4);
+  const whatsAppHref = getWhatsAppHref(
+    "Hi VIP StudioS, I'd like to discuss a content or digital project.",
+  );
 
   return (
-    <div className="studio-route-page">
+    <div className="vip-home">
       <FaqSchema />
       <HeroReel />
 
-      <section aria-labelledby="studio-services-title" className="studio-offer-section studio-route-stop" data-route-stop="Services">
-        <div className="studio-section-heading">
-          <h2 id="studio-services-title">
-            Three services.
-            <br />
-            <span>One clear brief.</span>
-          </h2>
-          <p>
-            Choose the support you need: social media management, a video shoot
-            or professional editing. Each project is scoped around your brief.
-          </p>
+      <section aria-labelledby="studio-proof-title" className="vip-proof" id="studio-proof">
+        <div className="vip-section-shell">
+          <div className="vip-proof-heading">
+            <h2 id="studio-proof-title">A team built to carry the whole brief.</h2>
+            <p>Business details supplied by VIP StudioS.</p>
+          </div>
+          <dl className="vip-facts">
+            {studioFacts.map((fact) => (
+              <div className="vip-fact" key={fact.label}>
+                <dt>{fact.label}</dt>
+                <dd>{fact.value}</dd>
+              </div>
+            ))}
+          </dl>
         </div>
-        <div className="studio-service-list">
-          {serviceOfferings.map((service) => (
-            <Link
-              className="studio-service-row"
-              key={service.slug}
-              to={`/services/${service.slug}`}
-            >
-              <span className="studio-service-name">{service.title}</span>
-              <span className="studio-service-note">
-                {service.shortDescription}
-                {service.scope && (
-                  <small>{service.scope.join(" · ")}</small>
-                )}
-              </span>
-              <ArrowUpRight aria-hidden="true" className="studio-service-arrow" size={20} />
-            </Link>
-          ))}
-        </div>
-        <Link className="studio-text-link" to="/services">
-          See service details <ArrowUpRight aria-hidden="true" size={17} />
-        </Link>
       </section>
 
-      <section aria-labelledby="studio-work-title" className="studio-work studio-route-stop" data-route-stop="Concept work">
-        <div className="studio-section-heading">
-          <h2 id="studio-work-title">
-            Ideas made
-            <br />
-            <span>visible.</span>
-          </h2>
-          <Link className="studio-text-link" to="/work">
-            Browse concept studies <ArrowUpRight aria-hidden="true" size={17} />
+      <section aria-labelledby="studio-services-title" className="vip-services" id="services">
+        <div className="vip-section-shell">
+          <div className="vip-section-heading">
+            <div>
+              <p className="vip-eyebrow">What we do</p>
+              <h2 id="studio-services-title">
+                More than social media.
+                <br />
+                <span>We build your digital presence.</span>
+              </h2>
+            </div>
+            <p>
+              Your business needs more than regular posts. Bring strategy,
+              creative content, professional production and digital execution
+              together in one place.
+            </p>
+          </div>
+          <div className="vip-service-grid">
+            {serviceOfferings.map((service, index) => {
+              const Icon = serviceIcons[index];
+              return (
+                <Link
+                  className="vip-service-card"
+                  key={service.slug}
+                  to={`/services/${service.slug}`}
+                >
+                  <span className="vip-service-card-top">
+                    <span>{String(index + 1).padStart(2, "0")}</span>
+                    <Icon aria-hidden="true" size={19} />
+                  </span>
+                  <h3>{service.title}</h3>
+                  <p>{service.shortDescription}</p>
+                  <span className="vip-service-link">
+                    Explore service <ArrowUpRight aria-hidden="true" size={15} />
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
+          <Link className="vip-inline-link" to="/services">
+            Explore all services <ArrowUpRight aria-hidden="true" size={16} />
           </Link>
         </div>
-        <p className="studio-concept-note">
-          {projects.length > 0 && projects.every((project) => project.concept)
-            ? "These are illustrative studies made with stock imagery—not client commissions, testimonials or performance results."
-            : projects.length > 0
-              ? "Selected work and illustrative studies are clearly identified. Project details reflect only the material shown."
-              : "Approved project work is being added. Start a conversation about your brief."}
-        </p>
-        {projectsError && <p className="studio-content-error" role="alert">Project work could not be loaded: {projectsError}</p>}
-        {projectsLoading && <p aria-live="polite" className="studio-content-loading">Loading project work…</p>}
-        <div className="studio-work-grid">
-          {homeProjects.map((project, index) => (
-            <div key={project.slug}>
-              <ProjectCard index={index} project={project} />
+      </section>
+
+      <section aria-labelledby="studio-work-title" className="vip-work" id="work">
+        <div className="vip-section-shell">
+          <div className="vip-section-heading">
+            <div>
+              <p className="vip-eyebrow">Visual directions</p>
+              <h2 id="studio-work-title">
+                The work is the
+                <br />
+                <span>first conversation.</span>
+              </h2>
             </div>
-          ))}
-        </div>
-      </section>
-
-      <section aria-labelledby="studio-process-title" className="studio-process studio-route-stop" data-route-stop="Process">
-        <div className="studio-section-heading">
-          <h2 id="studio-process-title">
-            A clear process.
-            <br />
-            <span>From brief to delivery.</span>
-          </h2>
-          <p>
-            Before work begins, the project scope, deliverables and timing are
-            agreed with you.
-          </p>
-        </div>
-        <ol className="studio-process-list">
-          {contentJourney.map((step, index) => (
-            <li className="studio-process-step" key={step.label}>
-              <span>{String(index + 1).padStart(2, "0")}</span>
-              <h3>{step.label}</h3>
-              <p>{step.detail}</p>
-            </li>
-          ))}
-        </ol>
-        <p className="studio-process-note">Review stages and revisions are confirmed in the agreed scope.</p>
-      </section>
-
-      <section aria-labelledby="studio-faq-title" className="studio-faq studio-route-stop" data-route-stop="FAQ">
-        <div className="studio-faq-heading">
-          <h2 id="studio-faq-title">
-            Before we
-            <br />
-            <span>press record.</span>
-          </h2>
-          <p>Good questions make a better first conversation.</p>
-        </div>
-        <div className="studio-faq-list">
-          {faqs.map(({ question, answer }) => (
-            <details key={question}>
-              <summary>
-                {question}
-                <span aria-hidden="true">+</span>
-              </summary>
-              <p>{answer}</p>
-            </details>
-          ))}
-        </div>
-      </section>
-
-      <section aria-labelledby="studio-cta-title" className="studio-closing studio-route-stop" data-route-stop="Enquire">
-        <div>
-          <p className="studio-closing-location">PUNE, MAHARASHTRA · WORKING ACROSS INDIA</p>
-          <h2 id="studio-cta-title">
-            Have a story
-            <br />
-            <span>to tell?</span>
-          </h2>
-          <p>
-            Tell us what you are making. We will help shape the right format,
-            production approach and next step.
-          </p>
-          <div className="studio-closing-actions">
-            <Link className="button button-light" to="/contact">
-              Start your project <ArrowUpRight aria-hidden="true" size={17} />
+            <Link className="vip-inline-link" to="/work">
+              Browse all concepts <ArrowUpRight aria-hidden="true" size={16} />
             </Link>
-            <Link className="studio-text-link" to="/work">
-              See the concept work <ArrowUpRight aria-hidden="true" size={15} />
+          </div>
+          <p className="vip-section-intro">
+            These illustrative studies show possible creative directions using
+            stock imagery. They are not client commissions or evidence of
+            delivered results.
+          </p>
+          {error && (
+            <p className="studio-content-error" role="alert">
+              Project work could not be loaded: {error}
+            </p>
+          )}
+          {isLoading && (
+            <p aria-live="polite" className="studio-content-loading">
+              Loading project work…
+            </p>
+          )}
+          {!isLoading && !error && homeProjects.length === 0 && (
+            <p className="studio-content-empty">
+              There are no published projects yet.{" "}
+              <Link to="/contact">Tell us about your project.</Link>
+            </p>
+          )}
+          <div className="vip-work-grid">
+            {homeProjects.map((project, index) => (
+              <ProjectCard index={index} key={project.slug} project={project} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="studio-reasons-title" className="vip-reasons" id="why-vip">
+        <div className="vip-section-shell">
+          <div className="vip-section-heading">
+            <div>
+              <p className="vip-eyebrow">Why VIP StudioS</p>
+              <h2 id="studio-reasons-title">
+                One team.
+                <br />
+                <span>A wider view.</span>
+              </h2>
+            </div>
+            <p>
+              Creative thinking and consistent execution, coordinated around
+              the goals and requirements of your business.
+            </p>
+          </div>
+          <div className="vip-reasons-grid">
+            {studioReasons.map((reason, index) => (
+              <article className="vip-reason" key={reason.title}>
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <h3>{reason.title}</h3>
+                <p>{reason.detail}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="studio-process-title" className="vip-process" id="process">
+        <div className="vip-section-shell">
+          <div className="vip-section-heading">
+            <div>
+              <p className="vip-eyebrow">The process</p>
+              <h2 id="studio-process-title">
+                From idea
+                <br />
+                <span>to the next idea.</span>
+              </h2>
+            </div>
+            <p>
+              A clear route from discovery to delivery, with scope and review
+              stages agreed before production begins.
+            </p>
+          </div>
+          <ProcessTimeline />
+          <Link className="vip-inline-link" to="/process">
+            See how we work <ArrowUpRight aria-hidden="true" size={16} />
+          </Link>
+        </div>
+      </section>
+
+      <section aria-labelledby="studio-ecosystem-title" className="vip-ecosystem">
+        <div className="vip-section-shell vip-ecosystem-layout">
+          <div className="vip-ecosystem-copy">
+            <p className="vip-eyebrow">Content ecosystem</p>
+            <h2 id="studio-ecosystem-title">
+              One team.
+              <br />
+              <span>Every format in view.</span>
+            </h2>
+            <p>
+              Plan the message, create for the right formats, then coordinate
+              publishing and account management where they are part of the brief.
+            </p>
+            <Link className="vip-inline-link" to="/services">
+              Find the right support <ArrowUpRight aria-hidden="true" size={16} />
             </Link>
+          </div>
+          <div aria-label="Content planned, produced and managed across formats" className="vip-ecosystem-flow">
+            <div className="vip-ecosystem-stage">
+              <span>Plan</span>
+              <div><b>Strategy</b><b>Content</b><b>Branding</b></div>
+            </div>
+            <div aria-hidden="true" className="vip-ecosystem-connector">→</div>
+            <div className="vip-ecosystem-stage">
+              <span>Produce</span>
+              <div><b>Video</b><b>Reels</b><b>Podcasts</b></div>
+            </div>
+            <div aria-hidden="true" className="vip-ecosystem-connector">→</div>
+            <div className="vip-ecosystem-stage">
+              <span>Publish &amp; manage</span>
+              <div><b>Instagram</b><b>Facebook</b><b>YouTube</b></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="studio-about-title" className="vip-about" id="about">
+        <div className="vip-section-shell vip-about-layout">
+          <figure className="vip-about-image">
+            <img
+              alt="Illustrative stock image of a video-production workspace, not a VIP StudioS team photograph"
+              height="1000"
+              loading="lazy"
+              src={projects[3].image}
+              width="1200"
+            />
+            <figcaption>Illustrative stock image · not a VIP StudioS team photograph</figcaption>
+          </figure>
+          <div className="vip-about-copy">
+            <p className="vip-eyebrow">About the studio</p>
+            <h2 id="studio-about-title">
+              We&apos;re not just
+              <br />
+              <span>content creators.</span>
+            </h2>
+            <p>
+              We are a creative and digital team helping businesses build a
+              stronger online presence through content, video production, social
+              media management and digital execution.
+            </p>
+            <ul className="vip-about-facts">
+              {studioFacts.slice(0, 3).map((fact) => (
+                <li key={fact.label}><strong>{fact.value}</strong><span>{fact.label}</span></li>
+              ))}
+            </ul>
+            <Link className="vip-secondary-link" to="/about">
+              Meet the studio <ArrowUpRight aria-hidden="true" size={16} />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="studio-faq-title" className="vip-faq">
+        <div className="vip-section-shell vip-faq-layout">
+          <div>
+            <p className="vip-eyebrow">Good to know</p>
+            <h2 id="studio-faq-title">A few things<br /><span>before we start.</span></h2>
+          </div>
+          <div className="vip-faq-list">
+            {faqs.map(({ question, answer }) => (
+              <details key={question}>
+                <summary>{question}<span aria-hidden="true">+</span></summary>
+                <p>{answer}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="studio-cta-title" className="vip-cta">
+        <div className="vip-section-shell vip-cta-inner">
+          <div>
+            <p className="vip-eyebrow">Social · Video · Podcasts · YouTube</p>
+            <h2 id="studio-cta-title">
+              Ready to grow
+              <br />
+              your <span>brand?</span>
+            </h2>
+            <p>Let&apos;s turn your ideas into content with a clear next step.</p>
+          </div>
+          <div className="vip-cta-actions">
+            <Link className="button button-dark" to="/contact">
+              Start a project <ArrowUpRight aria-hidden="true" size={17} />
+            </Link>
+            {whatsAppHref && (
+              <a className="vip-dark-link" href={whatsAppHref} rel="noreferrer" target="_blank">
+                Message us on WhatsApp <ArrowUpRight aria-hidden="true" size={16} />
+              </a>
+            )}
           </div>
         </div>
       </section>
