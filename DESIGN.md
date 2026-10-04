@@ -1,45 +1,47 @@
 ---
 name: VIP StudioS
-description: A connected content canvas for social strategy and video production.
+description: A cinematic moving frame for social strategy and video production.
 colors:
-  ink: "#080808"
-  ink-raised: "#111110"
-  ink-soft: "#1b1a18"
-  white: "#f7f6f2"
-  white-dim: "#d2d0c8"
-  muted: "#a7a49a"
-  gold: "#c9ad69"
-  gold-bright: "#e4cd91"
-  gold-deep: "#765f37"
-  line: "rgba(247, 246, 242, 0.15)"
-  line-gold: "rgba(201, 173, 105, 0.42)"
+  ink: "#0a0a0a"
+  ink-raised: "#141414"
+  ink-soft: "#1e1e1e"
+  white: "#f5f5f5"
+  white-dim: "#d0d0d0"
+  muted: "#a0a0a0"
+  gold: "#d8ad46"
+  gold-bright: "#f0c96a"
+  gold-deep: "#745515"
+  porcelain: "#f5f3ed"
+  ink-on-light: "#141414"
+  line: "#2a2a2a"
 typography:
   display:
-    fontFamily: "Manrope, Arial, sans-serif"
+    fontFamily: "Inter, Arial, sans-serif"
     fontSize: "clamp(3.8rem, 7vw, 6.7rem)"
     fontWeight: 800
     lineHeight: 0.94
     letterSpacing: "-0.075em"
   headline:
-    fontFamily: "Manrope, Arial, sans-serif"
+    fontFamily: "Inter, Arial, sans-serif"
     fontSize: "clamp(2.8rem, 5.5vw, 5.3rem)"
     fontWeight: 800
     lineHeight: 0.99
     letterSpacing: "-0.075em"
   body:
-    fontFamily: "Manrope, Arial, sans-serif"
+    fontFamily: "Inter, Arial, sans-serif"
     fontSize: "1rem"
     fontWeight: 400
     lineHeight: 1.55
   label:
-    fontFamily: "Manrope, Arial, sans-serif"
+    fontFamily: "Inter, Arial, sans-serif"
     fontSize: "0.58rem"
     fontWeight: 800
     lineHeight: 1.5
     letterSpacing: "0.11em"
 rounded:
-  sharp: "2px"
-  signal: "2px"
+  control: "8px"
+  card: "14px"
+  pill: "999px"
 spacing:
   page-gutter: "clamp(1.25rem, 5.5vw, 6rem)"
   page-width: "1480px"
@@ -48,7 +50,7 @@ components:
     backgroundColor: "{colors.gold}"
     textColor: "{colors.ink}"
     typography: "{typography.body}"
-    rounded: "{rounded.sharp}"
+    rounded: "{rounded.pill}"
     padding: "0.8rem 1.1rem"
     height: "50px"
   button-primary-hover:
@@ -57,19 +59,19 @@ components:
     backgroundColor: "{colors.white}"
     textColor: "{colors.ink}"
     typography: "{typography.body}"
-    rounded: "{rounded.sharp}"
+    rounded: "{rounded.pill}"
     padding: "0.8rem 1.1rem"
     height: "50px"
   project-image:
     backgroundColor: "{colors.ink-soft}"
-    rounded: "{rounded.sharp}"
+    rounded: "{rounded.card}"
 ---
 
 ## Overview
 
-**Creative North Star: "Connected content canvas."**
+**Creative North Star: "The moving frame."**
 
-VIP StudioS turns social planning and video production into one coherent creative offer. The interface uses a modular composition of image, message, and service controls: a visitor can move between Social, Shoot, and Edit in the hero, then follow the same path down the page to services, disclosed concept work, and enquiry.
+VIP StudioS turns social planning and video production into one coherent service offer. Editorial image crops, precise typography, and a fine gold route create a recognizable premium identity grounded in the supplied black-and-gold logo. A visitor can move from the offer to services, disclosed concept work, and enquiry.
 
 **The first-view rule:** the offer and project action are visible beside one decisive image. Three labeled controls expose the studio's social and production range. Do not bury the enquiry action in the footer or make illustrative concept images look commissioned.
 
@@ -77,22 +79,23 @@ VIP StudioS turns social planning and video production into one coherent creativ
 
 The dark media canvas lets imagery hold attention; porcelain sections provide a clear reading interval; brushed gold marks active states and actions rather than implying performance.
 
-- **Ink** (`#080808`): media-led hero, process sections, navigation, and footer.
-- **Raised Ink** (`#111110`) and **Soft Ink** (`#1b1a18`): controls and media frames.
-- **Porcelain** (`#f7f6f2`): primary type and light action surfaces.
-- **Dim White** (`#d2d0c8`) and **Muted** (`#a7a49a`): supporting copy and metadata on dark fields.
-- **Gold** (`#c9ad69`): primary action, active selector, and short emphasis.
-- **Bright Gold** (`#e4cd91`): hover and keyboard focus.
-- **Deep Gold** (`#765f37`): accessible gold text on light surfaces.
-- **Hairlines** (`rgba(247, 246, 242, 0.15)` and `rgba(201, 173, 105, 0.42)`): separation and selection.
+- **Ink** (`#0a0a0a`): media-led hero, process sections, navigation, and footer.
+- **Raised Ink** (`#141414`) and **Soft Ink** (`#1e1e1e`): controls and media frames.
+- **Porcelain** (`#f5f3ed`): reading sections and light action surfaces.
+- **Dim White** (`#d0d0d0`) and **Muted** (`#a0a0a0`): supporting copy and metadata on dark fields.
+- **Gold** (`#d8ad46`): primary action, active selector, and short emphasis.
+- **Bright Gold** (`#f0c96a`): hover and keyboard focus on dark surfaces.
+- **Deep Gold** (`#745515`): accessible gold text on light surfaces.
+- **Ink on light** (`#141414`): copy, focus, and controls on porcelain sections.
+- **Hairlines** (`#2a2a2a`): separation on dark surfaces; use a dark translucent rule on light fields.
 
-Keep gold selective. Use ink, porcelain, and gold in alternating fields instead of turning full sections into gold panels.
+Keep gold selective. Use ink and porcelain as the reading surfaces; reserve a full gold field for the final project invitation.
 
 ## Typography
 
-- **Display and page headlines:** Manrope 800, fluid sizing, negative tracking, and compact but readable line-height.
-- **Body and controls:** Manrope 400–700, with comfortable paragraph measures and explicit control labels.
-- **Metadata:** Manrope 700–800, small and tracked only when it carries useful context.
+- **Display and page headlines:** Inter 700–800, fluid sizing, negative tracking, and compact but readable line-height.
+- **Body and controls:** Inter 400–700, with comfortable paragraph measures and explicit control labels.
+- **Metadata:** Inter 700–800, small and tracked only when it carries useful context.
 
 Avoid the former oversized all-caps display treatment. The hierarchy comes from weight, scale, and spacing rather than decorative typefaces.
 
@@ -100,7 +103,7 @@ Avoid the former oversized all-caps display treatment. The hierarchy comes from 
 
 Use a centered 1480px frame and fluid page gutters. The desktop hero balances a left-aligned offer with a wide image stage and three compact image-led selectors. On mobile, stack the offer before the image; keep all service selectors visible and usable without horizontal scrolling.
 
-Alternate media-dark sections with porcelain reading surfaces. Services remain open rows, the plan-to-publish sequence remains a meaningful numbered progression, and the concept gallery retains an asymmetrical image rhythm instead of a generic uniform tile grid.
+Alternate media-dark sections with porcelain reading surfaces. Services remain open rows, the plan-to-publish sequence remains a meaningful numbered progression, and the concept gallery retains an asymmetrical image rhythm instead of a generic uniform tile grid. At narrow viewports, the gallery adapts to paired crops; never force horizontal scrolling.
 
 ## Elevation & Depth
 
@@ -108,13 +111,13 @@ Use tonal ink surfaces, real image contrast, thin rules, and one modest offset e
 
 ## Shapes
 
-Controls, fields, project frames, and dividers are square-edged with a restrained 2px radius where interaction benefits from it. The brand mark is a fine-line V/S monogram. Gold does not become a decorative border on every component.
+Controls use an 8px radius, cards use a 14px radius, and the navigation and primary actions use a pill shape. The brand is the supplied gold-and-white logo. Gold does not become a decorative border on every component.
 
 ## Components
 
 ### Navigation and actions
 
-The sticky header is compact and quiet, with Home, Services, Portfolio, About, and Contact routes plus a visible Start a project action. The mobile menu uses a large touch target and closes on navigation or Escape. Primary actions use gold with dark text; text links remain separate and clearly named. Preserve a visible 2px focus ring with offset.
+The sticky header is compact and quiet, with Home, Services, Work, About, and Contact routes plus a visible Start a project action. The mobile menu uses a large touch target and closes on navigation or Escape. Primary actions use gold with dark text; text links remain separate and clearly named. Preserve a visible 2px focus ring with offset.
 
 ### Hero media selector and concept work
 
@@ -126,7 +129,7 @@ Service rows pair category, actual service description, and a direct path to det
 
 ### Enquiry fields
 
-Keep labels outside square-edged, high-contrast fields. The enquiry form collects name, email, phone/WhatsApp, requested service, and project description, with optional brand and timeline. Email and WhatsApp values come from build-time environment variables. The form opens a local email draft and must not imply that data was submitted to a server. The persistent WhatsApp action is shown only when a valid destination is configured.
+Keep labels outside rounded, high-contrast fields. The enquiry form collects name, email, phone/WhatsApp, requested service, and project description, with optional brand and timeline. Email and WhatsApp values come from build-time environment variables. The form opens a local email draft and must not imply that data was submitted to a server. The persistent WhatsApp action is shown only when a valid destination is configured.
 
 ### Portfolio and proof
 

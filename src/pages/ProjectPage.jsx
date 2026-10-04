@@ -2,12 +2,15 @@ import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import NotFoundPage from "./NotFoundPage.jsx";
 import ProjectCard from "../components/ProjectCard.jsx";
-import { getProjectBySlug, projects } from "../data/projects.js";
+import usePublishedProjects from "../hooks/usePublishedProjects.js";
 
 export default function ProjectPage() {
   const { slug } = useParams();
-  const project = getProjectBySlug(slug);
+  const { projects, isLoading, error } = usePublishedProjects();
+  const project = projects.find((item) => item.slug === slug);
 
+  if (isLoading) return <div aria-live="polite" className="studio-route-loading">Loading project…</div>;
+  if (error) return <div className="studio-content-error" role="alert">Project work could not be loaded: {error}</div>;
   if (!project) return <NotFoundPage />;
   const relatedProjects = projects
     .filter((item) => item.slug !== project.slug)
@@ -21,12 +24,12 @@ export default function ProjectPage() {
       <div className="project-detail-heading">
         <div>
           <h1>{project.title}<span className="gold-stop">.</span></h1>
-          <p className="project-disclosure">Illustrative concept / not client work</p>
+          {project.concept && <p className="project-disclosure">Illustrative concept / not client work</p>}
         </div>
         <div className="project-meta">
           <span>{project.category}</span>
           <span>{project.format}</span>
-          <span>Illustrative concept study</span>
+          <span>{project.concept ? "Illustrative concept study" : "Selected project"}</span>
         </div>
       </div>
       <figure className="project-detail-visual">
@@ -38,22 +41,22 @@ export default function ProjectPage() {
           width="1800"
         />
         <figcaption>
-          <span>Illustrative stock image</span>
-          <span>Not a commissioned project</span>
+          <span>{project.concept ? "Illustrative stock image" : "Project image"}</span>
+          <span>{project.concept ? "Not a commissioned project" : "Shared as selected work"}</span>
         </figcaption>
       </figure>
       <div className="project-story">
         <div>
-          <span className="story-label">THE IDEA</span>
+          <span className="story-label">{project.concept ? "THE IDEA" : "THE PROJECT"}</span>
           <p className="project-summary">{project.summary}</p>
         </div>
         <div className="project-story-note">
           <span className="story-label">THE VISUAL APPROACH</span>
           <p>{project.approach}</p>
-          <p className="concept-disclosure">
+          {project.concept && <p className="concept-disclosure">
             This illustrative concept study uses stock imagery. It is not
             evidence of commissioned work, a client, or a result.
-          </p>
+          </p>}
         </div>
       </div>
       <section aria-labelledby="related-projects-title" className="related-projects">

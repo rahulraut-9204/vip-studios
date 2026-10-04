@@ -12,7 +12,7 @@ import {
 import { Link } from "react-router-dom";
 import HeroReel from "../components/HeroReel.jsx";
 import ProjectCard from "../components/ProjectCard.jsx";
-import { projects } from "../data/projects.js";
+import usePublishedProjects from "../hooks/usePublishedProjects.js";
 import { contentJourney, serviceOfferings } from "../data/services.js";
 
 const faqs = [
@@ -84,6 +84,11 @@ function FaqSchema() {
 
 export default function HomePage() {
   const reduceMotion = useReducedMotion();
+  const { projects, isLoading: projectsLoading, error: projectsError } = usePublishedProjects();
+  const homeProjects = [
+    ...projects.filter((project) => project.featured),
+    ...projects.filter((project) => !project.featured),
+  ].slice(0, 4);
 
   return (
     <div className="studio-route-page">
@@ -263,11 +268,16 @@ export default function HomePage() {
           </Link>
         </div>
         <p className="studio-concept-note">
-          These are illustrative studies made with stock imagery—not client
-          commissions, testimonials or performance results.
+          {projects.length > 0 && projects.every((project) => project.concept)
+            ? "These are illustrative studies made with stock imagery—not client commissions, testimonials or performance results."
+            : projects.length > 0
+              ? "Selected work and illustrative studies are clearly identified. Project details reflect only the material shown."
+              : "Approved project work is being added. Start a conversation about your brief."}
         </p>
+        {projectsError && <p className="studio-content-error" role="alert">Project work could not be loaded: {projectsError}</p>}
+        {projectsLoading && <p aria-live="polite" className="studio-content-loading">Loading project work…</p>}
         <div className="studio-work-grid">
-          {projects.slice(0, 3).map((project, index) => (
+          {homeProjects.map((project, index) => (
             <motion.div
               initial={reduceMotion ? false : { opacity: 0, y: 18 }}
               key={project.slug}

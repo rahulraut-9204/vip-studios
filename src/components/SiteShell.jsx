@@ -3,6 +3,7 @@ import { Outlet, useLocation } from "react-router-dom";
 import { trackEvent } from "../data/analytics.js";
 import { getProjectBySlug } from "../data/projects.js";
 import { serviceOfferings } from "../data/services.js";
+import { supabase } from "../lib/supabase.js";
 import SiteFooter from "./SiteFooter.jsx";
 import SiteHeader from "./SiteHeader.jsx";
 import WhatsAppButton from "./WhatsAppButton.jsx";
@@ -37,12 +38,121 @@ const pageMetadata = {
   },
 };
 
+function applyRouteMetadata(pathname, project, service, pendingProject = false) {
+  const normalizedPath = pathname.replace(/\/$/, "") || "/";
+  const metadata = pendingProject
+    ? {
+        title: "Selected project — VIP StudioS",
+        description: "Explore selected video and content work from VIP StudioS.",
+      }
+    : project
+    ? {
+        title: project.concept
+          ? `${project.title} — Concept project — VIP StudioS`
+          : `${project.title} — VIP StudioS`,
+        description: project.concept
+          ? `${project.summary} This is illustrative concept work, not a commissioned client project.`
+          : project.summary,
+      }
+    : service
+      ? {
+          title: `${service.title} in Pune — VIP StudioS`,
+          description: `${service.description} Based in Pune, working with clients across India.`,
+        }
+      : pageMetadata[normalizedPath] ?? {
+          title: "Page not found — VIP StudioS",
+          description:
+            "This page is not available. Explore VIP StudioS services or contact the studio.",
+        };
+  const canonicalUrl = new URL(pathname, siteOrigin).href;
+  const isNotFound =
+    (!project && !service && !pendingProject && !pageMetadata[normalizedPath]) ||
+    pendingProject;
+
+  document.title = metadata.title;
+  document
+    .querySelector('meta[name="description"]')
+    ?.setAttribute("content", metadata.description);
+  document
+    .querySelector('meta[property="og:title"]')
+    ?.setAttribute("content", metadata.title);
+  document
+    .querySelector('meta[property="og:description"]')
+    ?.setAttribute("content", metadata.description);
+  document
+    .querySelector('meta[property="og:url"]')
+    ?.setAttribute("content", canonicalUrl);
+  document
+    .querySelector('meta[property="og:type"]')
+    ?.setAttribute("content", project ? "article" : "website");
+  document
+    .querySelector('meta[name="twitter:title"]')
+    ?.setAttribute("content", metadata.title);
+  document
+    .querySelector('meta[name="twitter:description"]')
+    ?.setAttribute("content", metadata.description);
+  document
+    .querySelector('link[rel="canonical"]')
+    ?.setAttribute("href", canonicalUrl);
+  document
+    .querySelector('meta[name="robots"]')
+    ?.setAttribute("content", isNotFound ? "noindex, follow" : "index, follow");
+
+  const breadcrumbScriptId = "route-breadcrumb-schema";
+  let breadcrumbScript = document.getElementById(breadcrumbScriptId);
+  if (normalizedPath === "/") {
+    breadcrumbScript?.remove();
+  } else {
+    if (!breadcrumbScript) {
+      breadcrumbScript = document.createElement("script");
+      breadcrumbScript.id = breadcrumbScriptId;
+      breadcrumbScript.type = "application/ld+json";
+      document.head.append(breadcrumbScript);
+    }
+    const routeLabel =
+      project?.title ||
+      service?.title ||
+      ({
+        "/services": "Services",
+        "/work": "Our Work",
+        "/about": "About",
+        "/contact": "Contact",
+      }[normalizedPath] || "Page");
+    const category = normalizedPath.startsWith("/services/")
+      ? "Services"
+      : normalizedPath.startsWith("/work/")
+        ? "Our Work"
+        : "";
+    const crumbs = [{ name: "Home", path: "/" }];
+    if (category) {
+      crumbs.push({
+        name: category,
+        path: category === "Services" ? "/services" : "/work",
+      });
+    }
+    crumbs.push({ name: routeLabel, path: pathname });
+    breadcrumbScript.textContent = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: crumbs.map((crumb, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        name: crumb.name,
+        item: new URL(crumb.path, siteOrigin).href,
+      })),
+    });
+  }
+
+  return metadata;
+}
+
 function RouteMetadata() {
   const { pathname, hash } = useLocation();
   const previousPathname = useRef(pathname);
   const lastTrackedPath = useRef("");
 
   useEffect(() => {
+    let isActive = true;
     if (previousPathname.current !== pathname) {
       document.getElementById("main-content")?.focus({ preventScroll: true });
       previousPathname.current = pathname;
@@ -63,102 +173,46 @@ function RouteMetadata() {
     const slug = pathname.startsWith("/work/")
       ? pathname.split("/").at(-1)
       : "";
-    const project = slug ? getProjectBySlug(slug) : null;
+    const staticProject = slug ? getProjectBySlug(slug) : null;
     const serviceSlug = pathname.startsWith("/services/")
       ? pathname.split("/").at(-1)
       : "";
     const service = serviceSlug
       ? serviceOfferings.find((item) => item.slug === serviceSlug)
       : null;
-    const metadata =
-      project
-        ? {
-            title: `${project.title} — Concept project — VIP StudioS`,
-            description: `${project.summary} This is illustrative concept work, not a commissioned client project.`,
+    const pendingProject = !staticProject && Boolean(slug && supabase);
+    const metadata = applyRouteMetadata(
+      pathname,
+      staticProject,
+      service,
+      pendingProject,
+    );
+    if (pendingProject) {
+      supabase
+        .from("projects")
+        .select("title, summary, is_concept")
+        .eq("slug", slug)
+        .eq("status", "published")
+        .maybeSingle()
+        .then(({ data, error }) => {
+          if (!isActive) return;
+          if (error) {
+            applyRouteMetadata(pathname, null, null);
+            return;
           }
-        : service
-          ? {
-              title: `${service.title} in Pune — VIP StudioS`,
-              description: `${service.description} Based in Pune, working with clients across India.`,
-            }
-        : pageMetadata[pathname.replace(/\/$/, "") || "/"] ?? {
-            title: "Page not found — VIP StudioS",
-            description: "This page is not available. Explore VIP StudioS services or contact the studio.",
-          };
-
-    const canonicalUrl = new URL(pathname, siteOrigin).href;
-    const isNotFound =
-      !project &&
-      !service &&
-      !pageMetadata[pathname.replace(/\/$/, "") || "/"];
-    document.title = metadata.title;
-    document
-      .querySelector('meta[name="description"]')
-      ?.setAttribute("content", metadata.description);
-    document
-      .querySelector('meta[property="og:title"]')
-      ?.setAttribute("content", metadata.title);
-    document
-      .querySelector('meta[property="og:description"]')
-      ?.setAttribute("content", metadata.description);
-    document
-      .querySelector('meta[property="og:url"]')
-      ?.setAttribute("content", canonicalUrl);
-    document
-      .querySelector('meta[property="og:type"]')
-      ?.setAttribute("content", project ? "article" : "website");
-    document
-      .querySelector('meta[name="twitter:title"]')
-      ?.setAttribute("content", metadata.title);
-    document
-      .querySelector('meta[name="twitter:description"]')
-      ?.setAttribute("content", metadata.description);
-    document
-      .querySelector('link[rel="canonical"]')
-      ?.setAttribute("href", canonicalUrl);
-    document
-      .querySelector('meta[name="robots"]')
-      ?.setAttribute("content", isNotFound ? "noindex, follow" : "index, follow");
-    const breadcrumbScriptId = "route-breadcrumb-schema";
-    let breadcrumbScript = document.getElementById(breadcrumbScriptId);
-    if (pathname === "/") {
-      breadcrumbScript?.remove();
-    } else {
-      if (!breadcrumbScript) {
-        breadcrumbScript = document.createElement("script");
-        breadcrumbScript.id = breadcrumbScriptId;
-        breadcrumbScript.type = "application/ld+json";
-        document.head.append(breadcrumbScript);
-      }
-      const routeLabel = project?.title || service?.title || ({
-        "/services": "Services",
-        "/work": "Our Work",
-        "/about": "About",
-        "/contact": "Contact",
-      }[pathname] || "Page");
-      const category = pathname.startsWith("/services/")
-        ? "Services"
-        : pathname.startsWith("/work/")
-          ? "Our Work"
-          : "";
-      const crumbs = [{ name: "Home", path: "/" }];
-      if (category) {
-        crumbs.push({
-          name: category,
-          path: category === "Services" ? "/services" : "/work",
+          if (data) {
+            applyRouteMetadata(
+              pathname,
+              { ...data, concept: data.is_concept },
+              null,
+            );
+          } else {
+            applyRouteMetadata(pathname, null, null);
+          }
+        })
+        .catch(() => {
+          if (isActive) applyRouteMetadata(pathname, null, null);
         });
-      }
-      crumbs.push({ name: routeLabel, path: pathname });
-      breadcrumbScript.textContent = JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
-        itemListElement: crumbs.map((crumb, index) => ({
-          "@type": "ListItem",
-          position: index + 1,
-          name: crumb.name,
-          item: new URL(crumb.path, siteOrigin).href,
-        })),
-      });
     }
     if (lastTrackedPath.current !== pathname) {
       trackEvent("page_view", {
@@ -170,6 +224,9 @@ function RouteMetadata() {
       }
       lastTrackedPath.current = pathname;
     }
+    return () => {
+      isActive = false;
+    };
   }, [hash, pathname]);
 
   return null;

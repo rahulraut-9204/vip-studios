@@ -3,11 +3,13 @@ import { ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useMemo, useState } from "react";
 import ProjectCard from "../components/ProjectCard.jsx";
-import { projectCategories, projects } from "../data/projects.js";
+import { projectCategories } from "../data/projects.js";
+import usePublishedProjects from "../hooks/usePublishedProjects.js";
 
 export default function WorkPage() {
   const [activeCategory, setActiveCategory] = useState("All");
   const reduceMotion = useReducedMotion();
+  const { projects, isLoading, error } = usePublishedProjects();
   const visibleProjects = useMemo(
     () =>
       activeCategory === "All"
@@ -22,9 +24,9 @@ export default function WorkPage() {
         <p className="studio-location">VISUAL DIRECTIONS · CONCEPT STUDIES</p>
         <h1>Frames for<br /><span>the story.</span></h1>
         <p>
-          Explore a few illustrative directions for social and video. These
-          studies use stock imagery; they are not client projects or proof of
-          delivered results.
+          {projects.length > 0 && projects.every((project) => project.concept)
+            ? "Explore illustrative directions for social and video. These studies use stock imagery; they are not client projects or proof of delivered results."
+            : "Explore selected work and visual directions for social and video. Each project is identified clearly, with no invented results or client claims."}
         </p>
       </div>
 
@@ -43,11 +45,19 @@ export default function WorkPage() {
           ))}
         </div>
         <span className="work-count" aria-live="polite">
-          {String(visibleProjects.length).padStart(2, "0")} CONCEPT STUDIES
+          {String(visibleProjects.length).padStart(2, "0")}{" "}
+          {visibleProjects.length > 0 && visibleProjects.every((project) => project.concept)
+            ? "CONCEPT STUDIES"
+            : "PROJECTS"}
         </span>
       </div>
 
       <div aria-live="polite" className="project-grid work-project-grid">
+        {isLoading && <p aria-live="polite" className="studio-content-loading">Loading project work…</p>}
+        {error && <p className="studio-content-error" role="alert">Project work could not be loaded: {error}</p>}
+        {!isLoading && !error && visibleProjects.length === 0 && (
+          <p className="studio-content-empty">There are no published projects yet. <Link to="/contact">Tell us about your project.</Link></p>
+        )}
         <AnimatePresence initial={false} mode="popLayout">
           {visibleProjects.map((project, index) => (
             <motion.div

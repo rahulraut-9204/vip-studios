@@ -8,11 +8,13 @@ export default function Brand({ onNavigate }) {
       onClick={onNavigate}
       to="/"
     >
-      <span aria-hidden="true" className="brand-mark">V/S</span>
-      <span className="brand-wordmark">
-        <span>VIP</span>
-        <span>STUDIOS</span>
-      </span>
+      <img
+        alt=""
+        className="brand-logo"
+        height="1024"
+        src="/vip-studios-logo.jpeg"
+        width="1536"
+      />
     </Link>
   );
 }

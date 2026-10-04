@@ -7,7 +7,7 @@ import Brand from "./Brand.jsx";
 const footerLinks = [
   { label: "Home", to: "/" },
   { label: "Services", to: "/services" },
-  { label: "Our Work", to: "/work" },
+  { label: "Work", to: "/work" },
   { label: "About", to: "/about" },
   { label: "Contact", to: "/contact" },
 ];

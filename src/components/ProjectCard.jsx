@@ -5,7 +5,7 @@ export default function ProjectCard({ project, index = 0 }) {
   return (
     <article className={`project-card project-card-${index % 2 === 0 ? "wide" : "tall"}`}>
       <Link
-        aria-label={`View ${project.title}, a concept project`}
+        aria-label={`View ${project.title}${project.concept ? ", a concept project" : ""}`}
         className="project-link"
         to={`/work/${project.slug}`}
       >
@@ -21,7 +21,7 @@ export default function ProjectCard({ project, index = 0 }) {
           <span className="project-view">
             <ArrowUpRight aria-hidden="true" size={18} />
           </span>
-          <span className="concept-stamp">Concept work</span>
+          <span className="concept-stamp">{project.concept ? "Concept work" : "Selected work"}</span>
         </div>
         <div className="project-caption">
           <div>
