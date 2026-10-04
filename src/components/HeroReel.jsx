@@ -18,7 +18,7 @@ export default function HeroReel() {
   return (
     <section aria-labelledby="home-title" className="studio-hero studio-route-stop" data-route-stop="Start">
       <div className="studio-hero-copy">
-        <p className="studio-location">SOCIAL MEDIA & VIDEO STUDIO · PUNE</p>
+        <p className="studio-location">SOCIAL MEDIA & VIDEO STUDIO</p>
         <h1 id="home-title">
           Social media.
           <br />
@@ -27,7 +27,6 @@ export default function HeroReel() {
         <p className="studio-hero-intro">
           We manage social accounts and create the video content around them —
           from planning and shoots to professional editing and publishing.
-          Based in Pune, working across India.
         </p>
         <div className="studio-hero-actions">
           <Link className="button button-gold" to="/contact">

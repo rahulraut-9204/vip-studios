@@ -1,14 +1,4 @@
-import { motion, useReducedMotion } from "motion/react";
-import {
-  ArrowDown,
-  ArrowRight,
-  ArrowUpRight,
-  Clapperboard,
-  Layers3,
-  Play,
-  Scissors,
-  Video,
-} from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import HeroReel from "../components/HeroReel.jsx";
 import ProjectCard from "../components/ProjectCard.jsx";
@@ -17,49 +7,24 @@ import { contentJourney, serviceOfferings } from "../data/services.js";
 
 const faqs = [
   {
-    question: "What type of videos do you edit?",
+    question: "What does social media management include?",
     answer:
-      "VIP StudioS offers professional editing for social and video content. Share the format, footage and goal in your brief so the scope can be discussed before work begins.",
+      "Social media strategy, content planning, publishing and account management. Platforms and ongoing scope are discussed in your brief.",
   },
   {
-    question: "Do you provide video shoots?",
+    question: "Can you shoot videos and edit existing footage?",
     answer:
-      "Yes. Video shoots are part of the studio's confirmed services. The production approach and requirements are discussed for each project.",
+      "Yes. Video shoots and professional editing are available. Share whether you need production, editing for footage you already have, or both.",
   },
   {
-    question: "Can you edit footage we already have?",
+    question: "How are timing and pricing decided?",
     answer:
-      "Yes. Send a description of the footage, intended platform and final format. The studio can review the material and confirm whether it fits the requested edit.",
+      "Timing, deliverables and pricing depend on the project requirements. They are confirmed after the brief is reviewed; no fixed package rates or turnaround promises are listed here.",
   },
   {
-    question: "Can you make short videos from longer content?",
+    question: "How do I start?",
     answer:
-      "Short-form and social-ready edits can be discussed as part of the brief. The final scope depends on the source material and the formats you need.",
-  },
-  {
-    question: "Do you offer monthly content support?",
-    answer:
-      "Recurring social-media planning, publishing and account management are available to discuss. Monthly scope and pricing are quoted after understanding the requirements.",
-  },
-  {
-    question: "How do revisions and turnaround work?",
-    answer:
-      "Review stages, revision scope and delivery timing are agreed for the individual project. No standard turnaround is promised on this site.",
-  },
-  {
-    question: "Do you work outside Pune?",
-    answer:
-      "VIP StudioS is based in Pune and works with clients across India. For an on-location shoot, share the city so availability can be confirmed.",
-  },
-  {
-    question: "How do I start a project?",
-    answer:
-      "Send a project brief by email or start a WhatsApp conversation. The website opens an email draft on your device; it does not store or submit the details to a server.",
-  },
-  {
-    question: "Can I receive the source files?",
-    answer:
-      "File handover is confirmed as part of the project scope. Include any source-file requirements in your brief so they can be discussed before work begins.",
+      "Send a short project brief by email or WhatsApp. The website opens an email draft on your device; it does not store or submit form details to a server.",
   },
 ];
 
@@ -83,7 +48,6 @@ function FaqSchema() {
 }
 
 export default function HomePage() {
-  const reduceMotion = useReducedMotion();
   const { projects, isLoading: projectsLoading, error: projectsError } = usePublishedProjects();
   const homeProjects = [
     ...projects.filter((project) => project.featured),
@@ -95,165 +59,39 @@ export default function HomePage() {
       <FaqSchema />
       <HeroReel />
 
-      <section aria-label="Studio services" className="studio-service-rail studio-route-stop" data-route-stop="Services">
-        <p>One creative partner</p>
-        {["Social strategy", "Video shoots", "Professional editing", "Publishing"].map(
-          (item, index) => (
-            <span className="studio-rail-item" key={item}>
-              {index > 0 && <i aria-hidden="true" />}
-              {item}
-            </span>
-          ),
-        )}
-      </section>
-
-      <section aria-labelledby="studio-offer-title" className="studio-offer-section studio-route-stop" data-route-stop="Planning">
+      <section aria-labelledby="studio-services-title" className="studio-offer-section studio-route-stop" data-route-stop="Services">
         <div className="studio-section-heading">
-          <h2 id="studio-offer-title">
-            More than a
+          <h2 id="studio-services-title">
+            Three services.
             <br />
-            <span>final cut.</span>
+            <span>One clear brief.</span>
           </h2>
           <p>
-            Bring the idea, the footage or the account that needs a clearer
-            direction. We connect the moving parts, from planning and production
-            to edit and publish.
+            Choose the support you need: social media management, a video shoot
+            or professional editing. Each project is scoped around your brief.
           </p>
         </div>
-        <div className="studio-offer-columns">
-          {[
-            {
-              icon: <Layers3 aria-hidden="true" />,
-              title: "Plan with purpose",
-              copy: "Shape social direction and content plans around your brand, audience and goals.",
-            },
-            {
-              icon: <Video aria-hidden="true" />,
-              title: "Shoot the story",
-              copy: "Create video around the message, the people and the platform it needs to reach.",
-            },
-            {
-              icon: <Scissors aria-hidden="true" />,
-              title: "Edit for the feed",
-              copy: "Turn footage into considered, platform-ready edits without promising audience outcomes.",
-            },
-          ].map((item, index) => (
-            <motion.article
-              className="studio-offer-item"
-              initial={reduceMotion ? false : { opacity: 0, y: 18 }}
-              key={item.title}
-              transition={{ duration: 0.55, delay: index * 0.08 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.25 }}
-            >
-              <span className="studio-offer-icon">{item.icon}</span>
-              <h3>{item.title}</h3>
-              <p>{item.copy}</p>
-            </motion.article>
-          ))}
-        </div>
-      </section>
-
-      <section aria-labelledby="studio-services-title" className="studio-services studio-route-stop" data-route-stop="Production">
-        <div className="studio-section-heading studio-section-heading-light">
-          <h2 id="studio-services-title">
-            What we can
-            <br />
-            <span>make together.</span>
-          </h2>
-          <Link className="studio-text-link" to="/services">
-            Explore all services <ArrowUpRight aria-hidden="true" size={17} />
-          </Link>
-        </div>
         <div className="studio-service-list">
-          {serviceOfferings.slice(0, 6).map((service, index) => (
+          {serviceOfferings.map((service) => (
             <Link
               className="studio-service-row"
               key={service.slug}
               to={`/services/${service.slug}`}
             >
-              <span className="studio-service-index">{String(index + 1).padStart(2, "0")}</span>
               <span className="studio-service-name">{service.title}</span>
-              <span className="studio-service-note">{service.shortDescription}</span>
+              <span className="studio-service-note">
+                {service.shortDescription}
+                {service.scope && (
+                  <small>{service.scope.join(" · ")}</small>
+                )}
+              </span>
               <ArrowUpRight aria-hidden="true" className="studio-service-arrow" size={20} />
             </Link>
           ))}
         </div>
-      </section>
-
-      <section aria-labelledby="content-system-title" className="studio-system studio-route-stop" data-route-stop="Formats">
-        <div className="studio-system-copy">
-          <h2 id="content-system-title">
-            One story.
-            <br />
-            <span>Many ways in.</span>
-          </h2>
-          <p>
-            A shoot can be planned with more than one destination in mind. A
-            longer piece, short edits and social cutdowns may all come from the
-            same idea, depending on your footage, scope and goals.
-          </p>
-          <Link className="button button-gold" to="/contact?service=Monthly%20content%20support">
-            Plan my content <ArrowUpRight aria-hidden="true" size={17} />
-          </Link>
-        </div>
-        <div aria-label="Illustrative example of a content idea adapted into formats" className="studio-format-map">
-          <div className="studio-format-origin">
-            <Clapperboard aria-hidden="true" />
-            <span>ONE IDEA</span>
-            <small>Illustrative content map</small>
-          </div>
-          {[
-            ["01", "Long-form video", "A full story"],
-            ["02", "Short-form edits", "Moments worth sharing"],
-            ["03", "Social posts", "A reason to return"],
-          ].map(([number, label, note]) => (
-            <div className="studio-format-branch" key={label}>
-              <span>{number}</span>
-              <div>
-                <strong>{label}</strong>
-                <small>{note}</small>
-              </div>
-              <ArrowRight aria-hidden="true" size={17} />
-            </div>
-          ))}
-          <p>
-            Example only. Deliverables depend on the project brief and agreed
-            scope.
-          </p>
-        </div>
-      </section>
-
-      <section aria-labelledby="studio-monthly-title" className="studio-monthly studio-route-stop" data-route-stop="Ongoing support">
-        <div>
-          <p className="studio-location">ONGOING CONTENT SUPPORT</p>
-          <h2 id="studio-monthly-title">
-            Your content team,
-            <br />
-            <span>without building one in-house.</span>
-          </h2>
-          <p>
-            Recurring support can combine social planning, production and
-            publishing around the rhythm your business needs. The mix and
-            frequency are agreed in the project scope.
-          </p>
-        </div>
-        <div className="studio-monthly-options">
-          {[
-            ["01", "Plan & publish", "A considered social presence."],
-            ["02", "Shoot & edit", "Video content from brief to final cut."],
-            ["03", "Connected support", "A mix of services shaped to your needs."],
-          ].map(([number, title, detail]) => (
-            <div className="studio-monthly-option" key={title}>
-              <span>{number}</span>
-              <div><strong>{title}</strong><small>{detail}</small></div>
-            </div>
-          ))}
-          <p>Scope and quote are confirmed after a conversation—no fixed pricing is published.</p>
-          <Link className="studio-text-link" to="/contact?service=Monthly%20content%20support">
-            Request monthly support <ArrowUpRight aria-hidden="true" size={16} />
-          </Link>
-        </div>
+        <Link className="studio-text-link" to="/services">
+          See service details <ArrowUpRight aria-hidden="true" size={17} />
+        </Link>
       </section>
 
       <section aria-labelledby="studio-work-title" className="studio-work studio-route-stop" data-route-stop="Concept work">
@@ -278,42 +116,8 @@ export default function HomePage() {
         {projectsLoading && <p aria-live="polite" className="studio-content-loading">Loading project work…</p>}
         <div className="studio-work-grid">
           {homeProjects.map((project, index) => (
-            <motion.div
-              initial={reduceMotion ? false : { opacity: 0, y: 18 }}
-              key={project.slug}
-              transition={{ duration: 0.55, delay: index * 0.08 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.2 }}
-            >
+            <div key={project.slug}>
               <ProjectCard index={index} project={project} />
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
-      <section aria-labelledby="studio-audience-title" className="studio-audience studio-route-stop" data-route-stop="Audience">
-        <div className="studio-section-heading studio-section-heading-light">
-          <h2 id="studio-audience-title">
-            Built for people
-            <br />
-            <span>with a story.</span>
-          </h2>
-          <p>
-            From a first shoot to a steady social presence, the right format
-            starts with what you need to say.
-          </p>
-        </div>
-        <div className="studio-audience-list">
-          {[
-            ["01", "Businesses", "Make the offer easier to understand."],
-            ["02", "Creators & founders", "Give your point of view a consistent frame."],
-            ["03", "Professionals & educators", "Make expertise clear, human and watchable."],
-            ["04", "Brands & agencies", "Bring a campaign idea into production."],
-          ].map(([number, audience, need]) => (
-            <div className="studio-audience-row" key={audience}>
-              <span>{number}</span>
-              <h3>{audience}</h3>
-              <p>{need}</p>
             </div>
           ))}
         </div>
@@ -322,13 +126,13 @@ export default function HomePage() {
       <section aria-labelledby="studio-process-title" className="studio-process studio-route-stop" data-route-stop="Process">
         <div className="studio-section-heading">
           <h2 id="studio-process-title">
-            From idea
+            A clear process.
             <br />
-            <span>to final video.</span>
+            <span>From brief to delivery.</span>
           </h2>
           <p>
-            A straightforward path that keeps the brief, review and final
-            delivery connected.
+            Before work begins, the project scope, deliverables and timing are
+            agreed with you.
           </p>
         </div>
         <ol className="studio-process-list">
@@ -340,10 +144,7 @@ export default function HomePage() {
             </li>
           ))}
         </ol>
-        <p className="studio-process-note">
-          Project timing, review stages and revisions are confirmed in the
-          agreed scope.
-        </p>
+        <p className="studio-process-note">Review stages and revisions are confirmed in the agreed scope.</p>
       </section>
 
       <section aria-labelledby="studio-faq-title" className="studio-faq studio-route-stop" data-route-stop="FAQ">
@@ -385,11 +186,10 @@ export default function HomePage() {
               Start your project <ArrowUpRight aria-hidden="true" size={17} />
             </Link>
             <Link className="studio-text-link" to="/work">
-              See the concept work <Play aria-hidden="true" size={15} />
+              See the concept work <ArrowUpRight aria-hidden="true" size={15} />
             </Link>
           </div>
         </div>
-        <ArrowDown aria-hidden="true" className="studio-closing-arrow" size={38} />
       </section>
     </div>
   );

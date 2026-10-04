@@ -17,9 +17,9 @@ const pageMetadata = {
       "Pune-based social media management, video shoots and professional editing for brands and businesses. Plan, produce and publish content across India.",
   },
   "/services": {
-    title: "Video & social content services in Pune — VIP StudioS",
+    title: "Social Media, Video Shoots & Editing | VIP StudioS",
     description:
-      "Explore video editing, short-form, YouTube, production, podcast video, social-media content and monthly support from VIP StudioS.",
+      "Social media strategy, content planning, publishing and account management, plus video shoots and professional editing in Pune and across India.",
   },
   "/work": {
     title: "Portfolio concepts — VIP StudioS",

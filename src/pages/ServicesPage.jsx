@@ -6,15 +6,15 @@ export default function ServicesPage() {
   return (
     <section className="studio-page studio-services-page">
       <header className="studio-page-intro">
-        <p className="studio-location">FROM FIRST IDEA TO FINAL FRAME</p>
         <h1>
-          Make the idea
+          Social, shoots
           <br />
-          <span>go further.</span>
+          <span>and editing.</span>
         </h1>
         <p>
-          Social-media planning and management, video shoots and professional
-          editing—shaped around what you want to create.
+          Social media strategy, planning, publishing and account management,
+          alongside video shoots and professional editing. Scope is agreed
+          around your brief.
         </p>
       </header>
       <div className="studio-offering-list">
@@ -36,8 +36,8 @@ export default function ServicesPage() {
         ))}
       </div>
       <p className="studio-quote-note">
-        Pricing is scoped to the brief. Share your requirements for a project
-  quotation; no package rates or performance outcomes are promised here.
+        Deliverables, timing and pricing depend on the brief and are confirmed
+        before work begins.
       </p>
       <div className="studio-end-card">
         <div>

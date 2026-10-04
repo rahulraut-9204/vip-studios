@@ -1,4 +1,4 @@
-import { ArrowUpRight, Menu, MessageCircle, X } from "lucide-react";
+import { ArrowUpRight, ChevronDown, Menu, MessageCircle, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { getWhatsAppHref } from "../data/contact.js";
@@ -14,32 +14,69 @@ const links = [
 
 export default function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isCondensed, setIsCondensed] = useState(false);
+  const [isPinnedOpen, setIsPinnedOpen] = useState(false);
   const menuToggleRef = useRef(null);
+  const islandToggleRef = useRef(null);
   const location = useLocation();
   const whatsAppHref = getWhatsAppHref();
+  const currentPage =
+    [...links]
+      .reverse()
+      .find(
+        (link) =>
+          location.pathname === link.to ||
+          (link.to !== "/" && location.pathname.startsWith(`${link.to}/`)),
+      )?.label ?? "Studio";
 
   useEffect(() => {
     setMenuOpen(false);
+    setIsPinnedOpen(false);
   }, [location.pathname]);
 
   useEffect(() => {
-    if (!menuOpen) return undefined;
+    let frame = 0;
+    function updateScrollState() {
+      if (frame) return;
+      frame = window.requestAnimationFrame(() => {
+        setIsCondensed(window.scrollY > 72);
+        frame = 0;
+      });
+    }
+    updateScrollState();
+    window.addEventListener("scroll", updateScrollState, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", updateScrollState);
+      if (frame) window.cancelAnimationFrame(frame);
+    };
+  }, []);
 
+  useEffect(() => {
+    if (!menuOpen && !isPinnedOpen) return undefined;
     function closeOnEscape(event) {
       if (event.key === "Escape") {
         setMenuOpen(false);
-        menuToggleRef.current?.focus();
+        setIsPinnedOpen(false);
+        (menuOpen ? menuToggleRef : islandToggleRef).current?.focus();
       }
     }
 
     window.addEventListener("keydown", closeOnEscape);
     return () => window.removeEventListener("keydown", closeOnEscape);
-  }, [menuOpen]);
+  }, [menuOpen, isPinnedOpen]);
+
+  function closeNavigation() {
+    setMenuOpen(false);
+    setIsPinnedOpen(false);
+  }
 
   return (
-    <header className="site-header">
+    <header
+      className={`site-header${isCondensed ? " is-condensed" : ""}${isPinnedOpen ? " is-pinned-open" : ""}`}
+    >
       <div className="header-inner">
-        <Brand onNavigate={() => setMenuOpen(false)} />
+        <Brand onNavigate={closeNavigation} />
+        <span aria-hidden="true" className="header-current-page">{currentPage}</span>
         {whatsAppHref && (
           <a
             aria-label="Message VIP StudioS on WhatsApp"
@@ -52,6 +89,17 @@ export default function SiteHeader() {
             <span>WhatsApp</span>
           </a>
         )}
+        <button
+          aria-controls="primary-navigation"
+          aria-expanded={isPinnedOpen}
+          aria-label={isPinnedOpen ? "Collapse navigation" : "Keep navigation expanded"}
+          className="header-island-toggle"
+          onClick={() => setIsPinnedOpen((open) => !open)}
+          ref={islandToggleRef}
+          type="button"
+        >
+          <ChevronDown aria-hidden="true" size={17} />
+        </button>
         <button
           aria-controls="primary-navigation"
           aria-expanded={menuOpen}
@@ -75,7 +123,7 @@ export default function SiteHeader() {
               }
               end={link.to === "/"}
               key={link.to}
-              onClick={() => setMenuOpen(false)}
+              onClick={closeNavigation}
               to={link.to}
             >
               {link.label}
@@ -83,7 +131,7 @@ export default function SiteHeader() {
           ))}
           <Link
             className="button button-small button-gold header-cta"
-            onClick={() => setMenuOpen(false)}
+            onClick={closeNavigation}
             to="/contact"
           >
             Start a project <ArrowUpRight aria-hidden="true" size={15} />

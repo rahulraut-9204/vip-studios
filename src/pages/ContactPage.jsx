@@ -5,17 +5,6 @@ import { trackEvent } from "../data/analytics.js";
 import { contactConfig, getWhatsAppHref } from "../data/contact.js";
 import { serviceOfferings } from "../data/services.js";
 
-const goals = [
-  "Brand awareness",
-  "Lead generation",
-  "Sales",
-  "Education",
-  "Personal branding",
-  "Audience growth",
-  "Product launch",
-  "Other",
-];
-
 function createEmailBody(data) {
   return [
     `Name: ${data.name}`,
@@ -24,12 +13,8 @@ function createEmailBody(data) {
     `Phone / WhatsApp: ${data.phone || "Not provided"}`,
     `Website / Instagram: ${data.social || "Not provided"}`,
     `Service: ${data.service || "Not selected"}`,
-    `Number of videos: ${data.videoCount || "Not provided"}`,
     `Video type: ${data.videoType || "Not provided"}`,
-    `Expected duration: ${data.duration || "Not provided"}`,
-    `Deadline: ${data.deadline || "Not provided"}`,
-    `Budget range: ${data.budget || "Not provided"}`,
-    `Project goal: ${data.goal || "Not provided"}`,
+    `Preferred timing: ${data.deadline || "Not provided"}`,
     `Reference links: ${data.references || "Not provided"}`,
     "",
     "Project brief:",
@@ -68,12 +53,8 @@ export default function ContactPage() {
         "phone",
         "social",
         "service",
-        "videoCount",
         "videoType",
-        "duration",
         "deadline",
-        "budget",
-        "goal",
         "references",
         "requirements",
       ].map((key) => [key, String(fields.get(key) || "").trim()]),
@@ -220,43 +201,18 @@ export default function ContactPage() {
           </label>
           <div className="studio-form-pair">
             <label>
-              Number of videos
-              <input maxLength={80} name="videoCount" placeholder="If known" />
-            </label>
-            <label>
               Video type
               <select defaultValue="" name="videoType">
                 <option value="">Choose a format</option>
-                <option>Short-form / Reels</option>
-                <option>YouTube / long-form</option>
-                <option>Podcast</option>
-                <option>Corporate / brand</option>
+                <option>Short-form video</option>
+                <option>Long-form video</option>
                 <option>Social media content</option>
                 <option>Other / not sure</option>
               </select>
             </label>
-          </div>
-          <div className="studio-form-pair">
             <label>
-              Expected duration
-              <input maxLength={80} name="duration" placeholder="For example, 30 seconds" />
-            </label>
-            <label>
-              Deadline
+              Preferred timing
               <input maxLength={100} name="deadline" placeholder="Date or preferred timing" />
-            </label>
-          </div>
-          <div className="studio-form-pair">
-            <label>
-              Budget range
-              <input maxLength={100} name="budget" placeholder="Optional; to be discussed is fine" />
-            </label>
-            <label>
-              Project goal
-              <select defaultValue="" name="goal">
-                <option value="">Choose a goal</option>
-                {goals.map((goal) => <option key={goal}>{goal}</option>)}
-              </select>
             </label>
           </div>
           <label>
@@ -264,8 +220,14 @@ export default function ContactPage() {
             <textarea maxLength={1000} name="references" placeholder="Paste links to examples or relevant material" rows={2} />
           </label>
           <label>
-            Additional requirements
-            <textarea maxLength={3000} name="requirements" placeholder="What should the content help you communicate?" rows={5} />
+            Project brief <span aria-hidden="true">*</span>
+            <textarea
+              maxLength={3000}
+              name="requirements"
+              placeholder="What do you need? Share the context, service and requirements you already know."
+              required
+              rows={5}
+            />
           </label>
           <label aria-hidden="true" className="studio-trap-field" tabIndex="-1">
             Website

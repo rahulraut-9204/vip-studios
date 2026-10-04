@@ -36,9 +36,9 @@ Prospective clients discover the site, understand the social and video offer, vi
 
 - Product name: VIP StudioS.
 - Desired identity: premium, cinematic, ownable, and creative.
-- Required palette: black, white, and gold.
+- Required palette: black, white, and orange (`#FFA000`).
 - The visual direction must not copy a reference identity.
-- Prefer a bold, contemporary, digital-first expression with expressive type, confident composition, and purposeful animation; avoid dated or retro production motifs.
+- Prefer a bold, contemporary, digital-first expression with expressive type, confident composition, and purposeful animation; use Syne for headlines and DM Sans for readable body copy, and avoid dated or retro production motifs.
 
 ## Evidence on Hand
 

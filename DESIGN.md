@@ -8,32 +8,32 @@ colors:
   white: "#f5f5f5"
   white-dim: "#d0d0d0"
   muted: "#a0a0a0"
-  gold: "#d8ad46"
-  gold-bright: "#f0c96a"
-  gold-deep: "#745515"
+  orange: "#FFA000"
+  orange-hover: "#FFB52E"
+  orange-on-light: "#8A4B00"
   porcelain: "#f5f3ed"
   ink-on-light: "#141414"
   line: "#2a2a2a"
 typography:
   display:
-    fontFamily: "Inter, Arial, sans-serif"
+    fontFamily: "Syne, DM Sans, Arial, sans-serif"
     fontSize: "clamp(3.8rem, 7vw, 6.7rem)"
     fontWeight: 800
     lineHeight: 0.94
     letterSpacing: "-0.075em"
   headline:
-    fontFamily: "Inter, Arial, sans-serif"
+    fontFamily: "Syne, DM Sans, Arial, sans-serif"
     fontSize: "clamp(2.8rem, 5.5vw, 5.3rem)"
     fontWeight: 800
     lineHeight: 0.99
     letterSpacing: "-0.075em"
   body:
-    fontFamily: "Inter, Arial, sans-serif"
+    fontFamily: "DM Sans, Arial, sans-serif"
     fontSize: "1rem"
     fontWeight: 400
     lineHeight: 1.55
   label:
-    fontFamily: "Inter, Arial, sans-serif"
+    fontFamily: "DM Sans, Arial, sans-serif"
     fontSize: "0.58rem"
     fontWeight: 800
     lineHeight: 1.5
@@ -47,14 +47,14 @@ spacing:
   page-width: "1480px"
 components:
   button-primary:
-    backgroundColor: "{colors.gold}"
+    backgroundColor: "{colors.orange}"
     textColor: "{colors.ink}"
     typography: "{typography.body}"
     rounded: "{rounded.pill}"
     padding: "0.8rem 1.1rem"
     height: "50px"
   button-primary-hover:
-    backgroundColor: "{colors.gold-bright}"
+    backgroundColor: "{colors.orange-hover}"
   button-light:
     backgroundColor: "{colors.white}"
     textColor: "{colors.ink}"
@@ -71,31 +71,31 @@ components:
 
 **Creative North Star: "The moving frame."**
 
-VIP StudioS turns social planning and video production into one coherent service offer. Editorial image crops, precise typography, and a fine gold route create a recognizable premium identity grounded in the supplied black-and-gold logo. A visitor can move from the offer to services, disclosed concept work, and enquiry.
+VIP StudioS pairs social media management, video shoots, and professional editing. A vivid orange action color, editorial imagery, confident typography, and a compact scroll-reactive header create a distinct identity grounded in the supplied logo. A visitor moves from the offer to its three confirmed services, disclosed concept work, and a straightforward enquiry.
 
 **The first-view rule:** the offer and project action are visible beside one decisive image. Three labeled controls expose the studio's social and production range. Do not bury the enquiry action in the footer or make illustrative concept images look commissioned.
 
 ## Colors
 
-The dark media canvas lets imagery hold attention; porcelain sections provide a clear reading interval; brushed gold marks active states and actions rather than implying performance.
+The dark media canvas lets imagery hold attention; porcelain sections provide a clear reading interval; vivid orange marks active states and actions rather than implying performance.
 
 - **Ink** (`#0a0a0a`): media-led hero, process sections, navigation, and footer.
 - **Raised Ink** (`#141414`) and **Soft Ink** (`#1e1e1e`): controls and media frames.
 - **Porcelain** (`#f5f3ed`): reading sections and light action surfaces.
 - **Dim White** (`#d0d0d0`) and **Muted** (`#a0a0a0`): supporting copy and metadata on dark fields.
-- **Gold** (`#d8ad46`): primary action, active selector, and short emphasis.
-- **Bright Gold** (`#f0c96a`): hover and keyboard focus on dark surfaces.
-- **Deep Gold** (`#745515`): accessible gold text on light surfaces.
+- **Orange** (`#FFA000`): primary action, active selector, and short emphasis on dark surfaces.
+- **Orange hover** (`#FFB52E`): hover and keyboard focus on dark surfaces.
+- **Orange on light** (`#8A4B00`): readable accent text on porcelain surfaces.
 - **Ink on light** (`#141414`): copy, focus, and controls on porcelain sections.
 - **Hairlines** (`#2a2a2a`): separation on dark surfaces; use a dark translucent rule on light fields.
 
-Keep gold selective. Use ink and porcelain as the reading surfaces; reserve a full gold field for the final project invitation.
+Keep orange selective. Use ink and porcelain as the reading surfaces; reserve the full orange field for the final project invitation.
 
 ## Typography
 
-- **Display and page headlines:** Inter 700–800, fluid sizing, negative tracking, and compact but readable line-height.
-- **Body and controls:** Inter 400–700, with comfortable paragraph measures and explicit control labels.
-- **Metadata:** Inter 700–800, small and tracked only when it carries useful context.
+- **Display and page headlines:** Syne 500–800, fluid sizing, restrained negative tracking, and compact but readable line-height.
+- **Body and controls:** DM Sans 400–700, comfortable paragraph measures and explicit control labels.
+- **Metadata:** DM Sans 600–700, small and tracked only when it carries useful context.
 
 Avoid the former oversized all-caps display treatment. The hierarchy comes from weight, scale, and spacing rather than decorative typefaces.
 
@@ -103,21 +103,21 @@ Avoid the former oversized all-caps display treatment. The hierarchy comes from 
 
 Use a centered 1480px frame and fluid page gutters. The desktop hero balances a left-aligned offer with a wide image stage and three compact image-led selectors. On mobile, stack the offer before the image; keep all service selectors visible and usable without horizontal scrolling.
 
-Alternate media-dark sections with porcelain reading surfaces. Services remain open rows, the plan-to-publish sequence remains a meaningful numbered progression, and the concept gallery retains an asymmetrical image rhythm instead of a generic uniform tile grid. At narrow viewports, the gallery adapts to paired crops; never force horizontal scrolling.
+Use a direct page sequence: clear offer, three confirmed services, disclosed concept work, project process, short FAQ, and enquiry. Alternate media-dark sections with porcelain reading surfaces; at narrow viewports, stack the service rows and process without horizontal scrolling.
 
 ## Elevation & Depth
 
-Use tonal ink surfaces, real image contrast, thin rules, and one modest offset edge on the active hero media. Do not use glass, glow, or decorative blur. The hero image transition and selector state carry the authored motion; in-view reveals stay brief and content remains readable with reduced motion enabled.
+Use tonal ink surfaces, real image contrast, thin rules, and one modest offset edge on the active hero media. The header contracts into a compact island after scrolling and expands on hover, keyboard focus, or explicit pin. Keep transitions brief and functional; honor reduced-motion preferences.
 
 ## Shapes
 
-Controls use an 8px radius, cards use a 14px radius, and the navigation and primary actions use a pill shape. The brand is the supplied gold-and-white logo. Gold does not become a decorative border on every component.
+Controls use an 8px radius, cards use a 14px radius, and the navigation and primary actions use a pill shape. The brand is grounded in the supplied logo. Orange does not become a decorative border on every component.
 
 ## Components
 
 ### Navigation and actions
 
-The sticky header is compact and quiet, with Home, Services, Work, About, and Contact routes plus a visible Start a project action. The mobile menu uses a large touch target and closes on navigation or Escape. Primary actions use gold with dark text; text links remain separate and clearly named. Preserve a visible 2px focus ring with offset.
+The sticky header contracts into a centered island on scroll and expands on hover/focus; an explicit control can keep it open. Its Home, Services, Work, About, and Contact links remain keyboard-accessible. The mobile menu uses a large touch target and closes on navigation or Escape. Primary actions use orange with dark text. Preserve a visible 2px focus ring with offset.
 
 ### Hero media selector and concept work
 
@@ -125,7 +125,7 @@ The hero selectors are real buttons and expose Social, Shoot, and Edit with matc
 
 ### Services and journey
 
-Service rows pair category, actual service description, and a direct path to details. Plan, Shoot, Edit, and Publish are shown as an ordered service flow, not fabricated performance milestones.
+Service rows describe social media management, video shoots, and professional editing. The project steps name the brief, planning, creation, and delivery rather than implying performance milestones.
 
 ### Enquiry fields
 
@@ -145,6 +145,6 @@ Portfolio entries remain explicitly labeled illustrative concept studies until a
 
 ### Don't
 
-- Return to oversized kinetic typography, endless ticker motion, or the previous orbit/sticker decorations.
+- Return to oversized kinetic typography, endless ticker motion, or decorative route markers that interrupt the content flow.
 - Invent clients, testimonials, team details, metrics, audience growth, or guaranteed outcomes.
-- Use gold as an unverified success signal or add interface-like controls that do not perform an action.
+- Use orange as an unverified success signal or add interface-like controls that do not perform an action.
