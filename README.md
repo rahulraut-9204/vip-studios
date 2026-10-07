@@ -38,7 +38,7 @@ Create a local `.env` from `.env.example` to configure `VITE_PUBLIC_EMAIL` and `
 4. Set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` in local `.env.local` and the Cloudflare Pages build environment. The anon key is intentionally browser-visible; database RLS is the access boundary. Never put a service-role key in a `VITE_` variable or the client bundle.
 5. Visit `/studio/admin` and sign in. Unpublished drafts and archived entries stay private; only published projects are returned to public pages. Images are resized and converted to WebP before being uploaded to the public project-media bucket. Public image access is by asset URL; anonymous Storage listing is not enabled.
 
-The migration creates the admin allowlist, project schema, publication policies, and storage policies. Add/remove administrator IDs only through the Supabase SQL editor. The existing static concept portfolio remains the local/offline fallback when Supabase credentials are absent.
+The migrations create the admin allowlist, project schema, publication policies, storage policies, and optional media metadata. Add/remove administrator IDs only through the Supabase SQL editor. The existing static concept portfolio remains the local/offline fallback when Supabase credentials are absent. Project pages use a poster-first media flow: YouTube/direct video loads only after an explicit play action, while Instagram opens as an external link.
 
 ## Before expanding the public proof
 

@@ -8,6 +8,12 @@ const EMPTY_FORM = {
   slug: "",
   category: "Social",
   format: "",
+  platform: "image",
+  media_type: "image",
+  video_url: "",
+  client_name: "",
+  role: "",
+  result: "",
   year_label: "",
   image_alt: "",
   image_url: "",
@@ -98,6 +104,12 @@ function projectToForm(project) {
     slug: project.slug,
     category: project.category,
     format: project.format,
+    platform: project.platform ?? "image",
+    media_type: project.media_type ?? "image",
+    video_url: project.video_url ?? "",
+    client_name: project.client_name ?? "",
+    role: project.role ?? "",
+    result: project.result ?? "",
     year_label: project.year_label ?? "",
     image_alt: project.image_alt,
     image_url: project.image_url,
@@ -473,6 +485,22 @@ export default function AdminPage() {
             </div>
 
             <div className="studio-admin-field-pair">
+              <label>Media platform<select onChange={(event) => updateField("platform", event.target.value)} value={form.platform}>
+                <option value="image">Image study</option>
+                <option value="youtube">YouTube</option>
+                <option value="instagram">Instagram</option>
+                <option value="direct_video">Direct video</option>
+              </select></label>
+              <label>Media type<select onChange={(event) => updateField("media_type", event.target.value)} value={form.media_type}>
+                <option value="image">Poster / image</option>
+                <option value="video">Video</option>
+              </select></label>
+            </div>
+
+            <label>Video or social URL<input maxLength={500} onChange={(event) => updateField("video_url", event.target.value)} placeholder="YouTube, Instagram, or an approved .mp4/.webm URL" type="url" value={form.video_url} /></label>
+            <p className="studio-admin-hint">Public pages load the poster first. YouTube and direct video only load when a visitor chooses to play; Instagram opens in a new tab.</p>
+
+            <div className="studio-admin-field-pair">
               <label>Publication state<select onChange={(event) => updateField("status", event.target.value)} value={form.status}>
                 <option value="draft">Draft — private</option>
                 <option value="published">Published — public</option>
@@ -502,6 +530,11 @@ export default function AdminPage() {
             <label>Image focal point<input maxLength={80} onChange={(event) => updateField("image_position", event.target.value)} placeholder="center 50%" value={form.image_position} /></label>
             <label>Project summary<textarea maxLength={3000} onChange={(event) => updateField("summary", event.target.value)} required rows={3} value={form.summary} /></label>
             <label>Creative approach<textarea maxLength={3000} onChange={(event) => updateField("approach", event.target.value)} required rows={4} value={form.approach} /></label>
+            <div className="studio-admin-field-pair">
+              <label>Client / brand name<input maxLength={120} onChange={(event) => updateField("client_name", event.target.value)} placeholder="Leave blank for concept work" value={form.client_name} /></label>
+              <label>Role<input maxLength={180} onChange={(event) => updateField("role", event.target.value)} placeholder="Production, edit, strategy…" value={form.role} /></label>
+            </div>
+            <label>Result or proof note<textarea maxLength={1000} onChange={(event) => updateField("result", event.target.value)} placeholder="Only add approved, verifiable outcomes. Leave blank when unavailable." rows={2} value={form.result} /></label>
             <div className="studio-admin-field-pair">
               <label>Year or label<input maxLength={32} onChange={(event) => updateField("year_label", event.target.value)} placeholder="2025 or leave blank" value={form.year_label} /></label>
               <label>Accent<select onChange={(event) => updateField("accent", event.target.value)} value={form.accent}>

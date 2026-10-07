@@ -14,6 +14,12 @@ export const projects = [
     imageAlt: "A small team planning content together around a laptop",
     imagePosition: "center 52%",
     accent: "amber",
+    platform: "instagram",
+    mediaType: "image",
+    videoUrl: "",
+    clientName: "",
+    role: "Concept direction",
+    result: "",
     summary:
       "An illustrative social-video concept shaped around shifting light, quick movement, and a city that never quite holds still.",
     approach:
@@ -30,6 +36,12 @@ export const projects = [
     imageAlt: "A wristwatch used as illustrative concept imagery",
     imagePosition: "center 48%",
     accent: "silver",
+    platform: "direct_video",
+    mediaType: "image",
+    videoUrl: "",
+    clientName: "",
+    role: "Concept direction",
+    result: "",
     summary:
       "An illustrative shoot direction built around precision, material, and the reveal of a considered object.",
     approach:
@@ -46,6 +58,12 @@ export const projects = [
     imageAlt: "A video editing timeline displayed on a monitor",
     imagePosition: "center 57%",
     accent: "gold",
+    platform: "youtube",
+    mediaType: "image",
+    videoUrl: "",
+    clientName: "",
+    role: "Editing direction",
+    result: "",
     summary:
       "An illustrative editing study built around distance, changing weather, and natural light.",
     approach:
@@ -62,6 +80,12 @@ export const projects = [
     imageAlt: "A close-up of a camera and lenses, used as illustrative shoot imagery",
     imagePosition: "center 44%",
     accent: "white",
+    platform: "direct_video",
+    mediaType: "image",
+    videoUrl: "",
+    clientName: "",
+    role: "Shoot treatment",
+    result: "",
     summary:
       "A speculative look at the moment a rough idea starts to take shape on set.",
     approach:

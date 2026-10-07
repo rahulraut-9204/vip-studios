@@ -6,17 +6,17 @@
   --color-surface: #141414;
   --color-surface-raised: #1e1e1e;
   --color-border: #2a2a2a;
-  --color-accent: #ffd21c;
-  --color-accent-hover: #ffe15c;
-  --color-accent-on-light: #785900;
+  --color-accent: #ffa000;
+  --color-accent-hover: #ffb733;
+  --color-accent-on-light: #8a5600;
   --color-text: #f5f5f5;
   --color-text-secondary: #a0a0a0;
   --color-text-muted: #777777;
   --color-light-surface: #f5f3ed;
   --color-text-on-light: #141414;
   --color-muted-on-light: #55534d;
-  --font-body: "DM Sans", Arial, sans-serif;
-  --font-display: "Syne", var(--font-body);
+  --font-body: "Inter", Arial, sans-serif;
+  --font-display: "Inter", Arial, sans-serif;
   --radius-control: 0.5rem;
   --radius-card: 0.9rem;
   --radius-pill: 999px;
@@ -1376,6 +1376,98 @@ img {
   max-height: 74vh;
   min-height: 280px;
   object-fit: cover;
+}
+
+.project-detail-poster {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  background: var(--ink-soft);
+  color: inherit;
+  text-align: left;
+}
+
+.project-detail-poster.is-playable {
+  cursor: pointer;
+}
+
+.project-detail-poster img {
+  transition: transform 500ms var(--ease-out), filter 500ms var(--ease-out);
+}
+
+.project-detail-poster.is-playable:hover img,
+.project-detail-poster.is-playable:focus-visible img {
+  filter: brightness(0.72);
+  transform: scale(1.025);
+}
+
+.project-detail-play {
+  position: absolute;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 44px;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid var(--gold);
+  border-radius: var(--radius-pill);
+  background: var(--gold);
+  color: var(--ink);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.project-detail-player {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  min-height: 280px;
+  border: 0;
+  background: #000;
+  object-fit: contain;
+}
+
+.project-detail-visual figcaption a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--gold);
+}
+
+.project-detail-line {
+  display: flex;
+  gap: 0.75rem;
+  margin: 1.25rem 0 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.project-detail-line strong {
+  min-width: 4rem;
+  color: var(--white);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.project-play {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  place-items: center;
+  border: 1px solid var(--gold);
+  border-radius: 50%;
+  background: var(--gold);
+  color: var(--ink);
 }
 
 .project-detail-visual figcaption {

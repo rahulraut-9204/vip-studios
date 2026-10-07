@@ -14,6 +14,12 @@ function fromDatabase(project) {
     imageAlt: project.image_alt,
     imagePosition: project.image_position ?? "center",
     accent: project.accent ?? "gold",
+    platform: project.platform ?? "image",
+    mediaType: project.media_type ?? "image",
+    videoUrl: project.video_url ?? "",
+    clientName: project.client_name ?? "",
+    role: project.role ?? "",
+    result: project.result ?? "",
     summary: project.summary,
     approach: project.approach,
     concept: project.is_concept,
@@ -34,7 +40,7 @@ export default function usePublishedProjects() {
     supabase
       .from("projects")
       .select(
-        "slug,title,category,format,year_label,image_url,image_alt,image_position,accent,summary,approach,is_concept,featured",
+        "slug,title,category,format,year_label,image_url,image_alt,image_position,accent,platform,media_type,video_url,client_name,role,result,summary,approach,is_concept,featured",
       )
       .eq("status", "published")
       .order("featured", { ascending: false })
