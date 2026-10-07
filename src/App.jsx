@@ -16,6 +16,7 @@ export default function App() {
   return (
     <Suspense fallback={<div aria-live="polite" className="studio-route-loading">Loading page…</div>}>
       <Routes>
+        <Route path="/admin" element={<AdminPage />} />
         <Route path="/studio/admin" element={<AdminPage />} />
         <Route element={<SiteShell />}>
           <Route index element={<HomePage />} />

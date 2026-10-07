@@ -21,7 +21,6 @@ export default function ServiceDetailPage() {
       url: "https://vip-studios.pages.dev/",
       address: {
         "@type": "PostalAddress",
-        addressLocality: "Pune",
         addressRegion: "Maharashtra",
         addressCountry: "IN",
       },

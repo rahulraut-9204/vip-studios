@@ -6,9 +6,8 @@ import Brand from "./Brand.jsx";
 
 const links = [
   { label: "Home", to: "/" },
-  { label: "Services", to: "/services" },
   { label: "Work", to: "/work" },
-  { label: "Process", to: "/process" },
+  { label: "Services", to: "/services" },
   { label: "About", to: "/about" },
   { label: "Contact", to: "/contact" },
 ];
@@ -135,7 +134,7 @@ export default function SiteHeader() {
             onClick={closeNavigation}
             to="/contact"
           >
-            Let&apos;s grow your brand <ArrowUpRight aria-hidden="true" size={15} />
+            Start a project <ArrowUpRight aria-hidden="true" size={15} />
           </Link>
         </nav>
       </div>

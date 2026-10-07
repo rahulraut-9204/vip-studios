@@ -11,11 +11,8 @@ function createEmailBody(data) {
     `Company / brand: ${data.company || "Not provided"}`,
     `Email: ${data.email || "Not provided"}`,
     `Phone / WhatsApp: ${data.phone || "Not provided"}`,
-    `Website / Instagram: ${data.social || "Not provided"}`,
     `Service: ${data.service || "Not selected"}`,
-    `Video type: ${data.videoType || "Not provided"}`,
     `Preferred timing: ${data.deadline || "Not provided"}`,
-    `Reference links: ${data.references || "Not provided"}`,
     "",
     "Project brief:",
     data.requirements || "Not provided",
@@ -51,11 +48,8 @@ export default function ContactPage() {
         "company",
         "email",
         "phone",
-        "social",
         "service",
-        "videoType",
         "deadline",
-        "references",
         "requirements",
       ].map((key) => [key, String(fields.get(key) || "").trim()]),
     );
@@ -160,10 +154,6 @@ export default function ContactPage() {
               Company / brand
               <input autoComplete="organization" maxLength={120} name="company" />
             </label>
-            <label>
-              Website / Instagram
-              <input autoComplete="url" maxLength={200} name="social" placeholder="https://" />
-            </label>
           </div>
           <div className="studio-form-pair">
             <label>
@@ -199,27 +189,9 @@ export default function ContactPage() {
               <option value="Not sure yet">Not sure yet</option>
             </select>
           </label>
-          <div className="studio-form-pair">
-            <label>
-              Content format
-              <select defaultValue="" name="videoType">
-                <option value="">Choose a format</option>
-                <option>Reels / short-form video</option>
-                <option>YouTube video</option>
-                <option>Podcast episode</option>
-                <option>Brand or campaign content</option>
-                <option>Long-form video</option>
-                <option>Other / not sure</option>
-              </select>
-            </label>
-            <label>
-              Preferred timing
-              <input maxLength={100} name="deadline" placeholder="Date or preferred timing" />
-            </label>
-          </div>
           <label>
-            Reference links
-            <textarea maxLength={1000} name="references" placeholder="Paste links to examples or relevant material" rows={2} />
+            Expected timeline
+            <input maxLength={100} name="deadline" placeholder="Date or preferred timing" />
           </label>
           <label>
             Project brief <span aria-hidden="true">*</span>

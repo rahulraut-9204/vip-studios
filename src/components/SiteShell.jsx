@@ -12,7 +12,7 @@ const siteOrigin = "https://vip-studios.pages.dev";
 
 const pageMetadata = {
   "/": {
-    title: "Content, Social Media & Video Production in Pune | VIP StudioS",
+    title: "Content, Social Media & Video Production | VIP StudioS",
     description:
       "Social media management, video production, editing, podcasts and YouTube support for businesses. Build your digital content journey with VIP StudioS.",
   },
@@ -61,8 +61,8 @@ function applyRouteMetadata(pathname, project, service, pendingProject = false) 
       }
     : service
       ? {
-          title: `${service.title} in Pune — VIP StudioS`,
-          description: `${service.description} Based in Pune, working with clients across India.`,
+          title: `${service.title} — VIP StudioS`,
+          description: `${service.description} Working with clients across India.`,
         }
       : pageMetadata[normalizedPath] ?? {
           title: "Page not found — VIP StudioS",

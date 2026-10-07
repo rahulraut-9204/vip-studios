@@ -25,30 +25,25 @@ export default function HeroReel() {
   return (
     <section aria-labelledby="home-title" className="vip-hero">
       <div className="vip-hero-copy">
-        <p className="vip-eyebrow">Content · Social · Digital Growth</p>
+        <p className="vip-eyebrow">VIP STUDIOS · CREATIVE PRODUCTION</p>
         <h1 id="home-title">
-          We create content.
+          VIP STUDIOS
           <br />
-          We build brands.
-          <br />
-          We <span>grow businesses.</span>
+          <span>Crafting visual stories that move.</span>
         </h1>
         <p className="vip-hero-intro">
-          From social media management and professional video production to
-          podcasts, YouTube and digital growth, VIP StudioS can support the
-          complete content journey.
+          We create videos and content that help ambitious brands look sharper,
+          sound clearer and move people to act.
         </p>
         <div className="vip-hero-actions">
-          <Link className="button button-gold" to="/contact">
-            Let&apos;s grow your brand <ArrowUpRight aria-hidden="true" size={17} />
+          <Link className="button button-gold" to="/work">
+            View our work <ArrowUpRight aria-hidden="true" size={17} />
           </Link>
-          <Link className="vip-secondary-link" to="/work">
-            View our work <ArrowUpRight aria-hidden="true" size={16} />
+          <Link className="vip-secondary-link" to="/contact">
+            Start a project <ArrowUpRight aria-hidden="true" size={16} />
           </Link>
         </div>
-        <p className="vip-hero-journey">
-          Strategy <i /> Content <i /> Shoot <i /> Edit <i /> Publish <i /> Manage
-        </p>
+        <p className="vip-hero-journey">FILM <i /> EDIT <i /> DESIGN <i /> DELIVER</p>
       </div>
 
       <div className="vip-hero-visual">

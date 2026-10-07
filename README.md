@@ -20,7 +20,7 @@ Create a local `.env` from `.env.example` to configure `VITE_PUBLIC_EMAIL` and `
 - Quote scope, production details, deliverables, review/revision terms and turnaround are confirmed per project; no public rates or outcome guarantees are shown.
 - Pune and India-wide service language comes from the supplied brief. Do not add additional location pages without useful, verified local information.
 - Analytics event hooks support an existing `gtag` or GTM `dataLayer`; no analytics vendor, pixel, tag manager, booking service or third-party tracking script is installed by default.
-- `/studio/admin` is an allowlisted Supabase dashboard for project drafts, publication, image uploads, and archiving. If Supabase is not configured, the public site uses its bundled illustrative concepts.
+- `/admin` (with `/studio/admin` retained as a compatibility alias) is an allowlisted Supabase dashboard for project drafts, publication, image uploads, and archiving. If Supabase is not configured, the public site uses its bundled illustrative concepts.
 - Supabase-backed services remain in `src/data/services.js`; the CMS currently manages project work only. The site does not store enquiry submissions.
 
 ## Optional Supabase project CMS

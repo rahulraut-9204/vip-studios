@@ -21,7 +21,7 @@ export default function WorkPage() {
   return (
     <section className="studio-page studio-work-page">
       <div className="studio-page-intro">
-        <p className="studio-location">VIDEO · SOCIAL · CONTENT</p>
+        <p className="studio-location">SELECTED WORK · VISUAL STORIES</p>
         <h1>Our work<br /><span>starts with an idea.</span></h1>
         <p>
           {projects.length > 0 && projects.every((project) => project.concept)

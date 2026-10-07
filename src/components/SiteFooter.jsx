@@ -25,7 +25,7 @@ export default function SiteFooter() {
             Let&apos;s grow your brand <ArrowUpRight aria-hidden="true" size={16} />
           </Link>
           <p>One partner for your digital content journey.</p>
-          <p className="footer-service-area">Pune, Maharashtra · Working across India</p>
+          <p className="footer-service-area">Working across India</p>
         </div>
         <div className="footer-group">
           <h3>Explore</h3>

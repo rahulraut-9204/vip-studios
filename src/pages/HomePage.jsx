@@ -99,15 +99,14 @@ export default function HomePage() {
             <div>
               <p className="vip-eyebrow">What we do</p>
               <h2 id="studio-services-title">
-                More than social media.
+                Strategy, production
                 <br />
-                <span>We build your digital presence.</span>
+                <span>and sharp execution.</span>
               </h2>
             </div>
             <p>
-              Your business needs more than regular posts. Bring strategy,
-              creative content, professional production and digital execution
-              together in one place.
+              From a single edit to an ongoing content system, we shape the
+              right creative support around the brief.
             </p>
           </div>
           <div className="vip-service-grid">
@@ -142,11 +141,11 @@ export default function HomePage() {
         <div className="vip-section-shell">
           <div className="vip-section-heading">
             <div>
-              <p className="vip-eyebrow">Visual directions</p>
+              <p className="vip-eyebrow">Featured work</p>
               <h2 id="studio-work-title">
-                The work is the
+                Make the work
                 <br />
-                <span>first conversation.</span>
+                <span>the first conversation.</span>
               </h2>
             </div>
             <Link className="vip-inline-link" to="/work">
@@ -154,9 +153,8 @@ export default function HomePage() {
             </Link>
           </div>
           <p className="vip-section-intro">
-            These illustrative studies show possible creative directions using
-            stock imagery. They are not client commissions or evidence of
-            delivered results.
+            A growing library of selected work and clearly labelled concept
+            studies. Open a project to see the thinking, role and available proof.
           </p>
           {error && (
             <p className="studio-content-error" role="alert">

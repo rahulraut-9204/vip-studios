@@ -441,6 +441,20 @@ export default function AdminPage() {
           <button className="studio-admin-signout" onClick={signOut} type="button"><LogOut aria-hidden="true" size={16} /> Sign out</button>
         </header>
 
+        <section aria-label="Project library summary" className="studio-admin-stats">
+          {[
+            ["Total projects", projects.length],
+            ["Published", projects.filter((project) => project.status === "published").length],
+            ["Drafts", projects.filter((project) => project.status === "draft").length],
+            ["Featured", projects.filter((project) => project.featured).length],
+          ].map(([label, value]) => (
+            <div key={label}>
+              <strong>{String(value).padStart(2, "0")}</strong>
+              <span>{label}</span>
+            </div>
+          ))}
+        </section>
+
         <div className="studio-admin-layout">
           <aside aria-label="Saved projects" className="studio-admin-list">
             <div className="studio-admin-list-heading">

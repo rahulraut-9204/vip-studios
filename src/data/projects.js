@@ -7,7 +7,7 @@ export const projects = [
   {
     slug: "feed-in-motion",
     title: "Feed in Motion",
-    category: "Social media",
+    category: "Reels",
     format: "Concept short-form direction",
     year: "Concept",
     image: socialImage,
@@ -29,7 +29,7 @@ export const projects = [
   {
     slug: "product-in-focus",
     title: "Product in Focus",
-    category: "Video",
+    category: "Corporate",
     format: "Concept product shoot",
     year: "Concept",
     image: productImage,
@@ -51,7 +51,7 @@ export const projects = [
   {
     slug: "the-long-take",
     title: "The Long Take",
-    category: "Video",
+    category: "Video Editing",
     format: "Concept edit study",
     year: "Concept",
     image: editingImage,
@@ -73,7 +73,7 @@ export const projects = [
   {
     slug: "behind-the-frame",
     title: "Behind the Frame",
-    category: "Video",
+    category: "YouTube",
     format: "Concept shoot treatment",
     year: "Concept",
     image: cameraImage,
@@ -96,12 +96,12 @@ export const projects = [
 
 export const projectCategories = [
   "All",
-  "Social media",
-  "Video",
+  "Video Editing",
   "Reels",
-  "Podcast",
   "YouTube",
-  "Branding",
+  "Social Media",
+  "Corporate",
+  "Other",
 ];
 
 export function getProjectBySlug(slug) {
