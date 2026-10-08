@@ -3,7 +3,7 @@ import { ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useMemo, useState } from "react";
 import ProjectCard from "../components/ProjectCard.jsx";
-import { projectCategories } from "../data/projects.js";
+import { CATEGORIES } from "../config/site.js";
 import usePublishedProjects from "../hooks/usePublishedProjects.js";
 
 export default function WorkPage() {
@@ -32,7 +32,7 @@ export default function WorkPage() {
 
       <div className="work-toolbar studio-work-toolbar">
         <div aria-label="Filter visual studies by category" className="filter-list" role="group">
-          {projectCategories.map((category) => (
+          {["All", ...CATEGORIES].map((category) => (
             <button
               aria-pressed={activeCategory === category}
               className={`filter-button${activeCategory === category ? " is-active" : ""}`}
@@ -67,12 +67,15 @@ export default function WorkPage() {
           {visibleProjects.map((project, index) => (
             <motion.div
               animate={{ opacity: 1, y: 0 }}
-              className="project-grid-item"
+              className={`project-grid-item project-grid-item-${(index % 6) + 1}`}
               exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 12 }}
               initial={reduceMotion ? false : { opacity: 0, y: 12 }}
               key={project.slug}
-              layout={!reduceMotion}
-              transition={{ duration: reduceMotion ? 0 : 0.24, ease: "easeOut" }}
+              transition={{
+                delay: reduceMotion ? 0 : index * 0.04,
+                duration: reduceMotion ? 0 : 0.2,
+                ease: "easeOut",
+              }}
             >
               <ProjectCard index={index} project={project} />
             </motion.div>

@@ -7,7 +7,7 @@ export const projects = [
   {
     slug: "feed-in-motion",
     title: "Feed in Motion",
-    category: "Reels",
+    category: "Reels & Short-form",
     format: "Concept short-form direction",
     year: "Concept",
     image: socialImage,
@@ -32,6 +32,7 @@ export const projects = [
     category: "Corporate",
     format: "Concept product shoot",
     year: "Concept",
+    featured: true,
     image: productImage,
     imageAlt: "A wristwatch used as illustrative concept imagery",
     imagePosition: "center 48%",
@@ -76,6 +77,7 @@ export const projects = [
     category: "YouTube",
     format: "Concept shoot treatment",
     year: "Concept",
+    featured: true,
     image: cameraImage,
     imageAlt: "A close-up of a camera and lenses, used as illustrative shoot imagery",
     imagePosition: "center 44%",
@@ -92,16 +94,6 @@ export const projects = [
       "The composition pairs an expressive frame with a clear visual sequence. The stock photograph is illustrative, not VIP StudioS work.",
     concept: true,
   },
-];
-
-export const projectCategories = [
-  "All",
-  "Video Editing",
-  "Reels",
-  "YouTube",
-  "Social Media",
-  "Corporate",
-  "Other",
 ];
 
 export function getProjectBySlug(slug) {

@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { ArrowLeft, ImagePlus, LogOut, Plus, Save, X } from "lucide-react";
 import { Link } from "react-router-dom";
+import { CATEGORIES } from "../config/site.js";
 import { isSupabaseConfigured, supabase } from "../lib/supabase.js";
 
 const EMPTY_FORM = {
   title: "",
   slug: "",
-  category: "Social",
+  category: CATEGORIES[0],
   format: "",
   platform: "image",
   media_type: "image",
@@ -493,7 +494,7 @@ export default function AdminPage() {
 
             <div className="studio-admin-field-pair">
               <label>Category<select onChange={(event) => updateField("category", event.target.value)} value={form.category}>
-                {["Social", "Video shoots", "Editing"].map((category) => <option key={category}>{category}</option>)}
+                {CATEGORIES.map((category) => <option key={category}>{category}</option>)}
               </select></label>
               <label>Format<input maxLength={140} onChange={(event) => updateField("format", event.target.value)} required value={form.format} /></label>
             </div>

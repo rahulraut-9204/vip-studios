@@ -30,7 +30,7 @@ Prospective clients discover the site, understand the social and video offer, vi
 - Start with static content and data.
 - The owner has supplied these business details for the public site: 6+ years of industry experience, 10+ team members, 12+ active clients, and 1,000+ content and creative projects. They have not been independently verified.
 - The owner has confirmed social-media management and strategy, content creation, video and podcast production, professional editing, YouTube management, digital-growth strategy and brand content as services. Scope and deliverables are agreed per brief.
-- Pune and service across India are supplied geographic details; avoid implying the studio serves only Pune.
+- Geographic details remain intentionally open in the public design; do not imply the studio serves only one city.
 - Public enquiry details are configured from build-time environment variables; do not hardcode private values.
 - Accounts, payments, CRM, and app-like features are out of scope.
 
@@ -38,9 +38,9 @@ Prospective clients discover the site, understand the social and video offer, vi
 
 - Product name: VIP StudioS.
 - Desired identity: premium, cinematic, ownable, and creative.
-- Required palette: black, white, and signature yellow (`#FFD21C`), as specified in the current creative brief.
+- Required palette: black, white, and signature orange (`#FFA000`).
 - The visual direction must not copy a reference identity.
-- Prefer a bold, contemporary, digital-first expression with expressive type, confident composition, and purposeful animation; use Syne for headlines and DM Sans for readable body copy, and avoid dated or retro production motifs.
+- Prefer a bold, contemporary, digital-first expression with confident composition and purposeful animation; use Inter throughout and avoid dated or retro production motifs.
 
 ## Evidence on Hand
 

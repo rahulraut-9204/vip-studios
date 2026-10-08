@@ -1,150 +1,79 @@
 ---
 name: VIP StudioS
-description: A cinematic content journey for social strategy, production and digital growth.
+description: An editorial, cinematic content journey for strategy, production and digital growth.
 colors:
-  ink: "#0a0a0a"
-  ink-raised: "#141414"
-  ink-soft: "#1e1e1e"
-  white: "#f5f5f5"
-  white-dim: "#d0d0d0"
-  muted: "#a0a0a0"
-  yellow: "#FFD21C"
-  yellow-hover: "#FFE15C"
-  yellow-on-light: "#785900"
-  porcelain: "#f5f3ed"
-  ink-on-light: "#141414"
-  line: "#2a2a2a"
+  background: "#0A0A0A"
+  surface: "#141414"
+  surface-raised: "#1E1E1E"
+  border: "#2A2A2A"
+  accent: "#FFA000"
+  text: "#F5F5F5"
+  muted: "#A0A0A0"
+  light-surface: "#F5F3ED"
 typography:
   display:
-    fontFamily: "Syne, DM Sans, Arial, sans-serif"
-    fontSize: "clamp(3.8rem, 7vw, 6.7rem)"
+    fontFamily: "Inter, Arial, sans-serif"
     fontWeight: 800
-    lineHeight: 0.94
-    letterSpacing: "-0.075em"
-  headline:
-    fontFamily: "Syne, DM Sans, Arial, sans-serif"
-    fontSize: "clamp(2.8rem, 5.5vw, 5.3rem)"
-    fontWeight: 800
-    lineHeight: 0.99
-    letterSpacing: "-0.075em"
   body:
-    fontFamily: "DM Sans, Arial, sans-serif"
-    fontSize: "1rem"
+    fontFamily: "Inter, Arial, sans-serif"
     fontWeight: 400
-    lineHeight: 1.55
-  label:
-    fontFamily: "DM Sans, Arial, sans-serif"
-    fontSize: "0.58rem"
-    fontWeight: 800
-    lineHeight: 1.5
-    letterSpacing: "0.11em"
 rounded:
   control: "8px"
   card: "14px"
-  pill: "999px"
 spacing:
   page-gutter: "clamp(1.25rem, 5.5vw, 6rem)"
   page-width: "1480px"
-components:
-  button-primary:
-    backgroundColor: "{colors.yellow}"
-    textColor: "{colors.ink}"
-    typography: "{typography.body}"
-    rounded: "{rounded.pill}"
-    padding: "0.8rem 1.1rem"
-    height: "50px"
-  button-primary-hover:
-    backgroundColor: "{colors.yellow-hover}"
-  button-light:
-    backgroundColor: "{colors.white}"
-    textColor: "{colors.ink}"
-    typography: "{typography.body}"
-    rounded: "{rounded.pill}"
-    padding: "0.8rem 1.1rem"
-    height: "50px"
-  project-image:
-    backgroundColor: "{colors.ink-soft}"
-    rounded: "{rounded.card}"
 ---
 
 ## Overview
 
-**Creative North Star: "The moving frame."**
+VIP StudioS is a premium content, social-media and digital-growth partner. The site leads visitors through **SHOW → PROVE → TRUST → ENQUIRE**: show the work, explain the offer and process, establish truthful proof, then make the next conversation easy.
 
-VIP StudioS connects strategy, content, production, publishing and management as one practical digital-content partner. Cinematic black and white, a selective signature yellow accent, confident typography and a compact scroll-reactive header create an identity grounded in the supplied logo. Visitors understand the complete service range, see owner-supplied business details and clearly labeled concept work, then start an enquiry.
+The visual world is editorial and cinematic: a near-black media canvas, high-contrast type, thin rules, asymmetric compositions, image-led project surfaces and one deliberate orange accent. The interface should feel authored, not like a generic agency template.
 
-**The first-view rule:** the full content and growth offer and project action are visible beside one selectable, explicitly illustrative production image. Do not bury the enquiry action in the footer or make stock concepts look commissioned.
+## Tokens
 
-## Colors
+- **Background:** `#0A0A0A`
+- **Surface:** `#141414`
+- **Raised surface:** `#1E1E1E`
+- **Border:** `#2A2A2A`
+- **Accent:** `#FFA000`
+- **Text:** `#F5F5F5`
+- **Muted text:** `#A0A0A0`
+- **Light surface:** `#F5F3ED`
 
-The dark media canvas lets imagery hold attention; porcelain sections provide a clear reading interval; signature yellow marks active states and actions rather than implying performance.
-
-- **Ink** (`#0a0a0a`): media-led hero, process sections, navigation, and footer.
-- **Raised Ink** (`#141414`) and **Soft Ink** (`#1e1e1e`): controls and media frames.
-- **Porcelain** (`#f5f3ed`): reading sections and light action surfaces.
-- **Dim White** (`#d0d0d0`) and **Muted** (`#a0a0a0`): supporting copy and metadata on dark fields.
-- **Signature yellow** (`#FFD21C`): primary action, active selector, important figures and brief emphasis on dark surfaces.
-- **Yellow hover** (`#FFE15C`): hover and keyboard focus on dark surfaces.
-- **Yellow on light** (`#785900`): readable accent text on porcelain surfaces.
-- **Ink on light** (`#141414`): copy, focus, and controls on porcelain sections.
-- **Hairlines** (`#2a2a2a`): separation on dark surfaces; use a dark translucent rule on light fields.
-
-Keep yellow selective. Use ink and porcelain as the reading surfaces; reserve the full yellow field for the final project invitation.
+The accent is reserved for actions, active states, key figures and brief emphasis. Do not introduce yellow, gold, purple, blue or green aliases.
 
 ## Typography
 
-- **Display and page headlines:** Syne 500–800, fluid sizing, restrained negative tracking, and compact but readable line-height.
-- **Body and controls:** DM Sans 400–700, comfortable paragraph measures and explicit control labels.
-- **Metadata:** DM Sans 600–700, small and tracked only when it carries useful context.
+Inter is the single type family for display, body and controls. Display text uses tight tracking and fluid sizing; body copy stays readable with comfortable line length. Metadata is small and tracked only when it improves scanning.
 
-Avoid the former oversized all-caps display treatment. The hierarchy comes from weight, scale, and spacing rather than decorative typefaces.
+## Layout and responsive behavior
 
-## Layout
+Use a centered `1480px` frame with fluid page gutters. Responsive thresholds are limited to `480px`, `768px`, `1024px`, `1280px` and `1536px`. On smaller screens, stack editorial compositions, preserve strong media crops, keep controls comfortably tappable and prevent horizontal overflow.
 
-Use a centered 1480px frame and fluid page gutters. The desktop hero balances a three-line content-and-growth offer with a wide image stage and three compact image-led selectors. On mobile, stack the offer before the image; keep all service selectors visible and usable without horizontal scrolling.
-
-Use a direct page sequence: full service offer, owner-supplied business facts, service grid, disclosed concept work, differentiators, six-stage project process, content ecosystem, studio introduction, FAQ and enquiry. Alternate media-dark sections with porcelain reading surfaces; at narrow viewports, stack service rows and process steps without horizontal scrolling.
-
-## Elevation & Depth
-
-Use tonal ink surfaces, real image contrast, thin rules, and one modest offset edge on the active hero media. The header contracts into a compact island after scrolling and expands on hover, keyboard focus, or explicit pin. Keep transitions brief and functional; honor reduced-motion preferences.
-
-## Shapes
-
-Controls use an 8px radius, cards use a 14px radius, and the navigation and primary actions use a pill shape. The brand is grounded in the supplied logo. Yellow does not become a decorative border on every component.
+The scroll-reactive header contracts into a compact island and expands on hover, focus or explicit pin. Reduced-motion users receive the same hierarchy without movement.
 
 ## Components
 
-### Navigation and actions
+- **Navigation:** semantic links, visible focus, mobile menu with Escape and close-on-navigation behavior.
+- **Hero:** one clear studio proposition, selectable illustrative media and direct project/enquiry actions.
+- **Portfolio:** image-led cards and detail pages with explicit concept-work disclosures until approved commissioned work exists.
+- **Services/process:** explain scope and collaboration without promising reach, virality, follower counts or other unsupported outcomes.
+- **Enquiry:** labels remain outside fields; email and WhatsApp destinations come from `src/config/site.js` and build-time environment values.
 
-The sticky header contracts into a centered island on scroll and expands on hover/focus; an explicit control can keep it open. Its Home, Services, Work, Process, About, and Contact links remain keyboard-accessible. The mobile menu uses a large touch target and closes on navigation or Escape. Primary actions use signature yellow with dark text. Preserve a visible 2px focus ring with offset.
+## Content truth
 
-### Hero media selector and concept work
+Do not invent clients, testimonials, awards, team biographies, URLs or outcomes. Static portfolio items are illustrative concepts unless verified project data is supplied. The admin/CMS path may later provide published project data, but public fallbacks must remain truthful.
 
-The hero selectors are real buttons and expose Social, Shoot, and Edit with matching illustrative thumbnails. The active image, caption, and concept disclosure stay synchronized. All portfolio concept cards retain the “Concept work” label and are not presented as client results.
+## Do
 
-### Services and journey
+- Make the complete content offer clear quickly.
+- Let the work lead visually while preserving context and disclosures.
+- Keep keyboard access, visible focus, alt text, reduced motion and contrast intact.
 
-Service pages cover social media management, video and podcast production, editing, YouTube management, content creation, digital growth and brand content. The process names discovery, strategy, creation, editing, publishing and review without implying guaranteed performance milestones.
+## Do not
 
-### Enquiry fields
-
-Keep labels outside rounded, high-contrast fields. The enquiry form collects name, email, phone/WhatsApp, requested service, and project description, with optional brand and timeline. Email and WhatsApp values come from build-time environment variables. The form opens a local email draft and must not imply that data was submitted to a server. The persistent WhatsApp action is shown only when a valid destination is configured.
-
-### Portfolio and proof
-
-Portfolio entries remain explicitly labeled illustrative concept studies until approved client work is supplied. Project pages link to related concepts, but do not invent client names, dates, commissioned work, testimonials, or outcomes. Business metrics are identified as supplied by VIP StudioS. No video preview is enabled without an approved studio video asset.
-
-## Do's and Don'ts
-
-### Do
-
-- Make the complete content journey and eight service areas clear within seconds.
-- Use the connected content canvas to link image selection, service detail, concept examples, and enquiry.
-- Preserve reduced-motion behavior, visible keyboard focus, responsive controls, and clear concept disclosures.
-
-### Don't
-
-- Return to oversized kinetic typography, endless ticker motion, or decorative route markers that interrupt the content flow.
-- Invent clients, testimonials, team details, metrics, audience growth, or guaranteed outcomes.
-- Use yellow as an unverified success signal or add interface-like controls that do not perform an action.
+- Use decorative interface controls that do not perform an action.
+- Reintroduce gold/yellow tokens, oversized kinetic noise or copied reference identities.
+- Hide the enquiry path in the footer or imply that the client-side email draft is a server submission.

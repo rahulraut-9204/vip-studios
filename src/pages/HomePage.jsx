@@ -12,6 +12,7 @@ import { Link } from "react-router-dom";
 import HeroReel from "../components/HeroReel.jsx";
 import ProcessTimeline from "../components/ProcessTimeline.jsx";
 import ProjectCard from "../components/ProjectCard.jsx";
+import SectionHeading from "../components/SectionHeading.jsx";
 import { getWhatsAppHref } from "../data/contact.js";
 import { projects } from "../data/projects.js";
 import { serviceOfferings, studioFacts, studioReasons } from "../data/services.js";
@@ -63,10 +64,10 @@ function FaqSchema() {
 
 export default function HomePage() {
   const { projects: publishedProjects, isLoading, error } = usePublishedProjects();
-  const homeProjects = [
-    ...publishedProjects.filter((project) => project.featured),
-    ...publishedProjects.filter((project) => !project.featured),
-  ].slice(0, 4);
+  const featuredProjects = publishedProjects
+    .filter((project) => project.featured)
+    .slice(0, 3);
+  const homeProjects = (featuredProjects.length > 0 ? featuredProjects : publishedProjects).slice(0, 3);
   const whatsAppHref = getWhatsAppHref(
     "Hi VIP StudioS, I'd like to discuss a content or digital project.",
   );
@@ -75,23 +76,6 @@ export default function HomePage() {
     <div className="vip-home">
       <FaqSchema />
       <HeroReel />
-
-      <section aria-labelledby="studio-proof-title" className="vip-proof" id="studio-proof">
-        <div className="vip-section-shell">
-          <div className="vip-proof-heading">
-            <h2 id="studio-proof-title">A team built to carry the whole brief.</h2>
-            <p>Business details supplied by VIP StudioS.</p>
-          </div>
-          <dl className="vip-facts">
-            {studioFacts.map((fact) => (
-              <div className="vip-fact" key={fact.label}>
-                <dt>{fact.label}</dt>
-                <dd>{fact.value}</dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-      </section>
 
       <section aria-labelledby="studio-services-title" className="vip-services" id="services">
         <div className="vip-section-shell">
@@ -139,22 +123,18 @@ export default function HomePage() {
 
       <section aria-labelledby="studio-work-title" className="vip-work" id="work">
         <div className="vip-section-shell">
-          <div className="vip-section-heading">
-            <div>
-              <p className="vip-eyebrow">Featured work</p>
-              <h2 id="studio-work-title">
-                Make the work
-                <br />
-                <span>the first conversation.</span>
-              </h2>
-            </div>
-            <Link className="vip-inline-link" to="/work">
-              Browse all concepts <ArrowUpRight aria-hidden="true" size={16} />
-            </Link>
-          </div>
+          <SectionHeading
+            action={
+              <Link className="vip-inline-link" to="/work">
+                View all work <ArrowUpRight aria-hidden="true" size={16} />
+              </Link>
+            }
+            detail="A growing library of selected work and clearly labelled concept studies."
+            id="studio-work-title"
+            title="Make the work the first conversation."
+          />
           <p className="vip-section-intro">
-            A growing library of selected work and clearly labelled concept
-            studies. Open a project to see the thinking, role and available proof.
+            Open a project to see the thinking, role and available proof.
           </p>
           {error && (
             <p className="studio-content-error" role="alert">

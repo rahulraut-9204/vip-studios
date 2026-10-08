@@ -1,7 +1,6 @@
-import { ArrowUpRight, ChevronDown, Menu, MessageCircle, X } from "lucide-react";
+import { ArrowUpRight, Menu, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { getWhatsAppHref } from "../data/contact.js";
 import Brand from "./Brand.jsx";
 
 const links = [
@@ -15,23 +14,12 @@ const links = [
 export default function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isCondensed, setIsCondensed] = useState(false);
-  const [isPinnedOpen, setIsPinnedOpen] = useState(false);
   const menuToggleRef = useRef(null);
-  const islandToggleRef = useRef(null);
+  const navigationRef = useRef(null);
   const location = useLocation();
-  const whatsAppHref = getWhatsAppHref();
-  const currentPage =
-    [...links]
-      .reverse()
-      .find(
-        (link) =>
-          location.pathname === link.to ||
-          (link.to !== "/" && location.pathname.startsWith(`${link.to}/`)),
-      )?.label ?? "Studio";
 
   useEffect(() => {
     setMenuOpen(false);
-    setIsPinnedOpen(false);
   }, [location.pathname]);
 
   useEffect(() => {
@@ -39,7 +27,7 @@ export default function SiteHeader() {
     function updateScrollState() {
       if (frame) return;
       frame = window.requestAnimationFrame(() => {
-        setIsCondensed(window.scrollY > 72);
+        setIsCondensed(window.scrollY > 80);
         frame = 0;
       });
     }
@@ -52,54 +40,48 @@ export default function SiteHeader() {
   }, []);
 
   useEffect(() => {
-    if (!menuOpen && !isPinnedOpen) return undefined;
-    function closeOnEscape(event) {
+    if (!menuOpen) return undefined;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    function manageMenuFocus(event) {
       if (event.key === "Escape") {
         setMenuOpen(false);
-        setIsPinnedOpen(false);
-        (menuOpen ? menuToggleRef : islandToggleRef).current?.focus();
+        menuToggleRef.current?.focus();
+        return;
+      }
+      if (event.key !== "Tab" || !navigationRef.current) return;
+      const focusable = navigationRef.current.querySelectorAll(
+        'a[href], button:not([disabled])',
+      );
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
       }
     }
 
-    window.addEventListener("keydown", closeOnEscape);
-    return () => window.removeEventListener("keydown", closeOnEscape);
-  }, [menuOpen, isPinnedOpen]);
+    window.addEventListener("keydown", manageMenuFocus);
+    navigationRef.current.querySelector("a, button")?.focus();
+    return () => {
+      window.removeEventListener("keydown", manageMenuFocus);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [menuOpen]);
 
   function closeNavigation() {
     setMenuOpen(false);
-    setIsPinnedOpen(false);
   }
 
   return (
-    <header
-      className={`site-header${isCondensed ? " is-condensed" : ""}${isPinnedOpen ? " is-pinned-open" : ""}`}
-    >
+    <header className={`site-header${isCondensed ? " is-condensed" : ""}`}>
       <div className="header-inner">
         <Brand onNavigate={closeNavigation} />
-        <span aria-hidden="true" className="header-current-page">{currentPage}</span>
-        {whatsAppHref && (
-          <a
-            aria-label="Message VIP StudioS on WhatsApp"
-            className="header-whatsapp"
-            href={whatsAppHref}
-            rel="noreferrer"
-            target="_blank"
-          >
-            <MessageCircle aria-hidden="true" size={17} />
-            <span>WhatsApp</span>
-          </a>
-        )}
-        <button
-          aria-controls="primary-navigation"
-          aria-expanded={isPinnedOpen}
-          aria-label={isPinnedOpen ? "Collapse navigation" : "Keep navigation expanded"}
-          className="header-island-toggle"
-          onClick={() => setIsPinnedOpen((open) => !open)}
-          ref={islandToggleRef}
-          type="button"
-        >
-          <ChevronDown aria-hidden="true" size={17} />
-        </button>
+        <span aria-hidden="true" className="header-wordmark">VIP STUDIOS</span>
         <button
           aria-controls="primary-navigation"
           aria-expanded={menuOpen}
@@ -115,6 +97,7 @@ export default function SiteHeader() {
           aria-label="Main navigation"
           className={`primary-navigation${menuOpen ? " is-open" : ""}`}
           id="primary-navigation"
+          ref={navigationRef}
         >
           {links.map((link) => (
             <NavLink
