@@ -78,23 +78,16 @@ export const serviceOfferings = [
   },
 ];
 
-export const studioFacts = [
-  { value: "6+", label: "Years of experience" },
-  { value: "10+", label: "Creative team members" },
-  { value: "12+", label: "Active clients" },
-  { value: "1,000+", label: "Content and creative projects" },
-];
-
 export const studioReasons = [
   {
-    title: "Experience",
+    title: "Clear thinking",
     detail:
-      "Six-plus years of practical experience across video editing, content and digital media.",
+      "Start with the brief, audience and business context before deciding what to make.",
   },
   {
-    title: "A complete team",
+    title: "One coordinated partner",
     detail:
-      "More than ten people working across creative, production and digital execution.",
+      "Bring strategy, production, editing, publishing and account support into one conversation.",
   },
   {
     title: "End-to-end support",

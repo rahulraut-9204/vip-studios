@@ -8,6 +8,7 @@ import {
   TrendingUp,
   Youtube,
 } from "lucide-react";
+import { motion, useReducedMotion } from "motion/react";
 import { Link } from "react-router-dom";
 import HeroReel from "../components/HeroReel.jsx";
 import ProcessTimeline from "../components/ProcessTimeline.jsx";
@@ -15,10 +16,23 @@ import ProjectCard from "../components/ProjectCard.jsx";
 import SectionHeading from "../components/SectionHeading.jsx";
 import { getWhatsAppHref } from "../data/contact.js";
 import { projects } from "../data/projects.js";
-import { serviceOfferings, studioFacts, studioReasons } from "../data/services.js";
+import { serviceOfferings, studioReasons } from "../data/services.js";
 import usePublishedProjects from "../hooks/usePublishedProjects.js";
 
 const serviceIcons = [Instagram, Camera, Scissors, Mic2, Youtube, Clapperboard, TrendingUp, Camera];
+
+function revealProps(reduceMotion, delay = 0) {
+  return {
+    initial: reduceMotion ? false : { opacity: 0, y: 18 },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: { once: true, amount: 0.14 },
+    transition: {
+      delay: reduceMotion ? 0 : delay,
+      duration: reduceMotion ? 0 : 0.55,
+      ease: [0.22, 1, 0.36, 1],
+    },
+  };
+}
 
 const faqs = [
   {
@@ -63,6 +77,7 @@ function FaqSchema() {
 }
 
 export default function HomePage() {
+  const reduceMotion = useReducedMotion();
   const { projects: publishedProjects, isLoading, error } = usePublishedProjects();
   const featuredProjects = publishedProjects
     .filter((project) => project.featured)
@@ -77,7 +92,7 @@ export default function HomePage() {
       <FaqSchema />
       <HeroReel />
 
-      <section aria-labelledby="studio-services-title" className="vip-services" id="services">
+      <motion.section {...revealProps(reduceMotion)} aria-labelledby="studio-services-title" className="vip-services" id="services">
         <div className="vip-section-shell">
           <div className="vip-section-heading">
             <div>
@@ -97,9 +112,12 @@ export default function HomePage() {
             {serviceOfferings.map((service, index) => {
               const Icon = serviceIcons[index];
               return (
+                <motion.div
+                  {...revealProps(reduceMotion, index * 0.045)}
+                  key={service.slug}
+                >
                 <Link
                   className="vip-service-card"
-                  key={service.slug}
                   to={`/services/${service.slug}`}
                 >
                   <span className="vip-service-card-top">
@@ -112,6 +130,7 @@ export default function HomePage() {
                     Explore service <ArrowUpRight aria-hidden="true" size={15} />
                   </span>
                 </Link>
+                </motion.div>
               );
             })}
           </div>
@@ -119,9 +138,9 @@ export default function HomePage() {
             Explore all services <ArrowUpRight aria-hidden="true" size={16} />
           </Link>
         </div>
-      </section>
+      </motion.section>
 
-      <section aria-labelledby="studio-work-title" className="vip-work" id="work">
+      <motion.section {...revealProps(reduceMotion)} aria-labelledby="studio-work-title" className="vip-work" id="work">
         <div className="vip-section-shell">
           <SectionHeading
             action={
@@ -158,9 +177,9 @@ export default function HomePage() {
             ))}
           </div>
         </div>
-      </section>
+      </motion.section>
 
-      <section aria-labelledby="studio-reasons-title" className="vip-reasons" id="why-vip">
+      <motion.section {...revealProps(reduceMotion)} aria-labelledby="studio-reasons-title" className="vip-reasons" id="why-vip">
         <div className="vip-section-shell">
           <div className="vip-section-heading">
             <div>
@@ -186,9 +205,9 @@ export default function HomePage() {
             ))}
           </div>
         </div>
-      </section>
+      </motion.section>
 
-      <section aria-labelledby="studio-process-title" className="vip-process" id="process">
+      <motion.section {...revealProps(reduceMotion)} aria-labelledby="studio-process-title" className="vip-process" id="process">
         <div className="vip-section-shell">
           <div className="vip-section-heading">
             <div>
@@ -209,9 +228,9 @@ export default function HomePage() {
             See how we work <ArrowUpRight aria-hidden="true" size={16} />
           </Link>
         </div>
-      </section>
+      </motion.section>
 
-      <section aria-labelledby="studio-ecosystem-title" className="vip-ecosystem">
+      <motion.section {...revealProps(reduceMotion)} aria-labelledby="studio-ecosystem-title" className="vip-ecosystem">
         <div className="vip-section-shell vip-ecosystem-layout">
           <div className="vip-ecosystem-copy">
             <p className="vip-eyebrow">Content ecosystem</p>
@@ -245,9 +264,9 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
-      <section aria-labelledby="studio-about-title" className="vip-about" id="about">
+      <motion.section {...revealProps(reduceMotion)} aria-labelledby="studio-about-title" className="vip-about" id="about">
         <div className="vip-section-shell vip-about-layout">
           <figure className="vip-about-image">
             <img
@@ -271,19 +290,14 @@ export default function HomePage() {
               stronger online presence through content, video production, social
               media management and digital execution.
             </p>
-            <ul className="vip-about-facts">
-              {studioFacts.slice(0, 3).map((fact) => (
-                <li key={fact.label}><strong>{fact.value}</strong><span>{fact.label}</span></li>
-              ))}
-            </ul>
             <Link className="vip-secondary-link" to="/about">
               Meet the studio <ArrowUpRight aria-hidden="true" size={16} />
             </Link>
           </div>
         </div>
-      </section>
+      </motion.section>
 
-      <section aria-labelledby="studio-faq-title" className="vip-faq">
+      <motion.section {...revealProps(reduceMotion)} aria-labelledby="studio-faq-title" className="vip-faq">
         <div className="vip-section-shell vip-faq-layout">
           <div>
             <p className="vip-eyebrow">Good to know</p>
@@ -298,9 +312,9 @@ export default function HomePage() {
             ))}
           </div>
         </div>
-      </section>
+      </motion.section>
 
-      <section aria-labelledby="studio-cta-title" className="vip-cta">
+      <motion.section {...revealProps(reduceMotion)} aria-labelledby="studio-cta-title" className="vip-cta">
         <div className="vip-section-shell vip-cta-inner">
           <div>
             <p className="vip-eyebrow">Social · Video · Podcasts · YouTube</p>
@@ -322,7 +336,7 @@ export default function HomePage() {
             )}
           </div>
         </div>
-      </section>
+      </motion.section>
     </div>
   );
 }

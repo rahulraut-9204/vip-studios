@@ -20,12 +20,11 @@ export default function SiteFooter() {
     <footer className="site-footer">
       <div className="footer-main">
         <div className="footer-intro">
-          <h2>Content.<br />Creativity.<br />Growth.</h2>
+          <h2>Crafting visual<br />stories that move.</h2>
           <Link className="button button-gold" to="/contact">
             Let&apos;s grow your brand <ArrowUpRight aria-hidden="true" size={16} />
           </Link>
           <p>One partner for your digital content journey.</p>
-          <p className="footer-service-area">Working across India</p>
         </div>
         <div className="footer-group">
           <h3>Explore</h3>

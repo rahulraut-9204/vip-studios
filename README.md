@@ -1,6 +1,6 @@
 # VIP StudioS
 
-A React 19, Vite, JavaScript, and Tailwind CSS website for social strategy, video production and editing, illustrative portfolio concepts, and project enquiries. The identity is a premium black, porcelain and gold content studio, with a visible path from one idea to its possible formats.
+A React 19, Vite, JavaScript, and Tailwind CSS website for social strategy, video production and editing, illustrative portfolio concepts, and project enquiries. The identity is a premium black, white and orange content studio, with a visible path from one idea to its possible formats.
 
 ## Run locally
 

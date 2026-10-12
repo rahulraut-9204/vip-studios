@@ -15,7 +15,7 @@ export default function WorkPage() {
       activeCategory === "All"
         ? projects
         : projects.filter((project) => project.category === activeCategory),
-    [activeCategory],
+    [activeCategory, projects],
   );
 
   return (

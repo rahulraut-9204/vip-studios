@@ -62,7 +62,7 @@ function applyRouteMetadata(pathname, project, service, pendingProject = false) 
     : service
       ? {
           title: `${service.title} — VIP StudioS`,
-          description: `${service.description} Working with clients across India.`,
+          description: service.description,
         }
       : pageMetadata[normalizedPath] ?? {
           title: "Page not found — VIP StudioS",

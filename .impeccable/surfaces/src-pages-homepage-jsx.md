@@ -12,13 +12,13 @@ Homepage for VIP StudioS, a complete content, social-media, video and digital-gr
 Prospective clients need a clear view of social media management, video and podcast production, editing, YouTube management, content creation, digital growth and brand content. Lead them from the complete offer through business details and illustrative work to contact.
 
 ## Proof and content
-The hero pairs a three-line content-and-growth offer and project CTA with a selectable stock-image concept for Social, Shoot and Edit; it is explicitly not a showreel. Follow with owner-supplied business facts, eight service lines, disclosed concept studies, differentiators, a six-stage discovery-to-review process, a content ecosystem, studio introduction, concise FAQ and project enquiry. Business metrics are owner-supplied and not independently verified. Do not imply that stock images are commissioned work, client logos or results. Do not guarantee growth outcomes.
+The typographic hero pairs a clear content-and-growth offer with project and enquiry CTAs. Follow with eight service lines, disclosed concept studies, truthful differentiators, a six-stage discovery-to-review process, a content ecosystem, studio introduction, concise FAQ and project enquiry. Do not imply that stock images are commissioned work, client logos or results. Do not guarantee growth outcomes.
 
 ## Constraints
-Use an editorial sequence with carbon black, porcelain white, and signature yellow (#FFD21C); Syne headlines, DM Sans body, accessible controls, reduced-motion support, and responsive layouts. Preserve factual service descriptions, concept disclosures, enquiry behavior, SEO, and accessibility. Do not invent clients, testimonials, awards, logos or guaranteed outcomes. Email and WhatsApp come from the configured public environment variables.
+Use an editorial sequence with near-black, white, and signature orange (#FFA000); Inter throughout, accessible controls, reduced-motion support, and responsive layouts. Preserve factual service descriptions, concept disclosures, enquiry behavior, SEO, and accessibility. Do not invent clients, testimonials, awards, logos or guaranteed outcomes. Email and WhatsApp come from the configured public environment variables.
 
 ## Direction and memorable moment
-The scroll-reactive studio header contracts into a compact island, then expands on hover, keyboard focus or deliberate pin. The page follows the visitor's decision sequence: complete offer → business facts → services → clearly labeled concepts → reasons → process → ecosystem → enquiry. Yellow marks primary actions and selection; it is not a performance indicator.
+The stable studio header keeps navigation and the primary action visible, then opens a full-height mobile sheet on smaller screens. The page follows the visitor's decision sequence: complete offer → services → clearly labeled concepts → reasons → process → ecosystem → enquiry. Orange marks primary actions and selection; it is not a performance indicator.
 
 ## Unresolved decisions
 Approved showreel and commissioned portfolio assets, client permissions and logos, testimonials, team photography, exact service-specific deliverables, shoot logistics, revision/source-file policy, public prices, and any server-side enquiry endpoint or analytics provider.

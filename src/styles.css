@@ -1991,6 +1991,10 @@ img {
   transition: background-color 180ms ease;
 }
 
+.vip-service-grid > div {
+  min-width: 0;
+}
+
 .studio-service-row:hover {
   background: rgba(255, 255, 255, 0.035);
 }
@@ -5169,7 +5173,11 @@ select {
 
 @media (prefers-reduced-motion: reduce) {
   .project-detail-media-poster,
-  .project-detail-media-poster img {
+  .project-detail-media-poster img,
+  .vip-service-card,
+  .vip-inline-link,
+  .vip-secondary-link,
+  .vip-dark-link {
     transition: none;
   }
 }
@@ -5395,7 +5403,7 @@ select {
 
   .primary-navigation {
     position: fixed;
-    z-index: -1;
+    z-index: 1;
     inset: 0;
     display: flex;
     visibility: hidden;
@@ -5412,7 +5420,7 @@ select {
   }
 
   .primary-navigation.is-open {
-    z-index: -1;
+    z-index: 1;
     visibility: visible;
     opacity: 1;
     transform: translateY(0);

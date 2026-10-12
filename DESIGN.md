@@ -52,7 +52,7 @@ Inter is the single type family for display, body and controls. Display text use
 
 Use a centered `1480px` frame with fluid page gutters. Responsive thresholds are limited to `480px`, `768px`, `1024px`, `1280px` and `1536px`. On smaller screens, stack editorial compositions, preserve strong media crops, keep controls comfortably tappable and prevent horizontal overflow.
 
-The scroll-reactive header contracts into a compact island and expands on hover, focus or explicit pin. Reduced-motion users receive the same hierarchy without movement.
+The header remains a stable editorial bar with a compact mobile sheet; reduced-motion users receive the same hierarchy without movement.
 
 ## Components
 

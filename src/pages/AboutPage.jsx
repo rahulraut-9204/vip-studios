@@ -1,7 +1,7 @@
 import { ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import studioImage from "../assets/studies/studio-process.webp";
-import { studioFacts, studioReasons } from "../data/services.js";
+import { studioReasons } from "../data/services.js";
 
 export default function AboutPage() {
   return (
@@ -49,25 +49,11 @@ export default function AboutPage() {
             categories, bringing creative production and digital execution
             together under one brief.
           </p>
-          <p>
-            The figures below are business details supplied by VIP StudioS.
-            Portfolio visuals are separately labeled as illustrative concepts
-            unless commissioned work is identified.
-          </p>
           <Link className="vip-inline-link" to="/contact">
             Work with the studio <ArrowUpRight aria-hidden="true" size={16} />
           </Link>
         </div>
       </div>
-
-      <dl aria-label="VIP StudioS business details" className="vip-about-stats">
-        {studioFacts.map((fact) => (
-          <div key={fact.label}>
-            <dt>{fact.label}</dt>
-            <dd>{fact.value}</dd>
-          </div>
-        ))}
-      </dl>
 
       <section aria-labelledby="about-reasons-title" className="vip-about-reasons">
         <div className="vip-section-heading">

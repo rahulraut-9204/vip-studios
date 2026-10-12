@@ -19,13 +19,7 @@ export default function ServiceDetailPage() {
       "@type": "Organization",
       name: "VIP StudioS",
       url: "https://vip-studios.pages.dev/",
-      address: {
-        "@type": "PostalAddress",
-        addressRegion: "Maharashtra",
-        addressCountry: "IN",
-      },
     },
-    areaServed: "India",
   };
 
   return (
