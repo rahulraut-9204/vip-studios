@@ -1,339 +1,134 @@
-import {
-  ArrowUpRight,
-  Camera,
-  Clapperboard,
-  Instagram,
-  Mic2,
-  Scissors,
-  TrendingUp,
-  Youtube,
-} from "lucide-react";
+import { ArrowRight, Check, MoveUpRight } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import { Link } from "react-router-dom";
-import HeroReel from "../components/HeroReel.jsx";
-import ProcessTimeline from "../components/ProcessTimeline.jsx";
-import ProjectCard from "../components/ProjectCard.jsx";
-import SectionHeading from "../components/SectionHeading.jsx";
 import { getWhatsAppHref } from "../data/contact.js";
-import { projects } from "../data/projects.js";
-import { serviceOfferings, studioReasons } from "../data/services.js";
+import { projects as conceptProjects } from "../data/projects.js";
+import { contentJourney, serviceOfferings } from "../data/services.js";
+import ProjectCard from "../components/ProjectCard.jsx";
 import usePublishedProjects from "../hooks/usePublishedProjects.js";
 
-const serviceIcons = [Instagram, Camera, Scissors, Mic2, Youtube, Clapperboard, TrendingUp, Camera];
-
-function revealProps(reduceMotion, delay = 0) {
-  return {
-    initial: reduceMotion ? false : { opacity: 0, y: 18 },
-    whileInView: { opacity: 1, y: 0 },
-    viewport: { once: true, amount: 0.14 },
-    transition: {
-      delay: reduceMotion ? 0 : delay,
-      duration: reduceMotion ? 0 : 0.55,
-      ease: [0.22, 1, 0.36, 1],
-    },
-  };
-}
-
-const faqs = [
-  {
-    question: "What can VIP StudioS help with?",
-    answer:
-      "Social media management, video production and editing, podcast production, YouTube management, content creation, digital growth and brand content.",
-  },
-  {
-    question: "Can I book only one service?",
-    answer:
-      "Yes. Start with the service you need, or tell us about a wider project. The scope and deliverables are agreed before work begins.",
-  },
-  {
-    question: "Do you guarantee audience or business growth?",
-    answer:
-      "No specific audience, reach or business result can be guaranteed. Strategy and content are shaped around your goals, and available performance information can guide future work.",
-  },
-  {
-    question: "How do I get started?",
-    answer:
-      "Share a short project brief by email or WhatsApp. The enquiry form opens an email draft for you to review and send; this website does not store or submit the details.",
-  },
+const routeOptions = [
+  { eyebrow: "01 / Make", title: "I need a film, edit or campaign.", service: "Video Editing", tone: "coral" },
+  { eyebrow: "02 / Build", title: "I need a consistent content system.", service: "Content Creation", tone: "lavender" },
+  { eyebrow: "03 / Grow", title: "I need a stronger digital presence.", service: "Digital Growth", tone: "mint" },
 ];
 
-function FaqSchema() {
-  const schema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: faqs.map(({ question, answer }) => ({
-      "@type": "Question",
-      name: question,
-      acceptedAnswer: { "@type": "Answer", text: answer },
-    })),
+function reveal(reduceMotion, delay = 0) {
+  return {
+    initial: reduceMotion ? false : { opacity: 0, y: 24 },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: { once: true, amount: 0.16 },
+    transition: { delay: reduceMotion ? 0 : delay, duration: reduceMotion ? 0 : 0.55, ease: [0.22, 1, 0.36, 1] },
   };
-
-  return (
-    <script
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-      type="application/ld+json"
-    />
-  );
 }
 
 export default function HomePage() {
   const reduceMotion = useReducedMotion();
-  const { projects: publishedProjects, isLoading, error } = usePublishedProjects();
-  const featuredProjects = publishedProjects
-    .filter((project) => project.featured)
-    .slice(0, 3);
-  const homeProjects = (featuredProjects.length > 0 ? featuredProjects : publishedProjects).slice(0, 3);
-  const whatsAppHref = getWhatsAppHref(
-    "Hi VIP StudioS, I'd like to discuss a content or digital project.",
-  );
+  const { projects, isLoading, error } = usePublishedProjects();
+  const work = (projects.length ? projects : conceptProjects).slice(0, 3);
+  const whatsapp = getWhatsAppHref("Hi VIP StudioS, I have a content project to discuss.");
 
   return (
-    <div className="vip-home">
-      <FaqSchema />
-      <HeroReel />
-
-      <motion.section {...revealProps(reduceMotion)} aria-labelledby="studio-services-title" className="vip-services" id="services">
-        <div className="vip-section-shell">
-          <div className="vip-section-heading">
-            <div>
-              <p className="vip-eyebrow">What we do</p>
-              <h2 id="studio-services-title">
-                Strategy, production
-                <br />
-                <span>and sharp execution.</span>
-              </h2>
+    <div className="new-home">
+      <section className="new-hero" aria-labelledby="new-home-title">
+        <div className="new-hero-grid">
+          <div className="new-hero-copy">
+            <motion.p className="new-kicker" {...reveal(reduceMotion)}>VIP STUDIOS / CREATIVE PARTNER</motion.p>
+            <motion.h1 id="new-home-title" {...reveal(reduceMotion, .06)}>
+              Make your next
+              <span>frame matter.</span>
+            </motion.h1>
+            <motion.p className="new-hero-lede" {...reveal(reduceMotion, .12)}>
+              Video, content and digital support for brands that want their
+              ideas to land with clarity.
+            </motion.p>
+            <motion.div className="new-hero-actions" {...reveal(reduceMotion, .18)}>
+              <Link className="new-button new-button-dark" to="/contact">Start with a brief <ArrowRight aria-hidden="true" size={16} /></Link>
+              <Link className="new-text-link" to="/work">See selected work <MoveUpRight aria-hidden="true" size={16} /></Link>
+            </motion.div>
+          </div>
+          <motion.div className="new-hero-art" {...reveal(reduceMotion, .1)}>
+            <div className="new-hero-number">01</div>
+            <div className="new-hero-image new-hero-image-main">
+              <img alt={work[0].imageAlt} height="1000" src={work[0].image} width="1200" />
             </div>
-            <p>
-              From a single edit to an ongoing content system, we shape the
-              right creative support around the brief.
-            </p>
-          </div>
-          <div className="vip-service-grid">
-            {serviceOfferings.map((service, index) => {
-              const Icon = serviceIcons[index];
-              return (
-                <motion.div
-                  {...revealProps(reduceMotion, index * 0.045)}
-                  key={service.slug}
-                >
-                <Link
-                  className="vip-service-card"
-                  to={`/services/${service.slug}`}
-                >
-                  <span className="vip-service-card-top">
-                    <span>{String(index + 1).padStart(2, "0")}</span>
-                    <Icon aria-hidden="true" size={19} />
-                  </span>
-                  <h3>{service.title}</h3>
-                  <p>{service.shortDescription}</p>
-                  <span className="vip-service-link">
-                    Explore service <ArrowUpRight aria-hidden="true" size={15} />
-                  </span>
-                </Link>
-                </motion.div>
-              );
-            })}
-          </div>
-          <Link className="vip-inline-link" to="/services">
-            Explore all services <ArrowUpRight aria-hidden="true" size={16} />
-          </Link>
-        </div>
-      </motion.section>
-
-      <motion.section {...revealProps(reduceMotion)} aria-labelledby="studio-work-title" className="vip-work" id="work">
-        <div className="vip-section-shell">
-          <SectionHeading
-            action={
-              <Link className="vip-inline-link" to="/work">
-                View all work <ArrowUpRight aria-hidden="true" size={16} />
-              </Link>
-            }
-            detail="A growing library of selected work and clearly labelled concept studies."
-            id="studio-work-title"
-            title="Make the work the first conversation."
-          />
-          <p className="vip-section-intro">
-            Open a project to see the thinking, role and available proof.
-          </p>
-          {error && (
-            <p className="studio-content-error" role="alert">
-              Project work could not be loaded: {error}
-            </p>
-          )}
-          {isLoading && (
-            <p aria-live="polite" className="studio-content-loading">
-              Loading project work…
-            </p>
-          )}
-          {!isLoading && !error && homeProjects.length === 0 && (
-            <p className="studio-content-empty">
-              There are no published projects yet.{" "}
-              <Link to="/contact">Tell us about your project.</Link>
-            </p>
-          )}
-          <div className="vip-work-grid">
-            {homeProjects.map((project, index) => (
-              <ProjectCard index={index} key={project.slug} project={project} />
-            ))}
-          </div>
-        </div>
-      </motion.section>
-
-      <motion.section {...revealProps(reduceMotion)} aria-labelledby="studio-reasons-title" className="vip-reasons" id="why-vip">
-        <div className="vip-section-shell">
-          <div className="vip-section-heading">
-            <div>
-              <p className="vip-eyebrow">Why VIP StudioS</p>
-              <h2 id="studio-reasons-title">
-                One team.
-                <br />
-                <span>A wider view.</span>
-              </h2>
+            <div className="new-hero-image new-hero-image-small">
+              <img alt={work[1]?.imageAlt || work[0].imageAlt} height="800" loading="lazy" src={work[1]?.image || work[0].image} width="900" />
             </div>
-            <p>
-              Creative thinking and consistent execution, coordinated around
-              the goals and requirements of your business.
-            </p>
-          </div>
-          <div className="vip-reasons-grid">
-            {studioReasons.map((reason, index) => (
-              <article className="vip-reason" key={reason.title}>
-                <span>{String(index + 1).padStart(2, "0")}</span>
-                <h3>{reason.title}</h3>
-                <p>{reason.detail}</p>
-              </article>
-            ))}
-          </div>
+            <span className="new-hero-sticker">Ideas<br />into motion.</span>
+          </motion.div>
         </div>
-      </motion.section>
-
-      <motion.section {...revealProps(reduceMotion)} aria-labelledby="studio-process-title" className="vip-process" id="process">
-        <div className="vip-section-shell">
-          <div className="vip-section-heading">
-            <div>
-              <p className="vip-eyebrow">The process</p>
-              <h2 id="studio-process-title">
-                From idea
-                <br />
-                <span>to the next idea.</span>
-              </h2>
-            </div>
-            <p>
-              A clear route from discovery to delivery, with scope and review
-              stages agreed before production begins.
-            </p>
-          </div>
-          <ProcessTimeline />
-          <Link className="vip-inline-link" to="/process">
-            See how we work <ArrowUpRight aria-hidden="true" size={16} />
-          </Link>
+        <div className="new-hero-bottom">
+          <span>Scroll to choose your route</span>
+          <span className="new-hero-rule" />
+          <span>Social / Video / Digital</span>
         </div>
-      </motion.section>
+      </section>
 
-      <motion.section {...revealProps(reduceMotion)} aria-labelledby="studio-ecosystem-title" className="vip-ecosystem">
-        <div className="vip-section-shell vip-ecosystem-layout">
-          <div className="vip-ecosystem-copy">
-            <p className="vip-eyebrow">Content ecosystem</p>
-            <h2 id="studio-ecosystem-title">
-              One team.
-              <br />
-              <span>Every format in view.</span>
-            </h2>
-            <p>
-              Plan the message, create for the right formats, then coordinate
-              publishing and account management where they are part of the brief.
-            </p>
-            <Link className="vip-inline-link" to="/services">
-              Find the right support <ArrowUpRight aria-hidden="true" size={16} />
-            </Link>
-          </div>
-          <div aria-label="Content planned, produced and managed across formats" className="vip-ecosystem-flow">
-            <div className="vip-ecosystem-stage">
-              <span>Plan</span>
-              <div><b>Strategy</b><b>Content</b><b>Branding</b></div>
-            </div>
-            <div aria-hidden="true" className="vip-ecosystem-connector">→</div>
-            <div className="vip-ecosystem-stage">
-              <span>Produce</span>
-              <div><b>Video</b><b>Reels</b><b>Podcasts</b></div>
-            </div>
-            <div aria-hidden="true" className="vip-ecosystem-connector">→</div>
-            <div className="vip-ecosystem-stage">
-              <span>Publish &amp; manage</span>
-              <div><b>Instagram</b><b>Facebook</b><b>YouTube</b></div>
-            </div>
-          </div>
-        </div>
-      </motion.section>
-
-      <motion.section {...revealProps(reduceMotion)} aria-labelledby="studio-about-title" className="vip-about" id="about">
-        <div className="vip-section-shell vip-about-layout">
-          <figure className="vip-about-image">
-            <img
-              alt="Illustrative stock image of a video-production workspace, not a VIP StudioS team photograph"
-              height="1000"
-              loading="lazy"
-              src={projects[3].image}
-              width="1200"
-            />
-            <figcaption>Illustrative stock image · not a VIP StudioS team photograph</figcaption>
-          </figure>
-          <div className="vip-about-copy">
-            <p className="vip-eyebrow">About the studio</p>
-            <h2 id="studio-about-title">
-              We&apos;re not just
-              <br />
-              <span>content creators.</span>
-            </h2>
-            <p>
-              We are a creative and digital team helping businesses build a
-              stronger online presence through content, video production, social
-              media management and digital execution.
-            </p>
-            <Link className="vip-secondary-link" to="/about">
-              Meet the studio <ArrowUpRight aria-hidden="true" size={16} />
-            </Link>
-          </div>
-        </div>
-      </motion.section>
-
-      <motion.section {...revealProps(reduceMotion)} aria-labelledby="studio-faq-title" className="vip-faq">
-        <div className="vip-section-shell vip-faq-layout">
+      <motion.section className="new-route-section" aria-labelledby="route-title" {...reveal(reduceMotion)}>
+        <div className="new-section-head">
           <div>
-            <p className="vip-eyebrow">Good to know</p>
-            <h2 id="studio-faq-title">A few things<br /><span>before we start.</span></h2>
+            <p className="new-kicker">Start where the need is</p>
+            <h2 id="route-title">What are you<br /><em>trying to make happen?</em></h2>
           </div>
-          <div className="vip-faq-list">
-            {faqs.map(({ question, answer }) => (
-              <details key={question}>
-                <summary>{question}<span aria-hidden="true">+</span></summary>
-                <p>{answer}</p>
-              </details>
-            ))}
-          </div>
+          <p>Choose the closest fit. Your enquiry can still cover more than one service.</p>
+        </div>
+        <div className="new-route-grid">
+          {routeOptions.map((route) => (
+            <Link className={`new-route-card new-route-card-${route.tone}`} key={route.service} to={`/contact?service=${encodeURIComponent(route.service)}`}>
+              <span>{route.eyebrow}</span>
+              <h3>{route.title}</h3>
+              <span className="new-route-arrow"><ArrowRight aria-hidden="true" size={18} /></span>
+            </Link>
+          ))}
         </div>
       </motion.section>
 
-      <motion.section {...revealProps(reduceMotion)} aria-labelledby="studio-cta-title" className="vip-cta">
-        <div className="vip-section-shell vip-cta-inner">
+      <motion.section className="new-work-section" aria-labelledby="new-work-title" {...reveal(reduceMotion)}>
+        <div className="new-section-head new-section-head-work">
           <div>
-            <p className="vip-eyebrow">Social · Video · Podcasts · YouTube</p>
-            <h2 id="studio-cta-title">
-              Ready to grow
-              <br />
-              your <span>brand?</span>
-            </h2>
-            <p>Let&apos;s turn your ideas into content with a clear next step.</p>
+            <p className="new-kicker">Proof, not promises</p>
+            <h2 id="new-work-title">A few frames<br /><em>from the studio.</em></h2>
           </div>
-          <div className="vip-cta-actions">
-            <Link className="button button-dark" to="/contact">
-              Start a project <ArrowUpRight aria-hidden="true" size={17} />
-            </Link>
-            {whatsAppHref && (
-              <a className="vip-dark-link" href={whatsAppHref} rel="noreferrer" target="_blank">
-                Message us on WhatsApp <ArrowUpRight aria-hidden="true" size={16} />
-              </a>
-            )}
+          <Link className="new-text-link" to="/work">Open the full library <MoveUpRight aria-hidden="true" size={16} /></Link>
+        </div>
+        {error && <p className="studio-content-error" role="alert">Project work could not be loaded: {error}</p>}
+        {isLoading && <p aria-live="polite" className="studio-content-loading">Loading project work…</p>}
+        {!isLoading && <div className="new-work-grid">{work.map((project, index) => <ProjectCard key={project.slug} index={index} project={project} />)}</div>}
+      </motion.section>
+
+      <motion.section className="new-system-section" aria-labelledby="system-title" {...reveal(reduceMotion)}>
+        <div className="new-system-intro">
+          <p className="new-kicker">The operating idea</p>
+          <h2 id="system-title">One clear story.<br /><em>Many useful outputs.</em></h2>
+          <p>We help connect the thinking, making and follow-through so every piece of content has a job to do.</p>
+          <Link className="new-button new-button-light" to="/services">Explore the services <ArrowRight aria-hidden="true" size={16} /></Link>
+        </div>
+        <ol className="new-system-list">
+          {contentJourney.slice(0, 4).map((step, index) => (
+            <li key={step.label}>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <div><h3>{step.label}</h3><p>{step.detail}</p></div>
+              <Check aria-hidden="true" size={18} />
+            </li>
+          ))}
+        </ol>
+      </motion.section>
+
+      <motion.section className="new-proof-section" aria-labelledby="proof-title" {...reveal(reduceMotion)}>
+        <div className="new-proof-card">
+          <div>
+            <p className="new-kicker">A better first conversation</p>
+            <h2 id="proof-title">Bring the rough idea.<br /><em>Leave with a next step.</em></h2>
+          </div>
+          <div className="new-proof-points">
+            <p><Check aria-hidden="true" size={17} /> No fixed package required</p>
+            <p><Check aria-hidden="true" size={17} /> Scope agreed before work begins</p>
+            <p><Check aria-hidden="true" size={17} /> Email draft or WhatsApp, your choice</p>
+          </div>
+          <div className="new-proof-actions">
+            <Link className="new-button new-button-dark" to="/contact">Build your brief <ArrowRight aria-hidden="true" size={16} /></Link>
+            {whatsapp && <a className="new-text-link" href={whatsapp} rel="noreferrer" target="_blank">Open WhatsApp <MoveUpRight aria-hidden="true" size={16} /></a>}
           </div>
         </div>
       </motion.section>

@@ -1,6 +1,7 @@
 import { motion, useReducedMotion } from "motion/react";
 import { ArrowDown, ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import { projects } from "../data/projects.js";
 
 export default function HeroReel() {
   const reduceMotion = useReducedMotion();
@@ -58,6 +59,26 @@ export default function HeroReel() {
       <a className="vip-scroll-cue" href="#services">
         Scroll to explore <ArrowDown aria-hidden="true" size={14} />
       </a>
+      <div className="hero-media-composition" aria-label="Selected visual studies">
+        <div className="hero-media-main">
+          <img
+            alt={projects[0].imageAlt}
+            height="900"
+            src={projects[0].image}
+            width="1400"
+          />
+        </div>
+        <div className="hero-media-secondary">
+          <img
+            alt={projects[2].imageAlt}
+            height="900"
+            loading="lazy"
+            src={projects[2].image}
+            width="1400"
+          />
+        </div>
+        <div className="hero-media-tag">Ideas in. Better stories out.</div>
+      </div>
     </section>
   );
 }
