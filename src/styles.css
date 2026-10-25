@@ -1863,13 +1863,17 @@ p {
 }
 
 /* ==========================================================================
-   Admin Dashboard Styles
+   Admin Dashboard Styles — Obsidian Cinema Console & Vibrant Color System
    ========================================================================== */
 
 .studio-admin {
   min-height: 100vh;
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
+  background-color: #0B0914;
+  background-image: 
+    radial-gradient(circle at 12% 15%, rgba(99, 91, 255, 0.15) 0%, transparent 45%),
+    radial-gradient(circle at 88% 85%, rgba(255, 77, 45, 0.12) 0%, transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(0, 229, 153, 0.05) 0%, transparent 60%);
+  color: #F8F7FC;
   padding: 2rem var(--page-pad);
 }
 
@@ -1884,16 +1888,19 @@ p {
   align-items: center;
   padding-bottom: 1.5rem;
   margin-bottom: 2rem;
-  border-bottom: 1px solid var(--border-subtle);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .studio-admin-header h1 {
   font-size: 2.2rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  letter-spacing: -0.02em;
   margin: 0;
 }
 
 .studio-admin-header p {
-  color: var(--text-secondary);
+  color: #A59FFF;
   margin: 0.25rem 0 0;
 }
 
@@ -1907,23 +1914,31 @@ p {
 .studio-admin-signout {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.5rem;
   font-family: var(--font-display);
   font-size: 0.85rem;
-  font-weight: 600;
-  padding: 0.55rem 1rem;
+  font-weight: 700;
+  padding: 0.6rem 1.15rem;
   border-radius: var(--radius-pill);
-  border: 1px solid var(--border-subtle);
-  background: var(--bg-surface);
-  color: var(--text-primary);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: #FFFFFF;
   text-decoration: none;
   transition: all var(--motion-fast) ease;
 }
 
-.studio-admin-back:hover,
+.studio-admin-back:hover {
+  border-color: #635BFF;
+  background: rgba(99, 91, 255, 0.25);
+  box-shadow: 0 0 16px rgba(99, 91, 255, 0.35);
+  color: #FFFFFF;
+}
+
 .studio-admin-signout:hover {
-  border-color: var(--border-medium);
-  background: var(--bg-secondary);
+  border-color: #FF4D2D;
+  background: rgba(255, 77, 45, 0.25);
+  box-shadow: 0 0 16px rgba(255, 77, 45, 0.35);
+  color: #FFFFFF;
 }
 
 .studio-admin-stats {
@@ -1934,36 +1949,42 @@ p {
 }
 
 .studio-admin-stats > div {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
+  background: #141122;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1.25rem;
   padding: 1.5rem;
-  box-shadow: var(--shadow-subtle);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  transition: transform var(--motion-fast) ease, box-shadow var(--motion-fast) ease;
+}
+
+.studio-admin-stats > div:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
 }
 
 .studio-admin-stats strong {
   display: block;
   font-family: var(--font-display);
-  font-size: 2.2rem;
-  font-weight: 700;
-  color: var(--text-primary);
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: #FFFFFF;
   line-height: 1;
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.5rem;
 }
 
 .studio-admin-stats span {
   font-family: var(--font-display);
   font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--text-secondary);
+  font-weight: 700;
+  color: #A59FFF;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
 }
 
 .studio-admin-layout {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2.5rem;
+  grid-template-columns: 380px 1fr;
+  gap: 2rem;
   align-items: flex-start;
 }
 
@@ -1971,11 +1992,11 @@ p {
 .studio-admin-form,
 .studio-admin-card,
 .studio-admin-enquiries {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
+  background: #141122;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1.5rem;
   padding: 2rem;
-  box-shadow: var(--shadow-card);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
 }
 
 .studio-admin-list-heading {
@@ -1987,12 +2008,15 @@ p {
 
 .studio-admin-list-heading h2 {
   font-size: 1.5rem;
+  font-weight: 800;
+  color: #FFFFFF;
   margin: 0;
 }
 
 .studio-admin-list-heading h2 span {
   font-size: 1rem;
-  color: var(--text-muted);
+  color: #A59FFF;
+  font-weight: 600;
 }
 
 .studio-admin-items {
@@ -2007,14 +2031,14 @@ p {
   justify-content: space-between;
   padding: 1rem;
   border-radius: var(--radius-sm);
-  border: 1px solid var(--border-subtle);
-  background: var(--bg-primary);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #181428;
   gap: 1rem;
 }
 
 .studio-admin-item.is-editing {
-  border-color: var(--color-coral);
-  background: #FFF8F6;
+  border-color: #FF4D2D;
+  background: rgba(255, 77, 45, 0.15);
 }
 
 .studio-admin-item-info {
@@ -2024,12 +2048,12 @@ p {
 
 .studio-admin-item-info strong {
   font-size: 1rem;
-  color: var(--text-primary);
+  color: #FFFFFF;
 }
 
 .studio-admin-item-info span {
   font-size: 0.8rem;
-  color: var(--text-secondary);
+  color: #A59FFF;
 }
 
 .studio-admin-badge {
@@ -2043,13 +2067,15 @@ p {
 }
 
 .studio-admin-badge.is-published {
-  background: var(--color-mint);
-  color: var(--color-mint-text);
+  background: rgba(0, 229, 153, 0.2);
+  color: #00E599;
+  border: 1px solid rgba(0, 229, 153, 0.4);
 }
 
 .studio-admin-badge.is-draft {
-  background: var(--border-subtle);
-  color: var(--text-secondary);
+  background: rgba(255, 184, 0, 0.2);
+  color: #FFB800;
+  border: 1px solid rgba(255, 184, 0, 0.4);
 }
 
 /* Enquiries Inbox in Admin */
@@ -2065,10 +2091,10 @@ p {
 }
 
 .studio-admin-enquiry {
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-sm);
-  padding: 1.25rem;
-  background: var(--bg-primary);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  background: #181428;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -2077,19 +2103,19 @@ p {
 
 .studio-admin-enquiry strong {
   display: block;
-  font-size: 1.05rem;
-  color: var(--text-primary);
+  font-size: 1.15rem;
+  color: #FFFFFF;
 }
 
 .studio-admin-enquiry span {
   font-size: 0.8rem;
-  color: var(--color-periwinkle);
+  color: #A59FFF;
   font-weight: 600;
 }
 
 .studio-admin-enquiry p {
   font-size: 0.92rem;
-  color: var(--text-secondary);
+  color: #E2DFED;
   margin-top: 0.6rem;
   margin-bottom: 0;
 }
@@ -2102,45 +2128,55 @@ p {
 }
 
 .studio-admin-enquiry-actions a {
-  padding: 0.4rem 0.8rem;
+  padding: 0.5rem 1rem;
   border-radius: var(--radius-pill);
   font-size: 0.8rem;
-  font-weight: 600;
-  background: var(--bg-secondary);
-  color: var(--text-primary);
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.08);
+  color: #FFFFFF;
 }
 
 .studio-admin-enquiry-actions select {
-  padding: 0.4rem 0.8rem;
+  padding: 0.5rem 1rem;
   border-radius: var(--radius-pill);
   font-size: 0.8rem;
-  font-weight: 600;
-  border: 1px solid var(--border-subtle);
-  background: #FFFFFF;
+  font-weight: 700;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: #0E0C18;
+  color: #FFFFFF;
 }
 
 /* Admin Form Controls */
 .studio-admin-form label {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 0.45rem;
   font-family: var(--font-display);
   font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--text-primary);
+  font-weight: 700;
+  color: #E2DFED;
   margin-bottom: 1.2rem;
 }
 
 .studio-admin-form input,
 .studio-admin-form select,
 .studio-admin-form textarea {
-  padding: 0.75rem 1rem;
-  border-radius: var(--radius-sm);
-  border: 1.5px solid var(--border-subtle);
-  background: var(--bg-primary);
+  padding: 0.85rem 1rem;
+  border-radius: 0.75rem;
+  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  background: #0E0C18;
   font-family: var(--font-body);
-  font-size: 0.92rem;
-  color: var(--text-primary);
+  font-size: 0.95rem;
+  color: #FFFFFF;
+  transition: border-color var(--motion-fast) ease, box-shadow var(--motion-fast) ease;
+}
+
+.studio-admin-form input:focus,
+.studio-admin-form select:focus,
+.studio-admin-form textarea:focus {
+  outline: none;
+  border-color: #635BFF;
+  box-shadow: 0 0 0 3px rgba(99, 91, 255, 0.25);
 }
 
 .studio-admin-checks {
@@ -2154,6 +2190,114 @@ p {
   align-items: center;
   gap: 0.6rem;
   cursor: pointer;
+  color: #E2DFED;
+  font-size: 0.9rem;
+}
+
+.studio-admin-upload {
+  display: flex;
+  flex-direction: column;
+  padding: 1.75rem;
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+  border-radius: 1rem;
+  text-align: center;
+  cursor: pointer;
+  background: #0E0C18;
+  transition: all var(--motion-fast) ease;
+}
+
+.studio-admin-upload:hover {
+  border-color: #FF4D2D;
+  background: rgba(255, 77, 45, 0.08);
+}
+
+.studio-admin-upload span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.studio-admin-upload input[type="file"] {
+  display: none;
+}
+
+.studio-admin-preview {
+  width: 100%;
+  max-height: 240px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  margin-block: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.studio-admin-feedback {
+  padding: 0.85rem 1.25rem;
+  border-radius: 0.85rem;
+  background: rgba(99, 91, 255, 0.15);
+  border: 1px solid rgba(99, 91, 255, 0.4);
+  color: #C5C1FF;
+  font-size: 0.9rem;
+  font-family: var(--font-display);
+  margin-block: 1.2rem;
+}
+
+.studio-admin-cancel {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.85rem 1.5rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.06);
+  color: #C0BDCC;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--motion-fast) ease;
+}
+
+.studio-admin-cancel:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.studio-admin-delete {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.85rem 1.5rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(255, 77, 77, 0.35);
+  background: rgba(255, 77, 77, 0.12);
+  color: #FF4D4F;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--motion-fast) ease;
+  margin-left: auto;
+}
+
+.studio-admin-delete:hover {
+  background: #FF4D4F;
+  color: #FFFFFF;
+  box-shadow: 0 0 20px rgba(255, 77, 79, 0.4);
+}
+
+.studio-admin-loading {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0B0914;
+  color: #A59FFF;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 600;
 }
 
 /* ==========================================================================
@@ -2445,167 +2589,7 @@ p {
   color: var(--color-coral);
 }
 
-.studio-admin-project {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  width: 100%;
-  padding: 0.85rem 1rem;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border-subtle);
-  background: var(--bg-primary);
-  text-align: left;
-  transition: all var(--motion-fast) ease;
-  margin-bottom: 0.5rem;
-  cursor: pointer;
-}
 
-.studio-admin-project:hover {
-  border-color: var(--border-medium);
-  background: var(--bg-surface);
-}
-
-.studio-admin-project.is-active {
-  border-color: var(--color-coral);
-  background: #FFF8F6;
-}
-
-.studio-admin-project span {
-  font-family: var(--font-display);
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.studio-admin-project small {
-  font-size: 0.75rem;
-  color: var(--text-secondary);
-  text-transform: capitalize;
-}
-
-.studio-admin-icon-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 34px;
-  height: 34px;
-  border-radius: 8px;
-  border: 1px solid var(--border-subtle);
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  cursor: pointer;
-  transition: all var(--motion-fast) ease;
-}
-
-.studio-admin-icon-button:hover {
-  border-color: var(--border-medium);
-  background: var(--bg-surface);
-  color: var(--color-coral);
-}
-
-.studio-admin-field-pair {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.25rem;
-}
-
-.studio-admin-cancel {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.75rem 1.4rem;
-  border-radius: var(--radius-pill);
-  border: 1px solid var(--border-subtle);
-  background: var(--bg-surface);
-  color: var(--text-secondary);
-  font-family: var(--font-display);
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all var(--motion-fast) ease;
-}
-
-.studio-admin-cancel:hover {
-  border-color: var(--border-medium);
-  color: var(--text-primary);
-}
-
-.studio-admin-delete {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.75rem 1.4rem;
-  border-radius: var(--radius-pill);
-  border: 1px solid #FFCCC7;
-  background: #FFF1F0;
-  color: #CF1322;
-  font-family: var(--font-display);
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all var(--motion-fast) ease;
-  margin-left: auto;
-}
-
-.studio-admin-delete:hover {
-  background: #FF4D4F;
-  color: #FFFFFF;
-}
-
-.studio-admin-hint {
-  font-size: 0.78rem;
-  color: var(--text-muted);
-  margin-top: -0.6rem;
-  margin-bottom: 1.2rem;
-}
-
-.studio-admin-upload {
-  display: flex;
-  flex-direction: column;
-  padding: 1.5rem;
-  border: 2px dashed var(--border-medium);
-  border-radius: var(--radius-md);
-  text-align: center;
-  cursor: pointer;
-  background: var(--bg-primary);
-  transition: all var(--motion-fast) ease;
-}
-
-.studio-admin-upload:hover {
-  border-color: var(--color-coral);
-  background: #FFF8F6;
-}
-
-.studio-admin-upload span {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  font-family: var(--font-display);
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.studio-admin-upload input[type="file"] {
-  display: none;
-}
-
-.studio-admin-preview {
-  width: 100%;
-  max-height: 240px;
-  object-fit: cover;
-  border-radius: var(--radius-sm);
-  margin-block: 1rem;
-  border: 1px solid var(--border-subtle);
-}
-
-.studio-admin-feedback {
-  padding: 0.75rem 1rem;
-  border-radius: var(--radius-sm);
-  background: #E6F7FF;
-  border: 1px solid #91D5FF;
-  color: #0050B3;
-  font-size: 0.88rem;
-  margin-block: 1rem;
-}
 
 /* ==========================================================================
    Responsive Adaptations
