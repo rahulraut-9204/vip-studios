@@ -3,9 +3,12 @@ import { ArrowUpRight, Play, Volume2, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
   getDirectVideoUrl,
+  getInstagramEmbedUrl,
+  getInstagramReelId,
   getInstagramUrl,
   getMediaPlatformLabel,
   getYouTubeId,
+  isYouTubeShort,
 } from "../data/media.js";
 import { getFallbackImage } from "../data/fallbackImages.js";
 import { AspectPill, AudioEqualizer, RecIndicator, TimecodeBadge } from "./StudioGraphics.jsx";
@@ -29,9 +32,11 @@ export default function CinemaModal({ project, isOpen, onClose }) {
   if (!isOpen || !project) return null;
 
   const youtubeId = getYouTubeId(project.videoUrl);
+  const isShort = isYouTubeShort(project.videoUrl);
+  const instagramReelId = getInstagramReelId(project.videoUrl);
   const directVideoUrl = getDirectVideoUrl(project.videoUrl);
   const instagramUrl = getInstagramUrl(project.videoUrl);
-  const isVertical = project.category === "Reels & Short-form";
+  const isVertical = isShort || Boolean(instagramReelId) || project.category === "Reels & Short-form";
   const fallback = getFallbackImage(project.slug);
 
   return (
@@ -75,15 +80,26 @@ export default function CinemaModal({ project, isOpen, onClose }) {
         </div>
 
         {/* Video Viewport Stage */}
-        <div className="relative bg-black flex items-center justify-center overflow-hidden flex-1 min-h-[300px] sm:min-h-[440px]">
+        <div className="relative bg-black flex items-center justify-center overflow-hidden flex-1 min-h-[320px] sm:min-h-[460px] p-2 sm:p-4">
           {youtubeId ? (
-            <div className={`w-full h-full ${isVertical ? "max-w-[340px] aspect-[9/16]" : "aspect-video"}`}>
+            <div className={`w-full h-full flex items-center justify-center ${isVertical ? "max-w-[340px] aspect-[9/16]" : "aspect-video max-w-full"}`}>
               <iframe
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen
-                className="w-full h-full border-0"
+                className="w-full h-full border-0 rounded-xl shadow-2xl"
                 loading="eager"
                 src={`https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=1&rel=0&modestbranding=1`}
+                title={project.title}
+              />
+            </div>
+          ) : instagramReelId ? (
+            <div className="w-full h-full max-w-[340px] aspect-[9/16] flex items-center justify-center">
+              <iframe
+                allow="encrypted-media"
+                allowTransparency
+                className="w-full h-full border-0 rounded-xl shadow-2xl bg-black"
+                loading="eager"
+                src={`https://www.instagram.com/reel/${instagramReelId}/embed/`}
                 title={project.title}
               />
             </div>
@@ -159,7 +175,7 @@ export default function CinemaModal({ project, isOpen, onClose }) {
               onClick={onClose}
               to={`/work/${project.slug}`}
             >
-              Full Case Study <ArrowUpRight size={14} />
+              Full Details <ArrowUpRight size={14} />
             </Link>
             <Link
               className="button button-small button-gold text-xs font-mono font-bold"

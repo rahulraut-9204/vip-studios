@@ -6,11 +6,13 @@ import NotFoundPage from "./NotFoundPage.jsx";
 import ProjectCard from "../components/ProjectCard.jsx";
 import {
   getDirectVideoUrl,
+  getInstagramReelId,
   getInstagramUrl,
   getMediaPlatformLabel,
   getSafeExternalUrl,
   getYouTubeId,
   getYouTubeThumbnail,
+  isYouTubeShort,
 } from "../data/media.js";
 import { getFallbackImage } from "../data/fallbackImages.js";
 import usePublishedProjects from "../hooks/usePublishedProjects.js";
@@ -45,10 +47,12 @@ export default function ProjectPage() {
 
   const fallback = getFallbackImage(project.slug);
   const youtubeId = getYouTubeId(project.videoUrl);
+  const isShort = isYouTubeShort(project.videoUrl);
+  const instagramReelId = getInstagramReelId(project.videoUrl);
   const directVideoUrl = getDirectVideoUrl(project.videoUrl);
   const instagramUrl = getInstagramUrl(project.videoUrl);
   const externalMediaUrl = getSafeExternalUrl(project.videoUrl);
-  const hasPlayableMedia = Boolean(youtubeId || directVideoUrl);
+  const hasPlayableMedia = Boolean(youtubeId || instagramReelId || directVideoUrl);
   const mediaPoster = project.image || (youtubeId ? getYouTubeThumbnail(project.videoUrl) : fallback);
   const hasImage = Boolean(mediaPoster);
   const mediaAlt = project.imageAlt || `${project.title} project still`;
@@ -61,7 +65,7 @@ export default function ProjectPage() {
       ? relatedProjects
       : projects.filter((item) => item.slug !== project.slug).slice(0, 3);
 
-  const isVertical = project.category === "Reels & Short-form";
+  const isVertical = isShort || Boolean(instagramReelId) || project.category === "Reels & Short-form";
 
   return (
     <motion.article
@@ -115,16 +119,27 @@ export default function ProjectPage() {
 
       {/* Main Cinema Viewport Presentation */}
       {(hasImage || hasPlayableMedia) && (
-        <section aria-label="Project media presentation" className="relative my-8 rounded-2xl overflow-hidden bg-[#19162B] shadow-2xl border border-[#27213D]">
+        <section aria-label="Project media presentation" className="relative my-8 rounded-2xl overflow-hidden bg-[#12101E] shadow-2xl border border-white/10">
           {isMediaOpen && youtubeId ? (
-            <div className="aspect-[16/9] w-full">
+            <div className={`w-full flex items-center justify-center ${isVertical ? "max-w-md mx-auto aspect-[9/16] p-4" : "aspect-[16/9]"}`}>
               <iframe
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen
-                className="w-full h-full border-none"
+                className="w-full h-full border-none rounded-xl shadow-2xl"
                 loading="lazy"
                 src={`https://www.youtube-nocookie.com/embed/${encodeURIComponent(youtubeId)}?autoplay=1&rel=0`}
                 title={`${project.title} on YouTube`}
+              />
+            </div>
+          ) : isMediaOpen && instagramReelId ? (
+            <div className="w-full max-w-sm mx-auto aspect-[9/16] p-4 flex items-center justify-center">
+              <iframe
+                allow="encrypted-media"
+                allowTransparency
+                className="w-full h-full border-0 rounded-xl bg-black shadow-2xl"
+                loading="lazy"
+                src={`https://www.instagram.com/reel/${instagramReelId}/embed/`}
+                title={`${project.title} on Instagram`}
               />
             </div>
           ) : isMediaOpen && directVideoUrl ? (
@@ -182,7 +197,7 @@ export default function ProjectPage() {
             <div className="p-3 bg-black/60 border-t border-white/10 flex justify-end">
               {instagramUrl ? (
                 <a
-                  className="font-mono text-xs text-white/80 hover:text-[#FF6542] inline-flex items-center gap-1.5 transition-colors"
+                  className="font-mono text-xs text-white/80 hover:text-[#FF4D2D] inline-flex items-center gap-1.5 transition-colors"
                   href={instagramUrl}
                   rel="noreferrer"
                   target="_blank"
@@ -192,7 +207,7 @@ export default function ProjectPage() {
                 </a>
               ) : (
                 <a
-                  className="font-mono text-xs text-white/80 hover:text-[#FF6542] inline-flex items-center gap-1.5 transition-colors"
+                  className="font-mono text-xs text-white/80 hover:text-[#FF4D2D] inline-flex items-center gap-1.5 transition-colors"
                   href={externalMediaUrl}
                   rel="noreferrer"
                   target="_blank"

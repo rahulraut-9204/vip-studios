@@ -1,31 +1,59 @@
 import { useEffect, useState } from "react";
-import { ArrowLeft, Eye, EyeOff, Film, ImagePlus, Inbox, Lock, LogOut, Mail, Plus, RotateCcw, Save, ShieldCheck, X } from "lucide-react";
+import {
+  ArrowLeft,
+  Check,
+  ChevronDown,
+  ChevronUp,
+  ExternalLink,
+  Eye,
+  EyeOff,
+  Film,
+  ImagePlus,
+  Inbox,
+  Lock,
+  LogOut,
+  Mail,
+  MessageCircle,
+  Plus,
+  RotateCcw,
+  Save,
+  ShieldCheck,
+  Sparkles,
+  X,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import { CATEGORIES } from "../config/site.js";
 import { isSupabaseConfigured, supabase } from "../lib/supabase.js";
 import ProjectCard from "../components/ProjectCard.jsx";
 import { DEFAULT_STUDIO_CUTS } from "../data/defaultCuts.js";
+import {
+  analyzeVideoUrl,
+  getInstagramEmbedUrl,
+  getInstagramReelId,
+  getYouTubeId,
+  getYouTubeThumbnail,
+} from "../data/media.js";
 
 const EMPTY_FORM = {
   title: "",
   slug: "",
   category: CATEGORIES[0],
-  format: "",
-  platform: "image",
-  media_type: "image",
+  format: "16:9 4K Commercial Master",
+  platform: "youtube",
+  media_type: "video",
   video_url: "",
   client_name: "",
-  role: "",
+  role: "Lead Editor & Colorist",
   result: "",
-  year_label: "",
+  year_label: "2026",
   image_alt: "",
   image_url: "",
   image_position: "center",
   accent: "gold",
   summary: "",
   approach: "",
-  status: "draft",
-  is_concept: true,
+  status: "published",
+  is_concept: false,
   featured: false,
   sort_order: 0,
 };
@@ -107,21 +135,21 @@ function projectToForm(project) {
     slug: project.slug,
     category: project.category,
     format: project.format,
-    platform: project.platform ?? "image",
-    media_type: project.media_type ?? "image",
+    platform: project.platform ?? "youtube",
+    media_type: project.media_type ?? "video",
     video_url: project.video_url ?? "",
     client_name: project.client_name ?? "",
     role: project.role ?? "",
     result: project.result ?? "",
-    year_label: project.year_label ?? "",
-    image_alt: project.image_alt,
+    year_label: project.year_label ?? "2026",
+    image_alt: project.image_alt || project.title,
     image_url: project.image_url,
     image_position: project.image_position ?? "center",
     accent: project.accent ?? "gold",
     summary: project.summary,
     approach: project.approach,
     status: project.status,
-    is_concept: project.is_concept,
+    is_concept: false,
     featured: project.featured,
     sort_order: project.sort_order,
   };
@@ -149,22 +177,16 @@ export default function AdminPage() {
   const [enquiryStatusFilter, setEnquiryStatusFilter] = useState("all");
   const [showPassword, setShowPassword] = useState(false);
   const [isSigningIn, setIsSigningIn] = useState(false);
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   useEffect(() => {
     const previousTitle = document.title;
     const robotsMeta = document.querySelector('meta[name="robots"]');
-    const previousRobots = robotsMeta?.getAttribute("content");
-
     document.title = "Project library — VIP StudioS";
     robotsMeta?.setAttribute("content", "noindex, nofollow");
 
     return () => {
       document.title = previousTitle;
-      if (previousRobots) {
-        robotsMeta?.setAttribute("content", previousRobots);
-      } else {
-        robotsMeta?.removeAttribute("content");
-      }
     };
   }, []);
 
@@ -175,20 +197,20 @@ export default function AdminPage() {
     }
 
     let active = true;
-    const { data } = supabase.auth.onAuthStateChange((_event, nextSession) => {
-      if (active) setSession(nextSession);
+    supabase.auth.getSession().then(({ data }) => {
+      if (!active) return;
+      setSession(data.session);
+      setAuthLoading(false);
     });
 
-    supabase.auth.getSession().then(({ data: result, error }) => {
-      if (!active) return;
-      if (error) setFeedback(`Could not restore the admin session: ${error.message}`);
-      setSession(result.session);
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, currentSession) => {
+      setSession(currentSession);
       setAuthLoading(false);
     });
 
     return () => {
       active = false;
-      data.subscription.unsubscribe();
+      listener.subscription.unsubscribe();
     };
   }, []);
 
@@ -197,6 +219,7 @@ export default function AdminPage() {
       setPreviewUrl("");
       return undefined;
     }
+
     const url = URL.createObjectURL(selectedFile);
     setPreviewUrl(url);
     return () => URL.revokeObjectURL(url);
@@ -218,7 +241,7 @@ export default function AdminPage() {
       .then(({ data, error }) => {
         if (!active) return;
         if (error) {
-          setFeedback(`Could not load projects. Check the admin allowlist and database migration: ${error.message}`);
+          setFeedback(`Could not load projects. Check admin permissions: ${error.message}`);
         } else {
           setProjects(data ?? []);
           setFeedback("");
@@ -265,6 +288,7 @@ export default function AdminPage() {
     setSelectedFile(null);
     if (clearFeedback) setFeedback("");
     setPreviewError("");
+    setShowAdvanced(false);
   }
 
   function editProject(project) {
@@ -273,6 +297,7 @@ export default function AdminPage() {
     setSelectedFile(null);
     setFeedback("");
     setPreviewError("");
+    setShowAdvanced(false);
   }
 
   function updateField(field, value) {
@@ -287,6 +312,26 @@ export default function AdminPage() {
         ? slugify(title)
         : current.slug,
     }));
+  }
+
+  function handleVideoLinkChange(url) {
+    updateField("video_url", url);
+    const detected = analyzeVideoUrl(url);
+    if (detected) {
+      updateField("platform", detected.platform);
+      updateField("media_type", detected.media_type);
+      updateField("category", detected.category);
+      updateField("format", detected.format);
+      if (detected.thumbnail && !selectedFile) {
+        updateField("image_url", detected.thumbnail);
+      }
+      if (!form.summary) {
+        updateField("summary", "Commercial video edit crafted by VIP STUDIOS.");
+      }
+      if (!form.approach) {
+        updateField("approach", "Engineered with dynamic pacing, custom sound design, and cinema color grading.");
+      }
+    }
   }
 
   function chooseImage(file) {
@@ -306,8 +351,10 @@ export default function AdminPage() {
     let uploadedObjectPath = null;
 
     try {
-      if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(form.slug)) {
-        throw new Error("Use a lowercase URL slug with letters, numbers, and single hyphens.");
+      const title = form.title.trim() || "Untitled Project";
+      let slug = form.slug.trim() || slugify(title);
+      if (!slug || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
+        slug = `${slugify(title) || "cut"}-${Date.now().toString().slice(-4)}`;
       }
 
       let imageUrl = form.image_url;
@@ -327,16 +374,32 @@ export default function AdminPage() {
           .from("vip-studios-projects")
           .getPublicUrl(objectPath).data.publicUrl;
         uploadedImage = true;
+      } else if (!imageUrl && form.video_url) {
+        const detected = analyzeVideoUrl(form.video_url);
+        if (detected?.thumbnail) {
+          imageUrl = detected.thumbnail;
+        } else {
+          imageUrl = "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=1400&q=80";
+        }
+      } else if (!imageUrl) {
+        imageUrl = "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&w=1400&q=80";
       }
-
-      if (!imageUrl) throw new Error("Add a project image before saving.");
 
       const payload = {
         ...form,
+        title,
+        slug,
         image_url: imageUrl,
-        year_label: form.year_label.trim() || "Current",
+        image_alt: form.image_alt || `${title} video cut`,
+        format: form.format || (form.category === "Reels & Short-form" ? "9:16 Vertical Storytelling" : "16:9 4K Commercial Master"),
+        summary: form.summary || "A commercial video project produced and edited by VIP STUDIOS.",
+        approach: form.approach || "Crafted with high retention pacing, custom sound design, and cinema-grade color.",
+        year_label: form.year_label.trim() || "2026",
         sort_order: Number(form.sort_order) || 0,
+        status: form.status || "published",
+        is_concept: false,
       };
+
       const query = editingId
         ? supabase.from("projects").update(payload).eq("id", editingId)
         : supabase.from("projects").insert(payload);
@@ -372,7 +435,7 @@ export default function AdminPage() {
       }
 
       startNewProject(false);
-      setFeedback(`${form.status === "published" ? "Project published." : "Draft saved."}${cleanupWarning}`);
+      setFeedback(`✓ "${title}" successfully published to live website!${cleanupWarning}`);
     } catch (error) {
       const message = errorMessage(error);
       setFeedback(message.startsWith("Project saved,")
@@ -482,6 +545,8 @@ export default function AdminPage() {
     enquiryStatusFilter === "all" ? true : enquiry.status === enquiryStatusFilter
   );
 
+  const detectedVideo = analyzeVideoUrl(form.video_url);
+
   if (!isSupabaseConfigured) {
     return (
       <main className="studio-admin">
@@ -490,8 +555,7 @@ export default function AdminPage() {
           <h1>CMS setup needed.</h1>
           <p>
             Add the public Supabase project URL and anon key as
-            <code> VITE_SUPABASE_URL</code> and <code>VITE_SUPABASE_ANON_KEY</code>,
-            then apply the migration in <code>supabase/migrations</code>.
+            <code> VITE_SUPABASE_URL</code> and <code>VITE_SUPABASE_ANON_KEY</code>.
           </p>
           <Link className="button button-gold" to="/">Back to the website</Link>
         </div>
@@ -689,7 +753,7 @@ export default function AdminPage() {
               </div>
 
               {/* Category filter pills in sidebar */}
-              <div className="flex flex-wrap gap-1 mb-3 pb-3 border-b border-[#EAE6E0]/60">
+              <div className="flex flex-wrap gap-1 mb-3 pb-3 border-b border-[#E8E4DC]">
                 {["All", ...CATEGORIES].map((cat) => (
                   <button
                     key={cat}
@@ -697,8 +761,8 @@ export default function AdminPage() {
                     onClick={() => setCategoryFilter(cat)}
                     className={`text-[10px] font-mono uppercase px-2 py-0.5 rounded-full border transition-all ${
                       categoryFilter === cat
-                        ? "bg-[#19162B] text-white border-[#19162B] font-bold"
-                        : "bg-white text-[#6E6A7C] border-[#EAE6E0] hover:border-[#19162B]"
+                        ? "bg-[#12101E] text-white border-[#12101E] font-bold"
+                        : "bg-white text-[#5C586B] border-[#E8E4DC] hover:border-[#12101E]"
                     }`}
                   >
                     {cat === "All" ? "ALL" : cat}
@@ -708,12 +772,12 @@ export default function AdminPage() {
 
               {projectsLoading && <p aria-live="polite">Loading projects…</p>}
               {!projectsLoading && filteredProjects.length === 0 && (
-                <div className="py-6 text-center text-xs text-[#6E6A7C]">
+                <div className="py-6 text-center text-xs text-[#5C586B]">
                   <p>No {categoryFilter !== "All" ? categoryFilter : ""} projects found.</p>
                   <button
                     onClick={restoreDefaultCuts}
                     type="button"
-                    className="mt-2 text-xs text-[#FF6542] underline font-mono"
+                    className="mt-2 text-xs text-[#FF4D2D] underline font-mono"
                   >
                     Restore default cuts
                   </button>
@@ -733,157 +797,242 @@ export default function AdminPage() {
               ))}
             </aside>
 
-          <form className="studio-admin-form" onSubmit={saveProject}>
-            <div className="studio-admin-form-heading">
-              <div>
-                <p className="studio-location">{editingId ? "EDIT PROJECT" : "NEW PROJECT"}</p>
-                <h2>{editingId ? form.title : "Add a project"}</h2>
+            {/* Smart Add / Edit Project Form */}
+            <form className="studio-admin-form" onSubmit={saveProject}>
+              <div className="studio-admin-form-heading">
+                <div>
+                  <p className="studio-location">{editingId ? "EDIT PROJECT" : "NEW VIDEO CUT"}</p>
+                  <h2>{editingId ? form.title : "Add New Cut from Link"}</h2>
+                </div>
+                {editingId && (
+                  <button aria-label="Close project editor" className="studio-admin-icon-button" onClick={startNewProject} type="button">
+                    <X aria-hidden="true" size={18} />
+                  </button>
+                )}
               </div>
-              {editingId && <button aria-label="Close project editor" className="studio-admin-icon-button" onClick={startNewProject} type="button"><X aria-hidden="true" size={18} /></button>}
-            </div>
 
-            <div className="studio-admin-field-pair">
-              <label>Project title<input maxLength={120} onChange={(event) => updateTitle(event.target.value)} required value={form.title} /></label>
-              <label>URL slug<input maxLength={140} onChange={(event) => updateField("slug", slugify(event.target.value))} required value={form.slug} /></label>
-            </div>
-
-            <div className="studio-admin-field-pair">
-              <label>Category<select onChange={(event) => updateField("category", event.target.value)} value={form.category}>
-                {CATEGORIES.map((category) => <option key={category}>{category}</option>)}
-              </select></label>
-              <label>Format<input maxLength={140} onChange={(event) => updateField("format", event.target.value)} required value={form.format} /></label>
-            </div>
-
-            <div className="studio-admin-field-pair">
-              <label>Media platform<select onChange={(event) => updateField("platform", event.target.value)} value={form.platform}>
-                <option value="image">Image study</option>
-                <option value="youtube">YouTube</option>
-                <option value="instagram">Instagram</option>
-                <option value="direct_video">Direct video</option>
-              </select></label>
-              <label>Media type<select onChange={(event) => updateField("media_type", event.target.value)} value={form.media_type}>
-                <option value="image">Poster / image</option>
-                <option value="video">Video</option>
-              </select></label>
-            </div>
-
-            <label>Video or social URL<input maxLength={500} onChange={(event) => updateField("video_url", event.target.value)} placeholder="YouTube, Instagram, or an approved .mp4/.webm URL" type="url" value={form.video_url} /></label>
-            <p className="studio-admin-hint">Public pages load the poster first. YouTube and direct video only load when a visitor chooses to play; Instagram opens in a new tab.</p>
-
-            <div className="studio-admin-field-pair">
-              <label>Publication state<select onChange={(event) => updateField("status", event.target.value)} value={form.status}>
-                <option value="draft">Draft — private</option>
-                <option value="published">Published — public</option>
-                <option value="archived">Archived — private</option>
-              </select></label>
-              <label>Display order<input min="0" onChange={(event) => updateField("sort_order", event.target.value)} type="number" value={form.sort_order} /></label>
-            </div>
-
-            <div className="studio-admin-checks">
-              <label><input checked={form.featured} onChange={(event) => updateField("featured", event.target.checked)} type="checkbox" /> Feature in homepage showcase</label>
-              <label><input checked={form.is_concept} onChange={(event) => updateField("is_concept", event.target.checked)} type="checkbox" /> Label as an illustrative concept</label>
-            </div>
-            <p className="studio-admin-hint">
-              Keep the concept label on speculative work. Only publish non-concept
-              work after confirming the project, media, and permissions.
-            </p>
-
-            <label className="studio-admin-upload">
-              <span><ImagePlus aria-hidden="true" size={18} /> {selectedFile ? selectedFile.name : form.image_url ? "Replace project image" : "Choose project image"}</span>
-              <input accept="image/jpeg,image/png,image/webp" onChange={(event) => chooseImage(event.target.files?.[0] ?? null)} type="file" />
-            </label>
-            <p className="studio-admin-hint">JPEG, PNG, or WebP under 8 MB. Images are resized to 1920px and converted to WebP before upload.</p>
-            {previewError && <p className="studio-admin-feedback" role="alert">{previewError}</p>}
-            {(previewUrl || form.image_url) && <img alt="" className="studio-admin-preview" src={previewUrl || form.image_url} style={{ objectPosition: form.image_position }} />}
-
-            <label>Image description (alt text)<input maxLength={300} onChange={(event) => updateField("image_alt", event.target.value)} required value={form.image_alt} /></label>
-            <label>Image focal point<input maxLength={80} onChange={(event) => updateField("image_position", event.target.value)} placeholder="center 50%" value={form.image_position} /></label>
-            <label>Project summary<textarea maxLength={3000} onChange={(event) => updateField("summary", event.target.value)} required rows={3} value={form.summary} /></label>
-            <label>Creative approach<textarea maxLength={3000} onChange={(event) => updateField("approach", event.target.value)} required rows={4} value={form.approach} /></label>
-            <div className="studio-admin-field-pair">
-              <label>Client / brand name<input maxLength={120} onChange={(event) => updateField("client_name", event.target.value)} placeholder="Leave blank for concept work" value={form.client_name} /></label>
-              <label>Role<input maxLength={180} onChange={(event) => updateField("role", event.target.value)} placeholder="Production, edit, strategy…" value={form.role} /></label>
-            </div>
-            <label>Result or proof note<textarea maxLength={1000} onChange={(event) => updateField("result", event.target.value)} placeholder="Only add approved, verifiable outcomes. Leave blank when unavailable." rows={2} value={form.result} /></label>
-            <div className="studio-admin-field-pair">
-              <label>Year or label<input maxLength={32} onChange={(event) => updateField("year_label", event.target.value)} placeholder="2025 or leave blank" value={form.year_label} /></label>
-              <label>Accent<select onChange={(event) => updateField("accent", event.target.value)} value={form.accent}>
-                {["gold", "amber", "silver", "white"].map((accent) => <option key={accent}>{accent}</option>)}
-              </select></label>
-            </div>
-
-            {feedback && <p aria-live="polite" className="studio-admin-feedback" role="status">{feedback}</p>}
-            <div className="studio-admin-actions">
-              <button className="button button-gold" disabled={saving} type="submit"><Save aria-hidden="true" size={17} /> {saving ? "Saving…" : form.status === "published" ? "Save & publish" : "Save project"}</button>
-              <button className="button button-outline" onClick={() => setShowPreviewModal(true)} type="button">
-                <Eye aria-hidden="true" size={16} /> Preview Cut
-              </button>
-              {editingId && <button className="studio-admin-cancel" onClick={startNewProject} type="button">Cancel editing</button>}
-              {editingId && <button className="studio-admin-delete" disabled={saving} onClick={deleteProject} type="button">Delete permanently</button>}
-            </div>
-          </form>
-
-          {/* Live Cut Preview Modal */}
-          {showPreviewModal && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-              <div className="bg-[#FFFDF8] rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-[#EAE6E0] relative max-h-[90vh] overflow-y-auto">
-                <div className="flex items-center justify-between mb-4 pb-3 border-b border-[#EAE6E0]">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-[#FF6542]" />
-                    <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#19162B]">
-                      PREVIEW // {form.status.toUpperCase()}
+              {/* Direct Video Link Ingest Section */}
+              <div className="p-4 sm:p-5 rounded-2xl bg-[#F5F3FF] border border-[#635BFF]/25 mb-4">
+                <div className="flex items-center justify-between mb-2">
+                  <label className="font-mono text-xs font-bold uppercase tracking-wider text-[#635BFF] m-0 flex items-center gap-1.5">
+                    <Sparkles size={14} /> Paste Video Link (YouTube, Shorts, or Instagram Reel)
+                  </label>
+                  {detectedVideo && (
+                    <span className="font-mono text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#12101E] text-[#00E599] border border-[#00E599]/30">
+                      ✓ {detectedVideo.platform === "youtube" ? (detectedVideo.isVertical ? "YouTube Short (9:16)" : "YouTube 4K Video") : "Instagram Reel (9:16)"}
                     </span>
-                  </div>
-                  <button
-                    className="studio-admin-icon-button"
-                    onClick={() => setShowPreviewModal(false)}
-                    type="button"
-                  >
-                    <X size={16} />
-                  </button>
+                  )}
                 </div>
 
-                <ProjectCard
-                  project={{
-                    title: form.title || "Untitled Project",
-                    slug: form.slug || "preview-slug",
-                    category: form.category,
-                    format: form.format || "Commercial Cut",
-                    image: previewUrl || form.image_url || "/assets/studies/camera-closeup.webp",
-                    imageAlt: form.image_alt || form.title,
-                    imagePosition: form.image_position,
-                    accent: form.accent,
-                    platform: form.platform,
-                    videoUrl: form.video_url,
-                    clientName: form.client_name,
-                    featured: form.featured,
-                    concept: form.is_concept,
-                  }}
+                <input
+                  className="w-full bg-white border border-[#E8E4DC] focus:border-[#635BFF] rounded-xl px-4 py-3 text-sm font-mono text-[#12101E] placeholder-[#8E8A9E] focus:outline-none shadow-sm"
+                  maxLength={500}
+                  onChange={(event) => handleVideoLinkChange(event.target.value)}
+                  placeholder="https://www.youtube.com/watch?v=... or https://www.instagram.com/reel/..."
+                  type="url"
+                  value={form.video_url}
                 />
+                <p className="text-[11px] text-[#5C586B] mt-2 mb-0">
+                  Pastes from YouTube and Instagram automatically detect format, aspect ratio, and pull video posters.
+                </p>
 
-                <div className="mt-4 pt-4 border-t border-[#EAE6E0] flex justify-between items-center text-xs font-mono text-[#6E6A7C]">
-                  <span>Slug: /work/{form.slug || "new-slug"}</span>
-                  <button
-                    className="button button-small button-dark"
-                    onClick={() => setShowPreviewModal(false)}
-                    type="button"
-                  >
-                    Close Preview
+                {/* Live Detected Poster Preview */}
+                {(form.image_url || detectedVideo?.thumbnail) && (
+                  <div className="mt-3 pt-3 border-t border-[#635BFF]/15 flex items-center gap-3">
+                    <img
+                      alt="Detected thumbnail"
+                      className="w-20 h-14 object-cover rounded-lg border border-[#E8E4DC] shadow-sm bg-black"
+                      src={form.image_url || detectedVideo?.thumbnail}
+                    />
+                    <div className="text-xs">
+                      <strong className="block text-[#12101E] font-mono">Auto-detected Video Poster</strong>
+                      <span className="text-[#5C586B] text-[11px]">{form.format} · {form.category}</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Title & Client Inputs */}
+              <div className="studio-admin-field-pair">
+                <label>
+                  Project Title / Cut Name <span className="text-[#FF4D2D]">*</span>
+                  <input
+                    maxLength={120}
+                    onChange={(event) => updateTitle(event.target.value)}
+                    placeholder="e.g. Apex Velocity Campaign"
+                    required
+                    value={form.title}
+                  />
+                </label>
+                <label>
+                  Client / Brand Name (Optional)
+                  <input
+                    maxLength={120}
+                    onChange={(event) => updateField("client_name", event.target.value)}
+                    placeholder="e.g. CineWave, Nike, or Creator Handle"
+                    value={form.client_name}
+                  />
+                </label>
+              </div>
+
+              <div className="studio-admin-field-pair">
+                <label>
+                  Category
+                  <select onChange={(event) => updateField("category", event.target.value)} value={form.category}>
+                    {CATEGORIES.map((category) => (
+                      <option key={category}>{category}</option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  Publication State
+                  <select onChange={(event) => updateField("status", event.target.value)} value={form.status}>
+                    <option value="published">Published — live on website</option>
+                    <option value="draft">Draft — hidden</option>
+                  </select>
+                </label>
+              </div>
+
+              <div className="studio-admin-checks mb-4">
+                <label>
+                  <input checked={form.featured} onChange={(event) => updateField("featured", event.target.checked)} type="checkbox" />
+                  Feature on homepage showcase
+                </label>
+              </div>
+
+              {/* Advanced Accordion Toggle */}
+              <div className="border border-[#E8E4DC] rounded-2xl overflow-hidden mb-6">
+                <button
+                  className="w-full px-4 py-3 bg-[#FCFBF8] text-xs font-mono font-bold text-[#5C586B] hover:text-[#12101E] flex items-center justify-between cursor-pointer"
+                  onClick={() => setShowAdvanced((prev) => !prev)}
+                  type="button"
+                >
+                  <span>Advanced Settings &amp; Custom Upload (Optional)</span>
+                  {showAdvanced ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                </button>
+
+                {showAdvanced && (
+                  <div className="p-4 sm:p-6 bg-white border-t border-[#E8E4DC] flex flex-col gap-4">
+                    <label className="studio-admin-upload">
+                      <span>
+                        <ImagePlus aria-hidden="true" size={18} />{" "}
+                        {selectedFile ? selectedFile.name : form.image_url ? "Replace project thumbnail image" : "Upload custom project image"}
+                      </span>
+                      <input accept="image/jpeg,image/png,image/webp" onChange={(event) => chooseImage(event.target.files?.[0] ?? null)} type="file" />
+                    </label>
+
+                    <label>
+                      URL Slug
+                      <input maxLength={140} onChange={(event) => updateField("slug", slugify(event.target.value))} value={form.slug} />
+                    </label>
+
+                    <label>
+                      Project Summary
+                      <textarea maxLength={3000} onChange={(event) => updateField("summary", event.target.value)} rows={2} value={form.summary} />
+                    </label>
+
+                    <label>
+                      Director&apos;s Cut Approach
+                      <textarea maxLength={3000} onChange={(event) => updateField("approach", event.target.value)} rows={2} value={form.approach} />
+                    </label>
+
+                    <div className="studio-admin-field-pair">
+                      <label>
+                        Year / Season
+                        <input maxLength={32} onChange={(event) => updateField("year_label", event.target.value)} placeholder="2026" value={form.year_label} />
+                      </label>
+                      <label>
+                        Display Order
+                        <input min="0" onChange={(event) => updateField("sort_order", event.target.value)} type="number" value={form.sort_order} />
+                      </label>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {feedback && <p aria-live="polite" className="studio-admin-feedback" role="status">{feedback}</p>}
+
+              <div className="studio-admin-actions">
+                <button className="button button-gold" disabled={saving} type="submit">
+                  <Save aria-hidden="true" size={17} /> {saving ? "Saving…" : form.status === "published" ? "Save & Publish Cut" : "Save Draft"}
+                </button>
+                <button className="button button-outline" onClick={() => setShowPreviewModal(true)} type="button">
+                  <Eye aria-hidden="true" size={16} /> Preview Cut
+                </button>
+                {editingId && (
+                  <button className="studio-admin-cancel" onClick={startNewProject} type="button">
+                    Cancel Editing
                   </button>
+                )}
+                {editingId && (
+                  <button className="studio-admin-delete" disabled={saving} onClick={deleteProject} type="button">
+                    Delete Cut
+                  </button>
+                )}
+              </div>
+            </form>
+
+            {/* Live Cut Preview Modal */}
+            {showPreviewModal && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+                <div className="bg-[#FCFBF8] rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-[#E8E4DC] relative max-h-[90vh] overflow-y-auto">
+                  <div className="flex items-center justify-between mb-4 pb-3 border-b border-[#E8E4DC]">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-[#FF4D2D]" />
+                      <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#12101E]">
+                        PREVIEW // {form.status.toUpperCase()}
+                      </span>
+                    </div>
+                    <button
+                      className="studio-admin-icon-button"
+                      onClick={() => setShowPreviewModal(false)}
+                      type="button"
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
+
+                  <ProjectCard
+                    project={{
+                      title: form.title || "Untitled Project",
+                      slug: form.slug || "preview-slug",
+                      category: form.category,
+                      format: form.format || "Commercial Cut",
+                      image: previewUrl || form.image_url || "/assets/studies/camera-closeup.webp",
+                      imageAlt: form.image_alt || form.title,
+                      imagePosition: form.image_position,
+                      accent: form.accent,
+                      platform: form.platform,
+                      videoUrl: form.video_url,
+                      clientName: form.client_name,
+                      featured: form.featured,
+                      concept: false,
+                    }}
+                  />
+
+                  <div className="mt-4 pt-4 border-t border-[#E8E4DC] flex justify-between items-center text-xs font-mono text-[#5C586B]">
+                    <span>Slug: /work/{form.slug || "new-slug"}</span>
+                    <button
+                      className="button button-small button-dark"
+                      onClick={() => setShowPreviewModal(false)}
+                      type="button"
+                    >
+                      Close Preview
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
         )}
 
-        {/* Enquiries Screen */}
+        {/* Enquiries Screen with 1-Click WhatsApp & Email */}
         {activeTab === "enquiries" && (
           <section aria-labelledby="enquiries-title" className="studio-admin-enquiries">
             <div className="studio-admin-list-heading">
               <div>
                 <p className="studio-location">CLIENT BRIEFS INBOX</p>
-                <h2 id="enquiries-title">Project enquiries <span>{filteredEnquiries.length}</span></h2>
+                <h2 id="enquiries-title">Project Enquiries <span>{filteredEnquiries.length}</span></h2>
               </div>
 
               {/* Status filter buttons */}
@@ -895,8 +1044,8 @@ export default function AdminPage() {
                     onClick={() => setEnquiryStatusFilter(st)}
                     className={`font-mono text-xs uppercase px-3 py-1 rounded-full border transition-all ${
                       enquiryStatusFilter === st
-                        ? "bg-[#19162B] text-white border-[#19162B] font-bold"
-                        : "bg-white text-[#6E6A7C] border-[#EAE6E0] hover:border-[#19162B]"
+                        ? "bg-[#12101E] text-white border-[#12101E] font-bold"
+                        : "bg-white text-[#5C586B] border-[#E8E4DC] hover:border-[#12101E]"
                     }`}
                   >
                     {st === "all" ? `ALL (${enquiries.length})` : `${st.toUpperCase()} (${enquiries.filter((e) => e.status === st).length})`}
@@ -907,36 +1056,76 @@ export default function AdminPage() {
 
             {enquiriesLoading && <p aria-live="polite">Loading enquiries…</p>}
             {!enquiriesLoading && filteredEnquiries.length === 0 && (
-              <div className="py-12 text-center text-[#6E6A7C]">
+              <div className="py-12 text-center text-[#5C586B]">
                 <p className="text-base font-semibold mb-1">No enquiries found in this view.</p>
                 <p className="text-sm">Client briefs submitted on the website will land directly here.</p>
               </div>
             )}
             {!enquiriesLoading && filteredEnquiries.length > 0 && (
               <div className="studio-admin-enquiry-list">
-                {filteredEnquiries.map((enquiry) => (
-                  <article className="studio-admin-enquiry" key={enquiry.id}>
-                    <div>
-                      <strong>{enquiry.name}</strong>
-                      {enquiry.company && <small className="text-[#6E6A7C] ml-2 font-normal">({enquiry.company})</small>}
-                      <span>{enquiry.service} · {new Date(enquiry.created_at).toLocaleDateString()}</span>
-                      <p>{enquiry.requirements}</p>
-                    </div>
-                    <div className="studio-admin-enquiry-actions">
-                      {enquiry.email && <a href={`mailto:${enquiry.email}`}>Email</a>}
-                      {enquiry.phone && <a href={`tel:${enquiry.phone}`}>Call</a>}
-                      <select
-                        aria-label={`Status for ${enquiry.name}`}
-                        onChange={(event) => updateEnquiryStatus(enquiry.id, event.target.value)}
-                        value={enquiry.status}
-                      >
-                        <option value="new">New</option>
-                        <option value="contacted">Contacted</option>
-                        <option value="closed">Closed</option>
-                      </select>
-                    </div>
-                  </article>
-                ))}
+                {filteredEnquiries.map((enquiry) => {
+                  const cleanPhone = String(enquiry.phone || "").replace(/[^0-9]/g, "");
+                  const whatsAppReplyUrl = cleanPhone
+                    ? `https://wa.me/${cleanPhone}?text=${encodeURIComponent(
+                        `Hi ${enquiry.name}, thank you for contacting VIP STUDIOS regarding your ${enquiry.service} project! We reviewed your brief:`
+                      )}`
+                    : null;
+
+                  return (
+                    <article className="studio-admin-enquiry p-6 rounded-2xl bg-white border border-[#E8E4DC] shadow-sm mb-4" key={enquiry.id}>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <strong className="text-lg text-[#12101E]">{enquiry.name}</strong>
+                          {enquiry.company && (
+                            <span className="text-xs font-mono px-2 py-0.5 rounded bg-[#F5F3FF] text-[#635BFF]">
+                              {enquiry.company}
+                            </span>
+                          )}
+                          <span className="text-xs text-[#8E8A9E] font-mono">
+                            {new Date(enquiry.created_at).toLocaleDateString()}
+                          </span>
+                        </div>
+                        <div className="text-xs font-mono font-bold text-[#FF4D2D] mb-2">
+                          Service: {enquiry.service} {enquiry.deadline ? `· Timeline: ${enquiry.deadline}` : ""}
+                        </div>
+                        <p className="text-sm text-[#5C586B] leading-relaxed bg-[#FCFBF8] p-3 rounded-xl border border-[#E8E4DC] my-3">
+                          {enquiry.requirements}
+                        </p>
+                      </div>
+
+                      <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-[#E8E4DC]">
+                        {whatsAppReplyUrl && (
+                          <a
+                            className="button button-small button-gold text-xs font-mono inline-flex items-center gap-1.5"
+                            href={whatsAppReplyUrl}
+                            rel="noreferrer"
+                            target="_blank"
+                          >
+                            <MessageCircle size={14} /> Reply on WhatsApp
+                          </a>
+                        )}
+                        {enquiry.email && (
+                          <a
+                            className="button button-small button-outline text-xs font-mono inline-flex items-center gap-1.5"
+                            href={`mailto:${enquiry.email}?subject=${encodeURIComponent(`[VIP STUDIOS] Your Project Brief: ${enquiry.service}`)}`}
+                          >
+                            <Mail size={14} /> Email
+                          </a>
+                        )}
+                        <select
+                          aria-label={`Status for ${enquiry.name}`}
+                          className="font-mono text-xs px-2.5 py-1.5 rounded-lg border border-[#E8E4DC] bg-white text-[#12101E] ml-auto"
+                          onChange={(event) => updateEnquiryStatus(enquiry.id, event.target.value)}
+                          value={enquiry.status}
+                        >
+                          <option value="new">Status: New</option>
+                          <option value="contacted">Status: Contacted</option>
+                          <option value="closed">Status: Closed</option>
+                        </select>
+                      </div>
+                    </article>
+                  );
+                })}
               </div>
             )}
           </section>
