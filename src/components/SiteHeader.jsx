@@ -1,12 +1,14 @@
-import { ArrowUpRight, Menu, X } from "lucide-react";
+import { ArrowUpRight, Menu, MessageCircle, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import Brand from "./Brand.jsx";
+import { getWhatsAppHref } from "../data/contact.js";
 
 const links = [
   { label: "Home", to: "/" },
   { label: "Work", to: "/work" },
   { label: "Services", to: "/services" },
+  { label: "Process", to: "/process" },
   { label: "About", to: "/about" },
   { label: "Contact", to: "/contact" },
 ];
@@ -17,6 +19,7 @@ export default function SiteHeader() {
   const menuToggleRef = useRef(null);
   const navigationRef = useRef(null);
   const location = useLocation();
+  const whatsAppHref = getWhatsAppHref();
 
   useEffect(() => {
     setMenuOpen(false);
@@ -27,7 +30,7 @@ export default function SiteHeader() {
     function updateScrollState() {
       if (frame) return;
       frame = window.requestAnimationFrame(() => {
-        setIsCondensed(window.scrollY > 80);
+        setIsCondensed(window.scrollY > 50);
         frame = 0;
       });
     }
@@ -102,7 +105,7 @@ export default function SiteHeader() {
           {links.map((link) => (
             <NavLink
               className={({ isActive }) =>
-                `nav-link${isActive ? " is-active" : ""}`
+                `nav-link${isActive ? " is-active active" : ""}`
               }
               end={link.to === "/"}
               key={link.to}
@@ -112,13 +115,26 @@ export default function SiteHeader() {
               {link.label}
             </NavLink>
           ))}
-          <Link
-            className="button button-small button-gold header-cta"
-            onClick={closeNavigation}
-            to="/contact"
-          >
-            Start a project <ArrowUpRight aria-hidden="true" size={15} />
-          </Link>
+          <div className="header-cta-group">
+            <Link
+              className="button button-small button-gold header-cta"
+              onClick={closeNavigation}
+              to="/contact"
+            >
+              Start a project <ArrowUpRight aria-hidden="true" size={15} />
+            </Link>
+            {whatsAppHref && (
+              <a
+                className="button button-small button-outline mobile-whatsapp-cta"
+                href={whatsAppHref}
+                onClick={closeNavigation}
+                rel="noreferrer"
+                target="_blank"
+              >
+                <MessageCircle aria-hidden="true" size={15} /> WhatsApp
+              </a>
+            )}
+          </div>
         </nav>
       </div>
     </header>

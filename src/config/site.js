@@ -12,7 +12,7 @@ export const CATEGORIES = [
 
 const site = {
   studioName: "VIP StudioS",
-  tagline: "Crafting visual stories that move.",
+  tagline: "Your vision. Beautifully in motion.",
   domain: import.meta.env.VITE_SITE_URL || "https://vip-studios.pages.dev",
   email: publicEmail,
   phone: whatsapp,

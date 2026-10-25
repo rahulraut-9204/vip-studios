@@ -20,9 +20,9 @@ export default function SiteFooter() {
     <footer className="site-footer">
       <div className="footer-main">
         <div className="footer-intro">
-          <h2>Crafting visual<br />stories that move.</h2>
+          <h2>Make the next<br />frame count.</h2>
           <Link className="button button-gold" to="/contact">
-            Let&apos;s grow your brand <ArrowUpRight aria-hidden="true" size={16} />
+            Start a project <ArrowUpRight aria-hidden="true" size={16} />
           </Link>
           <p>One partner for your digital content journey.</p>
         </div>

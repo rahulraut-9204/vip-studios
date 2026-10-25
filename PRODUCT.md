@@ -38,9 +38,9 @@ Prospective clients discover the site, understand the social and video offer, vi
 
 - Product name: VIP StudioS.
 - Desired identity: premium, cinematic, ownable, and creative.
-- Required palette: black, white, and signature orange (`#FFA000`).
+- Required palette: light ivory and white surfaces with coral orange (`#FF6542`), electric periwinkle (`#7765F8`), mint (`#B9F4D0`), sunshine (`#FFD76A`) and deep ink (`#27213D`) used as named roles.
 - The visual direction must not copy a reference identity.
-- Prefer a bold, contemporary, digital-first expression with confident composition and purposeful animation; use Inter throughout and avoid dated or retro production motifs.
+- Prefer a bold, contemporary, digital-first expression with confident composition and purposeful animation; use Space Grotesk for display type and DM Sans for body/UI text.
 
 ## Evidence on Hand
 

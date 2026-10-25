@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { ArrowLeft, ImagePlus, LogOut, Plus, Save, X } from "lucide-react";
+import { ArrowLeft, Eye, ImagePlus, LogOut, Plus, Save, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { CATEGORIES } from "../config/site.js";
 import { isSupabaseConfigured, supabase } from "../lib/supabase.js";
+import ProjectCard from "../components/ProjectCard.jsx";
 
 const EMPTY_FORM = {
   title: "",
@@ -132,6 +133,8 @@ export default function AdminPage() {
   const [password, setPassword] = useState("");
   const [projects, setProjects] = useState([]);
   const [projectsLoading, setProjectsLoading] = useState(false);
+  const [enquiries, setEnquiries] = useState([]);
+  const [enquiriesLoading, setEnquiriesLoading] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState(EMPTY_FORM);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -139,6 +142,7 @@ export default function AdminPage() {
   const [feedback, setFeedback] = useState("");
   const [previewError, setPreviewError] = useState("");
   const [previewUrl, setPreviewUrl] = useState("");
+  const [showPreviewModal, setShowPreviewModal] = useState(false);
 
   useEffect(() => {
     const previousTitle = document.title;
@@ -214,6 +218,34 @@ export default function AdminPage() {
           setFeedback("");
         }
         setProjectsLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [session]);
+
+  useEffect(() => {
+    if (!supabase || !session) {
+      setEnquiries([]);
+      return undefined;
+    }
+
+    let active = true;
+    setEnquiriesLoading(true);
+    supabase
+      .from("enquiries")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(50)
+      .then(({ data, error }) => {
+        if (!active) return;
+        if (error) {
+          setFeedback(`Projects loaded, but enquiries could not be loaded: ${error.message}`);
+        } else {
+          setEnquiries(data ?? []);
+        }
+        setEnquiriesLoading(false);
       });
 
     return () => {
@@ -364,6 +396,17 @@ export default function AdminPage() {
       return;
     }
 
+    async function updateEnquiryStatus(id, status) {
+      const { error } = await supabase.from("enquiries").update({ status }).eq("id", id);
+      if (error) {
+        setFeedback(`Could not update enquiry: ${error.message}`);
+        return;
+      }
+      setEnquiries((current) =>
+        current.map((enquiry) => (enquiry.id === id ? { ...enquiry, status } : enquiry)),
+      );
+    }
+
     setFeedback("");
     setSaving(true);
     const project = projects.find((item) => item.id === editingId);
@@ -448,6 +491,7 @@ export default function AdminPage() {
             ["Published", projects.filter((project) => project.status === "published").length],
             ["Drafts", projects.filter((project) => project.status === "draft").length],
             ["Featured", projects.filter((project) => project.featured).length],
+            ["New enquiries", enquiries.filter((enquiry) => enquiry.status === "new").length],
           ].map(([label, value]) => (
             <div key={label}>
               <strong>{String(value).padStart(2, "0")}</strong>
@@ -560,11 +604,102 @@ export default function AdminPage() {
             {feedback && <p aria-live="polite" className="studio-admin-feedback" role="status">{feedback}</p>}
             <div className="studio-admin-actions">
               <button className="button button-gold" disabled={saving} type="submit"><Save aria-hidden="true" size={17} /> {saving ? "Saving…" : form.status === "published" ? "Save & publish" : "Save project"}</button>
+              <button className="button button-outline" onClick={() => setShowPreviewModal(true)} type="button">
+                <Eye aria-hidden="true" size={16} /> Preview Cut
+              </button>
               {editingId && <button className="studio-admin-cancel" onClick={startNewProject} type="button">Cancel editing</button>}
               {editingId && <button className="studio-admin-delete" disabled={saving} onClick={deleteProject} type="button">Delete permanently</button>}
             </div>
           </form>
+
+          {/* Live Cut Preview Modal */}
+          {showPreviewModal && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+              <div className="bg-[#FFFDF8] rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-[#EAE6E0] relative max-h-[90vh] overflow-y-auto">
+                <div className="flex items-center justify-between mb-4 pb-3 border-b border-[#EAE6E0]">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-[#FF6542]" />
+                    <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#19162B]">
+                      PREVIEW // {form.status.toUpperCase()}
+                    </span>
+                  </div>
+                  <button
+                    className="studio-admin-icon-button"
+                    onClick={() => setShowPreviewModal(false)}
+                    type="button"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+
+                <ProjectCard
+                  project={{
+                    title: form.title || "Untitled Project",
+                    slug: form.slug || "preview-slug",
+                    category: form.category,
+                    format: form.format || "Commercial Cut",
+                    image: previewUrl || form.image_url || "/assets/studies/camera-closeup.webp",
+                    imageAlt: form.image_alt || form.title,
+                    imagePosition: form.image_position,
+                    accent: form.accent,
+                    platform: form.platform,
+                    videoUrl: form.video_url,
+                    clientName: form.client_name,
+                    featured: form.featured,
+                    concept: form.is_concept,
+                  }}
+                />
+
+                <div className="mt-4 pt-4 border-t border-[#EAE6E0] flex justify-between items-center text-xs font-mono text-[#6E6A7C]">
+                  <span>Slug: /work/{form.slug || "new-slug"}</span>
+                  <button
+                    className="button button-small button-dark"
+                    onClick={() => setShowPreviewModal(false)}
+                    type="button"
+                  >
+                    Close Preview
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
+        <section aria-labelledby="enquiries-title" className="studio-admin-enquiries">
+          <div className="studio-admin-list-heading">
+            <div>
+              <p className="studio-location">INBOX</p>
+              <h2 id="enquiries-title">Project enquiries <span>{enquiries.length}</span></h2>
+            </div>
+          </div>
+          {enquiriesLoading && <p aria-live="polite">Loading enquiries…</p>}
+          {!enquiriesLoading && enquiries.length === 0 && <p>No enquiries yet.</p>}
+          {!enquiriesLoading && enquiries.length > 0 && (
+            <div className="studio-admin-enquiry-list">
+              {enquiries.map((enquiry) => (
+                <article className="studio-admin-enquiry" key={enquiry.id}>
+                  <div>
+                    <strong>{enquiry.name}</strong>
+                    <span>{enquiry.service} · {new Date(enquiry.created_at).toLocaleDateString()}</span>
+                    <p>{enquiry.requirements}</p>
+                  </div>
+                  <div className="studio-admin-enquiry-actions">
+                    {enquiry.email && <a href={`mailto:${enquiry.email}`}>Email</a>}
+                    {enquiry.phone && <a href={`tel:${enquiry.phone}`}>Call</a>}
+                    <select
+                      aria-label={`Status for ${enquiry.name}`}
+                      onChange={(event) => updateEnquiryStatus(enquiry.id, event.target.value)}
+                      value={enquiry.status}
+                    >
+                      <option value="new">New</option>
+                      <option value="contacted">Contacted</option>
+                      <option value="closed">Closed</option>
+                    </select>
+                  </div>
+                </article>
+              ))}
+            </div>
+          )}
+        </section>
       </div>
     </main>
   );
