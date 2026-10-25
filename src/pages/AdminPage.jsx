@@ -547,33 +547,23 @@ export default function AdminPage() {
 
   const detectedVideo = analyzeVideoUrl(form.video_url);
 
-  const CATEGORY_COLORS = {
-    All: "bg-[#635BFF] text-white border-[#635BFF] shadow-[0_0_12px_rgba(99,91,255,0.4)]",
-    "Video Editing": "bg-[#FF4D2D] text-white border-[#FF4D2D] shadow-[0_0_12px_rgba(255,77,45,0.4)]",
-    "Reels & Short-form": "bg-[#00E599] text-[#0E0C18] border-[#00E599] font-black shadow-[0_0_12px_rgba(0,229,153,0.4)]",
-    YouTube: "bg-[#FF0033] text-white border-[#FF0033] shadow-[0_0_12px_rgba(255,0,51,0.4)]",
-    "Social Media": "bg-[#FF2E93] text-white border-[#FF2E93] shadow-[0_0_12px_rgba(255,46,147,0.4)]",
-    Corporate: "bg-[#00D2FF] text-[#0E0C18] border-[#00D2FF] font-black shadow-[0_0_12px_rgba(0,210,255,0.4)]",
-    Other: "bg-[#FFB800] text-[#0E0C18] border-[#FFB800] font-black shadow-[0_0_12px_rgba(255,184,0,0.4)]",
-  };
-
   if (!isSupabaseConfigured) {
     return (
-      <main className="min-h-screen bg-[#0B0914] flex items-center justify-center p-4 py-12 relative overflow-hidden">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#635BFF]/15 rounded-full blur-[100px] pointer-events-none" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[#FF4D2D]/12 rounded-full blur-[100px] pointer-events-none" />
-
-        <div className="relative z-10 w-full max-w-md bg-[#141122]/90 backdrop-blur-xl border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl text-white">
-          <div className="flex items-center gap-2 mb-3">
-            <span className="w-2 h-2 rounded-full bg-[#FF4D2D] animate-pulse" />
-            <span className="text-[10px] font-mono uppercase tracking-wider text-[#FF4D2D] font-bold">VIP STUDIOS · STUDIO CMS</span>
+      <main className="min-h-screen bg-[#FCFBF9] flex items-center justify-center p-4 py-16 font-sans">
+        <div className="w-full max-w-md bg-white border border-[#E8E4DC] rounded-3xl p-8 sm:p-10 shadow-xl text-center">
+          <div className="flex items-center justify-center gap-2 mb-3">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#FF4D2D]" />
+            <span className="text-[10px] font-mono uppercase tracking-wider text-[#FF4D2D] font-bold">
+              VIP STUDIOS · STUDIO CMS
+            </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-white mb-2">CMS Setup Needed</h1>
-          <p className="text-xs text-white/60 mb-6 leading-relaxed font-mono">
-            Add your Supabase project URL and anon key as
-            <code className="text-[#635BFF] bg-[#635BFF]/10 px-1.5 py-0.5 rounded ml-1">VITE_SUPABASE_URL</code> and <code className="text-[#635BFF] bg-[#635BFF]/10 px-1.5 py-0.5 rounded">VITE_SUPABASE_ANON_KEY</code>.
+          <h1 className="text-2xl sm:text-3xl font-black text-[#12101E] tracking-tight mb-2">CMS Setup Needed</h1>
+          <p className="text-xs text-[#5C586B] mb-6 leading-relaxed font-sans">
+            Add your Supabase project credentials as
+            <code className="text-[#635BFF] bg-[#F5F3FF] px-1.5 py-0.5 rounded font-mono ml-1">VITE_SUPABASE_URL</code> and{" "}
+            <code className="text-[#635BFF] bg-[#F5F3FF] px-1.5 py-0.5 rounded font-mono">VITE_SUPABASE_ANON_KEY</code>.
           </p>
-          <Link className="inline-block text-center w-full py-3 rounded-xl font-mono text-xs font-bold uppercase tracking-wider text-white bg-gradient-to-r from-[#FF4D2D] to-[#FF2E93] shadow-[0_0_20px_rgba(255,77,45,0.4)]" to="/">
+          <Link className="button button-gold w-full text-center block text-xs font-mono font-bold uppercase tracking-wider py-3.5 shadow-sm" to="/">
             Back to Public Website
           </Link>
         </div>
@@ -583,54 +573,49 @@ export default function AdminPage() {
 
   if (authLoading) {
     return (
-      <main aria-live="polite" className="min-h-screen bg-[#0B0914] flex flex-col items-center justify-center gap-3 text-[#A59FFF] font-mono text-xs">
-        <div className="w-8 h-8 rounded-full border-2 border-[#635BFF] border-t-transparent animate-spin" />
-        <span>Authenticating studio console session…</span>
+      <main aria-live="polite" className="min-h-screen bg-[#FCFBF9] flex flex-col items-center justify-center gap-3 text-[#5C586B] font-mono text-xs">
+        <div className="w-8 h-8 rounded-full border-2 border-[#12101E] border-t-transparent animate-spin" />
+        <span>Checking studio session…</span>
       </main>
     );
   }
 
   if (!session) {
     return (
-      <main className="min-h-screen bg-[#0B0914] flex items-center justify-center p-4 py-12 relative overflow-hidden">
-        {/* Ambient Studio Lighting Orbs */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#635BFF]/15 rounded-full blur-[100px] pointer-events-none" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[#FF4D2D]/12 rounded-full blur-[100px] pointer-events-none" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#00E599]/05 rounded-full blur-[120px] pointer-events-none" />
-
-        <div className="relative z-10 w-full max-w-md bg-[#141122]/90 backdrop-blur-xl border border-white/10 rounded-3xl p-6 sm:p-8 shadow-[0_20px_50px_rgba(0,0,0,0.6)] text-white">
-          <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/10">
-            <Link className="inline-flex items-center gap-1.5 text-xs font-mono text-white/60 hover:text-white transition-colors" to="/">
+      <main className="min-h-screen bg-[#FCFBF9] flex items-center justify-center p-4 py-16 font-sans">
+        <div className="w-full max-w-md bg-white border border-[#E8E4DC] rounded-3xl p-8 sm:p-10 shadow-xl">
+          <div className="flex items-center justify-between mb-6 pb-4 border-b border-[#E8E4DC]">
+            <Link className="inline-flex items-center gap-1.5 text-xs font-mono text-[#5C586B] hover:text-[#12101E] transition-colors" to="/">
               <ArrowLeft size={14} /> Public Website
             </Link>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-[#FF4D2D] animate-pulse" />
               <span className="text-[10px] font-mono uppercase tracking-wider text-[#FF4D2D] font-bold">STUDIO CMS</span>
             </div>
           </div>
 
           <div className="mb-6">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#635BFF]/15 border border-[#635BFF]/30 text-[#A59FFF] font-mono text-[11px] font-bold uppercase tracking-widest mb-2">
+            <span className="font-mono text-xs uppercase tracking-widest text-[#635BFF] font-bold block mb-1.5">
               VIP STUDIOS // CMS PORTAL
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight m-0 mb-2">
+            </span>
+            <h1 className="text-2xl sm:text-3xl font-black text-[#12101E] tracking-tight m-0 mb-2 font-display">
               Studio Sign In
             </h1>
-            <p className="text-xs text-white/60 m-0 leading-relaxed font-sans">
+            <p className="text-xs text-[#5C586B] m-0 leading-relaxed font-sans">
               Enter your authorized administrator credentials to manage portfolio cuts, publishing workflows, and client enquiries.
             </p>
           </div>
 
           <form className="flex flex-col gap-4" onSubmit={signIn}>
             <div>
-              <label className="block text-xs font-mono font-bold uppercase tracking-wider text-[#E2DFED] mb-1.5">
+              <label className="block text-xs font-mono font-bold uppercase tracking-wider text-[#12101E] mb-1.5">
                 Admin Email
               </label>
               <div className="relative">
-                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none" size={16} />
+                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#8E8A9E] pointer-events-none" size={16} />
                 <input
                   autoComplete="username"
-                  className="w-full bg-[#0E0C18] border border-white/15 focus:border-[#635BFF] focus:ring-2 focus:ring-[#635BFF]/30 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none transition-all font-mono"
+                  className="w-full bg-white border border-[#E8E4DC] focus:border-[#635BFF] focus:ring-2 focus:ring-[#635BFF]/15 rounded-xl pl-10 pr-4 py-3 text-sm text-[#12101E] placeholder-[#8E8A9E] focus:outline-none transition-all font-mono"
                   onChange={(event) => setEmail(event.target.value)}
                   placeholder="admin@example.com"
                   required
@@ -641,14 +626,14 @@ export default function AdminPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-mono font-bold uppercase tracking-wider text-[#E2DFED] mb-1.5">
+              <label className="block text-xs font-mono font-bold uppercase tracking-wider text-[#12101E] mb-1.5">
                 Password
               </label>
               <div className="relative">
-                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none" size={16} />
+                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#8E8A9E] pointer-events-none" size={16} />
                 <input
                   autoComplete="current-password"
-                  className="w-full bg-[#0E0C18] border border-white/15 focus:border-[#635BFF] focus:ring-2 focus:ring-[#635BFF]/30 rounded-xl pl-10 pr-11 py-3 text-sm text-white placeholder-white/30 focus:outline-none transition-all font-mono"
+                  className="w-full bg-white border border-[#E8E4DC] focus:border-[#635BFF] focus:ring-2 focus:ring-[#635BFF]/15 rounded-xl pl-10 pr-11 py-3 text-sm text-[#12101E] placeholder-[#8E8A9E] focus:outline-none transition-all font-mono"
                   onChange={(event) => setPassword(event.target.value)}
                   placeholder="••••••••••••"
                   required
@@ -657,7 +642,7 @@ export default function AdminPage() {
                 />
                 <button
                   aria-label={showPassword ? "Hide password" : "Show password"}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition-colors cursor-pointer"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#8E8A9E] hover:text-[#12101E] transition-colors cursor-pointer"
                   onClick={() => setShowPassword((prev) => !prev)}
                   type="button"
                 >
@@ -667,13 +652,13 @@ export default function AdminPage() {
             </div>
 
             {feedback && (
-              <div className="p-3.5 rounded-xl bg-red-950/60 border border-red-700/60 text-red-200 text-xs font-mono" role="alert">
+              <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-mono" role="alert">
                 {feedback}
               </div>
             )}
 
             <button
-              className="w-full py-3.5 text-sm font-mono font-bold uppercase tracking-wider mt-2 rounded-xl text-white bg-gradient-to-r from-[#FF4D2D] to-[#FF2E93] hover:from-[#FF3D18] hover:to-[#E62080] shadow-[0_0_25px_rgba(255,77,45,0.45)] hover:shadow-[0_0_35px_rgba(255,77,45,0.6)] transition-all cursor-pointer disabled:opacity-50"
+              className="button button-gold w-full py-3.5 text-sm font-mono font-bold uppercase tracking-wider mt-2 shadow-sm cursor-pointer disabled:opacity-50"
               disabled={isSigningIn}
               type="submit"
             >
@@ -681,8 +666,8 @@ export default function AdminPage() {
             </button>
           </form>
 
-          <div className="mt-6 pt-5 border-t border-white/10 text-center text-[11px] font-mono text-white/40">
-            Protected studio administration console · All activities monitored
+          <div className="mt-6 pt-5 border-t border-[#E8E4DC] text-center text-[11px] font-mono text-[#8E8A9E]">
+            Protected studio administration console · Authorized access only
           </div>
         </div>
       </main>
@@ -690,109 +675,104 @@ export default function AdminPage() {
   }
 
   return (
-    <main className="studio-admin">
-      <div className="studio-admin-wrap">
-        {/* Modern Studio Glass Header */}
-        <header className="bg-[#141122]/90 backdrop-blur-md border border-white/10 rounded-2xl p-5 sm:p-6 mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shadow-xl">
+    <main className="studio-page studio-admin-page bg-[#FCFBF9] min-h-screen py-8 sm:py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Editorial Studio Header */}
+        <header className="mb-8 pb-8 border-b border-[#E8E4DC] flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
-            <div className="flex flex-wrap items-center gap-2.5 mb-2">
-              <Link
-                className="inline-flex items-center gap-1.5 text-xs font-mono text-white/70 hover:text-white px-3 py-1 rounded-full bg-white/5 border border-white/10 hover:border-[#635BFF]/50 transition-all"
-                to="/"
-              >
-                <ArrowLeft size={13} /> Public Website
-              </Link>
-              <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#FF4D2D]/15 border border-[#FF4D2D]/35 text-[#FF4D2D] text-[10px] font-mono font-bold uppercase tracking-wider">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#FF4D2D] animate-pulse" />
-                CMS LIVE
-              </span>
-              <span className="text-[10px] font-mono text-[#A59FFF] px-2.5 py-0.5 rounded-full bg-[#635BFF]/15 border border-[#635BFF]/35 font-bold uppercase tracking-wider">
-                VIP STUDIOS // CMS DESK
-              </span>
+            <div className="flex items-center gap-2 mb-3">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#FF4D2D] shadow-[0_0_8px_#FF4D2D]" />
+              <p className="m-0 font-mono text-xs uppercase tracking-widest text-[#FF4D2D] font-bold">
+                VIP STUDIOS · STUDIO CMS CONSOLE
+              </p>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight m-0">
-              Project Library &amp; Studio Desk
+            <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-[#12101E] m-0 mb-2 font-display">
+              Project Library &amp; <span className="text-[#FF4D2D]">Studio Desk.</span>
             </h1>
-            <p className="text-xs font-mono text-white/50 m-0 mt-1">
-              Direct Link Ingest · Dynamic Video Players · Instant Client Inquiries
+            <p className="text-base text-[#5C586B] max-w-2xl leading-relaxed m-0 font-sans">
+              Manage portfolio cuts, instant video link ingests, and incoming client briefs in one central cutting room.
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
-            <div className="hidden md:flex flex-col text-right">
-              <span className="text-[10px] font-mono text-white/40 uppercase tracking-wider">STUDIO OPERATOR</span>
-              <span className="text-xs font-mono text-[#00E599] font-bold flex items-center justify-end gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#00E599]" /> {session.user?.email || "Admin Master"}
-              </span>
+          <div className="flex flex-wrap items-center gap-3">
+            <Link
+              to="/"
+              className="button button-outline text-xs font-mono font-bold inline-flex items-center gap-1.5"
+            >
+              <ArrowLeft size={14} /> Public Website
+            </Link>
+            <div className="hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-[#057A4E] text-xs font-mono font-bold">
+              <span className="w-2 h-2 rounded-full bg-[#00E599]" />
+              {session.user?.email || "Admin"}
             </div>
             <button
-              className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-white/80 hover:text-white hover:bg-red-500/20 hover:border-red-500/40 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 transition-all cursor-pointer"
               onClick={signOut}
               type="button"
+              className="button button-outline text-xs font-mono font-bold text-red-600 hover:border-red-300 hover:bg-red-50 inline-flex items-center gap-1.5 cursor-pointer"
             >
               <LogOut size={14} /> Sign Out
             </button>
           </div>
         </header>
 
-        {/* 5 Distinct Colorful Key Metrics Cards */}
-        <section aria-label="Project library summary" className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5 mb-8">
-          {/* Card 1: Total Cuts (Violet) */}
-          <div className="bg-gradient-to-br from-[#635BFF]/15 via-[#141122] to-transparent border border-[#635BFF]/35 hover:border-[#635BFF] rounded-2xl p-4 sm:p-5 shadow-lg transition-all hover:-translate-y-0.5">
+        {/* 5 Clean Editorial Key Metric Cards */}
+        <section aria-label="Project library summary" className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
+          {/* Card 1: Total Cuts */}
+          <div className="bg-white border border-[#E8E4DC] border-t-4 border-t-[#635BFF] rounded-2xl p-5 shadow-sm hover:shadow-md transition-all">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#A59FFF]">MEDIA VAULT</span>
+              <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#635BFF]">MEDIA VAULT</span>
               <Film className="text-[#635BFF]" size={16} />
             </div>
-            <strong className="block text-3xl sm:text-4xl font-black text-white font-mono leading-none mb-1">
+            <strong className="block text-3xl sm:text-4xl font-black text-[#12101E] font-mono leading-none mb-1">
               {String(projects.length).padStart(2, "0")}
             </strong>
-            <span className="text-xs font-mono text-[#A59FFF] font-semibold uppercase">Total Cuts</span>
+            <span className="text-xs font-mono text-[#5C586B] font-bold uppercase">Total Cuts</span>
           </div>
 
-          {/* Card 2: Published Cuts (Mint) */}
-          <div className="bg-gradient-to-br from-[#00E599]/15 via-[#141122] to-transparent border border-[#00E599]/35 hover:border-[#00E599] rounded-2xl p-4 sm:p-5 shadow-lg transition-all hover:-translate-y-0.5">
+          {/* Card 2: Published */}
+          <div className="bg-white border border-[#E8E4DC] border-t-4 border-t-[#00E599] rounded-2xl p-5 shadow-sm hover:shadow-md transition-all">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#00E599]">LIVE ON WEB</span>
-              <Check className="text-[#00E599]" size={16} />
+              <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#057A4E]">LIVE ON WEB</span>
+              <Check className="text-[#057A4E]" size={16} />
             </div>
-            <strong className="block text-3xl sm:text-4xl font-black text-white font-mono leading-none mb-1">
+            <strong className="block text-3xl sm:text-4xl font-black text-[#12101E] font-mono leading-none mb-1">
               {String(projects.filter((p) => p.status === "published").length).padStart(2, "0")}
             </strong>
-            <span className="text-xs font-mono text-[#00E599] font-semibold uppercase">Published</span>
+            <span className="text-xs font-mono text-[#5C586B] font-bold uppercase">Published</span>
           </div>
 
-          {/* Card 3: Draft Cuts (Amber) */}
-          <div className="bg-gradient-to-br from-[#FFB800]/15 via-[#141122] to-transparent border border-[#FFB800]/35 hover:border-[#FFB800] rounded-2xl p-4 sm:p-5 shadow-lg transition-all hover:-translate-y-0.5">
+          {/* Card 3: Drafts */}
+          <div className="bg-white border border-[#E8E4DC] border-t-4 border-t-[#FFB800] rounded-2xl p-5 shadow-sm hover:shadow-md transition-all">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#FFD266]">TIMELINE</span>
-              <EyeOff className="text-[#FFB800]" size={16} />
+              <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#B45309]">TIMELINE</span>
+              <EyeOff className="text-[#B45309]" size={16} />
             </div>
-            <strong className="block text-3xl sm:text-4xl font-black text-white font-mono leading-none mb-1">
+            <strong className="block text-3xl sm:text-4xl font-black text-[#12101E] font-mono leading-none mb-1">
               {String(projects.filter((p) => p.status === "draft").length).padStart(2, "0")}
             </strong>
-            <span className="text-xs font-mono text-[#FFD266] font-semibold uppercase">Drafts</span>
+            <span className="text-xs font-mono text-[#5C586B] font-bold uppercase">Drafts</span>
           </div>
 
-          {/* Card 4: Featured Showcase (Coral) */}
-          <div className="bg-gradient-to-br from-[#FF4D2D]/15 via-[#141122] to-transparent border border-[#FF4D2D]/35 hover:border-[#FF4D2D] rounded-2xl p-4 sm:p-5 shadow-lg transition-all hover:-translate-y-0.5">
+          {/* Card 4: Featured */}
+          <div className="bg-white border border-[#E8E4DC] border-t-4 border-t-[#FF4D2D] rounded-2xl p-5 shadow-sm hover:shadow-md transition-all">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#FF7E66]">HERO CUT</span>
+              <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#FF4D2D]">HERO CUTS</span>
               <Sparkles className="text-[#FF4D2D]" size={16} />
             </div>
-            <strong className="block text-3xl sm:text-4xl font-black text-white font-mono leading-none mb-1">
+            <strong className="block text-3xl sm:text-4xl font-black text-[#12101E] font-mono leading-none mb-1">
               {String(projects.filter((p) => p.featured).length).padStart(2, "0")}
             </strong>
-            <span className="text-xs font-mono text-[#FF7E66] font-semibold uppercase">Featured</span>
+            <span className="text-xs font-mono text-[#5C586B] font-bold uppercase">Featured</span>
           </div>
 
-          {/* Card 5: New Enquiries (Neon Pink) */}
-          <div className="bg-gradient-to-br from-[#FF2E93]/15 via-[#141122] to-transparent border border-[#FF2E93]/35 hover:border-[#FF2E93] rounded-2xl p-4 sm:p-5 shadow-lg transition-all hover:-translate-y-0.5 col-span-2 sm:col-span-1">
+          {/* Card 5: New Enquiries */}
+          <div className="bg-white border border-[#E8E4DC] border-t-4 border-t-[#FF2E93] rounded-2xl p-5 shadow-sm hover:shadow-md transition-all col-span-2 sm:col-span-1">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#FF66B3]">CLIENT BRIEFS</span>
-              <Inbox className="text-[#FF2E93]" size={16} />
+              <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#BE185D]">CLIENT BRIEFS</span>
+              <Inbox className="text-[#BE185D]" size={16} />
             </div>
             <div className="flex items-baseline gap-2">
-              <strong className="block text-3xl sm:text-4xl font-black text-white font-mono leading-none mb-1">
+              <strong className="block text-3xl sm:text-4xl font-black text-[#12101E] font-mono leading-none mb-1">
                 {String(enquiries.filter((e) => e.status === "new").length).padStart(2, "0")}
               </strong>
               {enquiries.filter((e) => e.status === "new").length > 0 && (
@@ -801,25 +781,25 @@ export default function AdminPage() {
                 </span>
               )}
             </div>
-            <span className="text-xs font-mono text-[#FF66B3] font-semibold uppercase">New Briefs</span>
+            <span className="text-xs font-mono text-[#5C586B] font-bold uppercase">New Briefs</span>
           </div>
         </section>
 
-        {/* Navigation Tabs */}
-        <div className="flex items-center gap-3 border-b border-white/10 pb-4 mb-8 font-mono text-xs uppercase tracking-wider">
+        {/* Navigation Tabs Styled Identical to WorkPage Filter Pills */}
+        <div className="flex items-center gap-3 border-b border-[#E8E4DC] pb-6 mb-8 font-mono text-xs uppercase tracking-wider">
           <button
             onClick={() => setActiveTab("projects")}
             type="button"
-            className={`px-5 py-2.5 rounded-xl font-bold flex items-center gap-2 transition-all cursor-pointer ${
+            className={`px-5 py-2.5 rounded-full border transition-all cursor-pointer font-bold flex items-center gap-2 ${
               activeTab === "projects"
-                ? "bg-[#635BFF] text-white shadow-[0_0_20px_rgba(99,91,255,0.45)] border border-[#635BFF]"
-                : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
+                ? "bg-[#12101E] text-white border-[#12101E] shadow-sm scale-105"
+                : "bg-white text-[#5C586B] border-[#E8E4DC] hover:border-[#12101E] hover:text-[#12101E]"
             }`}
           >
             <Film size={15} />
             <span>Cuts &amp; Projects</span>
             <span className={`px-2 py-0.5 rounded-full text-[10px] ${
-              activeTab === "projects" ? "bg-white/20 text-white" : "bg-white/10 text-white/70"
+              activeTab === "projects" ? "bg-white/20 text-white" : "bg-black/5 text-[#5C586B]"
             }`}>
               {projects.length}
             </span>
@@ -828,10 +808,10 @@ export default function AdminPage() {
           <button
             onClick={() => setActiveTab("enquiries")}
             type="button"
-            className={`px-5 py-2.5 rounded-xl font-bold flex items-center gap-2 transition-all cursor-pointer ${
+            className={`px-5 py-2.5 rounded-full border transition-all cursor-pointer font-bold flex items-center gap-2 ${
               activeTab === "enquiries"
-                ? "bg-[#FF4D2D] text-white shadow-[0_0_20px_rgba(255,77,45,0.45)] border border-[#FF4D2D]"
-                : "bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
+                ? "bg-[#FF4D2D] text-white border-[#FF4D2D] shadow-sm scale-105"
+                : "bg-white text-[#5C586B] border-[#E8E4DC] hover:border-[#12101E] hover:text-[#12101E]"
             }`}
           >
             <Inbox size={15} />
@@ -842,7 +822,7 @@ export default function AdminPage() {
               </span>
             ) : (
               <span className={`px-2 py-0.5 rounded-full text-[10px] ${
-                activeTab === "enquiries" ? "bg-white/20 text-white" : "bg-white/10 text-white/70"
+                activeTab === "enquiries" ? "bg-white/20 text-white" : "bg-black/5 text-[#5C586B]"
               }`}>
                 {enquiries.length}
               </span>
@@ -850,11 +830,18 @@ export default function AdminPage() {
           </button>
         </div>
 
+        {/* Tab 1: Project Library & Editor */}
         {activeTab === "projects" && (
-          <div className="studio-admin-layout">
-            <aside aria-label="Saved projects" className="studio-admin-list">
-              <div className="studio-admin-list-heading">
-                <h2>Project Cuts <span>({filteredProjects.length})</span></h2>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            {/* Left Column: Cuts Library */}
+            <aside aria-label="Saved projects" className="lg:col-span-5 bg-white border border-[#E8E4DC] rounded-3xl p-6 shadow-sm">
+              <div className="flex items-center justify-between pb-4 mb-4 border-b border-[#E8E4DC]">
+                <div className="flex items-center gap-2">
+                  <h2 className="text-xl font-black text-[#12101E] m-0 font-display">Project Cuts</h2>
+                  <span className="px-2 py-0.5 rounded-full bg-[#F5F3FF] text-[#635BFF] text-xs font-mono font-bold">
+                    {filteredProjects.length}
+                  </span>
+                </div>
                 <div className="flex items-center gap-1.5">
                   <button
                     aria-label="Restore default cuts"
@@ -869,17 +856,17 @@ export default function AdminPage() {
                   <button
                     aria-label="Create a project"
                     title="Add new cut"
-                    className="studio-admin-icon-button"
+                    className="button button-small button-dark inline-flex items-center gap-1 text-xs font-mono font-bold"
                     onClick={() => startNewProject(true)}
                     type="button"
                   >
-                    <Plus size={18} />
+                    <Plus size={16} /> New Cut
                   </button>
                 </div>
               </div>
 
-              {/* Colorful Category Filter Pills */}
-              <div className="flex flex-wrap gap-1.5 mb-4 pb-4 border-b border-white/10">
+              {/* Category Filter Pills (Same as WorkPage) */}
+              <div className="flex flex-wrap gap-1.5 mb-4 pb-4 border-b border-[#E8E4DC]">
                 {["All", ...CATEGORIES].map((cat) => {
                   const isActive = categoryFilter === cat;
                   return (
@@ -887,10 +874,10 @@ export default function AdminPage() {
                       key={cat}
                       type="button"
                       onClick={() => setCategoryFilter(cat)}
-                      className={`text-[10px] font-mono uppercase px-2.5 py-1 rounded-full border transition-all cursor-pointer ${
+                      className={`text-[10px] font-mono uppercase px-3 py-1 rounded-full border transition-all cursor-pointer ${
                         isActive
-                          ? CATEGORY_COLORS[cat] || "bg-white text-[#0E0C18] border-white font-bold"
-                          : "bg-white/5 text-white/60 border-white/10 hover:text-white hover:border-white/25"
+                          ? "bg-[#12101E] text-white border-[#12101E] font-bold shadow-sm"
+                          : "bg-white text-[#5C586B] border-[#E8E4DC] hover:border-[#12101E] hover:text-[#12101E]"
                       }`}
                     >
                       {cat === "All" ? "ALL" : cat}
@@ -899,10 +886,14 @@ export default function AdminPage() {
                 })}
               </div>
 
-              {projectsLoading && <p aria-live="polite" className="text-[#A59FFF] font-mono text-xs">Loading cuts…</p>}
+              {projectsLoading && (
+                <div className="py-8 text-center text-xs font-mono text-[#5C586B]">
+                  <span className="inline-block animate-spin mr-2">●</span> Loading studio cuts…
+                </div>
+              )}
               {!projectsLoading && filteredProjects.length === 0 && (
-                <div className="py-8 text-center text-xs text-white/50">
-                  <p>No {categoryFilter !== "All" ? categoryFilter : ""} cuts found.</p>
+                <div className="py-8 text-center text-xs text-[#5C586B]">
+                  <p className="font-semibold text-[#12101E] mb-1">No {categoryFilter !== "All" ? categoryFilter : ""} cuts found.</p>
                   <button
                     onClick={restoreDefaultCuts}
                     type="button"
@@ -912,53 +903,63 @@ export default function AdminPage() {
                   </button>
                 </div>
               )}
-              {filteredProjects.map((project) => {
-                const isEditing = editingId === project.id;
-                const isPub = project.status === "published";
-                return (
-                  <button
-                    aria-current={isEditing ? "true" : undefined}
-                    className={`studio-admin-project${isEditing ? " is-active" : ""}`}
-                    key={project.id}
-                    onClick={() => editProject(project)}
-                    type="button"
-                  >
-                    <div className="flex items-center justify-between w-full mb-1">
-                      <span className="font-bold text-white text-sm line-clamp-1">{project.title}</span>
-                      {project.featured && (
-                        <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-[#FF4D2D]/20 text-[#FF4D2D] border border-[#FF4D2D]/40">
-                          ★ FEATURED
+              <div className="flex flex-col gap-2 max-h-[600px] overflow-y-auto pr-1">
+                {filteredProjects.map((project) => {
+                  const isEditing = editingId === project.id;
+                  const isPub = project.status === "published";
+                  return (
+                    <button
+                      aria-current={isEditing ? "true" : undefined}
+                      className={`p-3.5 rounded-2xl border transition-all text-left w-full cursor-pointer ${
+                        isEditing
+                          ? "bg-[#FFF8F6] border-[#FF4D2D] border-l-4 shadow-sm"
+                          : "bg-[#FCFBF9] border-[#E8E4DC] hover:bg-white hover:border-[#12101E]"
+                      }`}
+                      key={project.id}
+                      onClick={() => editProject(project)}
+                      type="button"
+                    >
+                      <div className="flex items-center justify-between w-full mb-1">
+                        <span className="font-bold text-[#12101E] text-sm line-clamp-1">{project.title}</span>
+                        {project.featured && (
+                          <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-orange-50 text-[#FF4D2D] border border-orange-200">
+                            ★ FEATURED
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 text-[11px] font-mono">
+                        <span className={`px-2 py-0.5 rounded-full font-bold uppercase ${
+                          isPub
+                            ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                            : "bg-amber-50 text-amber-700 border border-amber-200"
+                        }`}>
+                          {project.status}
                         </span>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-2 text-[11px] font-mono">
-                      <span className={`px-2 py-0.5 rounded-full font-bold uppercase ${
-                        isPub
-                          ? "bg-[#00E599]/20 text-[#00E599] border border-[#00E599]/40"
-                          : "bg-[#FFB800]/20 text-[#FFB800] border border-[#FFB800]/40"
-                      }`}>
-                        {project.status}
-                      </span>
-                      <span className="text-white/40">·</span>
-                      <span className="text-[#A59FFF] truncate">{project.category}</span>
-                      {project.format && (
-                        <>
-                          <span className="text-white/40">·</span>
-                          <span className="text-white/40 truncate">{project.format.split(" ")[0]}</span>
-                        </>
-                      )}
-                    </div>
-                  </button>
-                );
-              })}
+                        <span className="text-[#8E8A9E]">·</span>
+                        <span className="text-[#5C586B] truncate">{project.category}</span>
+                        {project.format && (
+                          <>
+                            <span className="text-[#8E8A9E]">·</span>
+                            <span className="text-[#8E8A9E] truncate">{project.format.split(" ")[0]}</span>
+                          </>
+                        )}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
             </aside>
 
-            {/* Smart Add / Edit Project Form */}
-            <form className="studio-admin-form" onSubmit={saveProject}>
-              <div className="studio-admin-list-heading">
+            {/* Right Column: Smart Add / Edit Cut Form */}
+            <form className="lg:col-span-7 bg-white border border-[#E8E4DC] rounded-3xl p-6 sm:p-8 shadow-sm" onSubmit={saveProject}>
+              <div className="flex items-center justify-between pb-4 mb-6 border-b border-[#E8E4DC]">
                 <div>
-                  <p className="studio-location text-[#A59FFF] font-mono text-xs">{editingId ? "EDITING CUT" : "NEW VIDEO CUT"}</p>
-                  <h2>{editingId ? form.title : "Add New Cut from Link"}</h2>
+                  <p className="font-mono text-xs font-bold uppercase tracking-wider text-[#FF4D2D] m-0">
+                    {editingId ? "EDITING PROJECT" : "NEW VIDEO CUT"}
+                  </p>
+                  <h2 className="text-xl sm:text-2xl font-black text-[#12101E] tracking-tight m-0 mt-0.5 font-display">
+                    {editingId ? form.title : "Add New Cut from Link"}
+                  </h2>
                 </div>
                 {editingId && (
                   <button aria-label="Close project editor" className="studio-admin-icon-button" onClick={startNewProject} type="button">
@@ -967,38 +968,38 @@ export default function AdminPage() {
                 )}
               </div>
 
-              {/* Direct Video Link Ingest Section with Vivid Gradient */}
-              <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-[#635BFF]/15 via-[#181428] to-[#FF4D2D]/10 border border-[#635BFF]/40 mb-6 shadow-xl">
+              {/* Direct Video Link Ingest Section */}
+              <div className="p-5 rounded-2xl bg-[#F6F4FE] border border-[#635BFF]/25 mb-6 shadow-sm">
                 <div className="flex items-center justify-between mb-2.5">
-                  <label className="font-mono text-xs font-bold uppercase tracking-wider text-[#A59FFF] m-0 flex items-center gap-2">
-                    <Sparkles className="text-[#FFB800]" size={15} /> Instant Video Ingest (YouTube, Shorts, or Instagram Reel)
+                  <label className="font-mono text-xs font-bold uppercase tracking-wider text-[#635BFF] m-0 flex items-center gap-1.5">
+                    <Sparkles size={15} /> Paste Video Link (YouTube, Shorts, or Instagram Reel)
                   </label>
                   {detectedVideo && (
-                    <span className="font-mono text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#00E599]/20 text-[#00E599] border border-[#00E599]/40 flex items-center gap-1">
+                    <span className="font-mono text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#12101E] text-[#00E599] border border-[#00E599]/30 flex items-center gap-1">
                       ✓ {detectedVideo.platform === "youtube" ? (detectedVideo.isVertical ? "YouTube Short (9:16)" : "YouTube 4K Master") : "Instagram Reel (9:16)"}
                     </span>
                   )}
                 </div>
 
                 <input
-                  className="w-full bg-[#0E0C18] border border-white/20 focus:border-[#635BFF] focus:ring-2 focus:ring-[#635BFF]/30 rounded-xl px-4 py-3 text-sm font-mono text-white placeholder-white/30 focus:outline-none transition-all shadow-inner"
+                  className="w-full bg-white border border-[#E8E4DC] focus:border-[#635BFF] focus:ring-2 focus:ring-[#635BFF]/15 rounded-xl px-4 py-3 text-sm font-mono text-[#12101E] placeholder-[#8E8A9E] focus:outline-none shadow-sm transition-all"
                   maxLength={500}
                   onChange={(event) => handleVideoLinkChange(event.target.value)}
                   placeholder="https://www.youtube.com/watch?v=... or https://www.instagram.com/reel/..."
                   type="url"
                   value={form.video_url}
                 />
-                <p className="text-[11px] font-mono text-white/50 mt-2 mb-0">
-                  Paste any YouTube video/Short or Instagram Reel. Aspect ratio, platform, and posters will be detected automatically.
+                <p className="text-[11px] font-sans text-[#5C586B] mt-2 mb-0">
+                  Pastes from YouTube and Instagram automatically detect aspect ratio (16:9 or 9:16) and extract high-resolution posters.
                 </p>
 
                 {/* Live Detected Poster Preview */}
                 {(form.image_url || detectedVideo?.thumbnail) && (
-                  <div className="mt-3.5 pt-3.5 border-t border-white/10 flex items-center gap-3.5">
-                    <div className="relative rounded-lg overflow-hidden border border-[#635BFF]/40 shadow-md">
+                  <div className="mt-3.5 pt-3.5 border-t border-[#635BFF]/15 flex items-center gap-3.5">
+                    <div className="relative rounded-lg overflow-hidden border border-[#E8E4DC] shadow-sm bg-black">
                       <img
                         alt="Detected thumbnail"
-                        className="w-24 h-16 object-cover bg-black"
+                        className="w-24 h-16 object-cover"
                         src={form.image_url || detectedVideo?.thumbnail}
                       />
                       <span className="absolute bottom-1 right-1 bg-black/80 text-[9px] font-mono text-white px-1 py-0.5 rounded">
@@ -1006,82 +1007,102 @@ export default function AdminPage() {
                       </span>
                     </div>
                     <div className="text-xs">
-                      <strong className="block text-white font-mono font-bold">Auto-detected Video Poster &amp; Scopes</strong>
-                      <span className="text-[#A59FFF] font-mono text-[11px]">{form.format} · {form.category}</span>
+                      <strong className="block text-[#12101E] font-mono font-bold">Auto-detected Video Poster &amp; Aspect</strong>
+                      <span className="text-[#5C586B] text-[11px]">{form.format} · {form.category}</span>
                     </div>
                   </div>
                 )}
               </div>
 
               {/* Title & Client Inputs */}
-              <div className="studio-admin-field-pair">
-                <label>
-                  <span>Project Title / Cut Name <span className="text-[#FF4D2D]">*</span></span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label className="block text-xs font-mono font-bold uppercase tracking-wider text-[#12101E] mb-1.5">
+                    Project Title / Cut Name <span className="text-[#FF4D2D]">*</span>
+                  </label>
                   <input
+                    className="w-full bg-white border border-[#E8E4DC] focus:border-[#635BFF] focus:ring-2 focus:ring-[#635BFF]/15 rounded-xl px-4 py-3 text-sm text-[#12101E] focus:outline-none transition-all font-sans"
                     maxLength={120}
                     onChange={(event) => updateTitle(event.target.value)}
                     placeholder="e.g. Apex Velocity Campaign"
                     required
                     value={form.title}
                   />
-                </label>
-                <label>
-                  <span>Client / Brand Name (Optional)</span>
+                </div>
+                <div>
+                  <label className="block text-xs font-mono font-bold uppercase tracking-wider text-[#12101E] mb-1.5">
+                    Client / Brand Name (Optional)
+                  </label>
                   <input
+                    className="w-full bg-white border border-[#E8E4DC] focus:border-[#635BFF] focus:ring-2 focus:ring-[#635BFF]/15 rounded-xl px-4 py-3 text-sm text-[#12101E] focus:outline-none transition-all font-sans"
                     maxLength={120}
                     onChange={(event) => updateField("client_name", event.target.value)}
-                    placeholder="e.g. CineWave, Nike, or Creator Handle"
+                    placeholder="e.g. CineWave, Nike, or Handle"
                     value={form.client_name}
                   />
-                </label>
+                </div>
               </div>
 
-              <div className="studio-admin-field-pair">
-                <label>
-                  <span>Category</span>
-                  <select onChange={(event) => updateField("category", event.target.value)} value={form.category}>
+              {/* Category & Publication State */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label className="block text-xs font-mono font-bold uppercase tracking-wider text-[#12101E] mb-1.5">
+                    Category
+                  </label>
+                  <select
+                    className="w-full bg-white border border-[#E8E4DC] focus:border-[#635BFF] focus:ring-2 focus:ring-[#635BFF]/15 rounded-xl px-4 py-3 text-sm text-[#12101E] focus:outline-none transition-all font-sans cursor-pointer"
+                    onChange={(event) => updateField("category", event.target.value)}
+                    value={form.category}
+                  >
                     {CATEGORIES.map((category) => (
                       <option key={category} value={category}>{category}</option>
                     ))}
                   </select>
-                </label>
-                <label>
-                  <span>Publication State</span>
-                  <select onChange={(event) => updateField("status", event.target.value)} value={form.status}>
+                </div>
+                <div>
+                  <label className="block text-xs font-mono font-bold uppercase tracking-wider text-[#12101E] mb-1.5">
+                    Publication State
+                  </label>
+                  <select
+                    className="w-full bg-white border border-[#E8E4DC] focus:border-[#635BFF] focus:ring-2 focus:ring-[#635BFF]/15 rounded-xl px-4 py-3 text-sm text-[#12101E] focus:outline-none transition-all font-sans cursor-pointer"
+                    onChange={(event) => updateField("status", event.target.value)}
+                    value={form.status}
+                  >
                     <option value="published">Published — Live on Public Site</option>
                     <option value="draft">Draft — Hidden In Studio Desk</option>
                   </select>
-                </label>
+                </div>
               </div>
 
-              <div className="studio-admin-checks mb-4">
-                <label className="flex items-center gap-2 cursor-pointer text-sm font-mono text-white/90">
+              {/* Feature Checkbox */}
+              <div className="p-3.5 rounded-xl bg-[#FCFBF9] border border-[#E8E4DC] mb-5">
+                <label className="flex items-center gap-2.5 cursor-pointer text-sm font-sans text-[#12101E] font-medium m-0">
                   <input
                     checked={form.featured}
-                    className="w-4 h-4 accent-[#FF4D2D] rounded"
+                    className="w-4 h-4 accent-[#FF4D2D] rounded cursor-pointer"
                     onChange={(event) => updateField("featured", event.target.checked)}
                     type="checkbox"
                   />
-                  <span className="text-[#FFB800] font-bold">★ Feature in Top Homepage Showcase</span>
+                  <span>Feature in Homepage Showcase</span>
                 </label>
               </div>
 
               {/* Advanced Accordion Toggle */}
-              <div className="border border-white/10 rounded-2xl overflow-hidden mb-6 bg-[#161324]">
+              <div className="border border-[#E8E4DC] rounded-2xl overflow-hidden mb-6 bg-[#FCFBF9]">
                 <button
-                  className="w-full px-5 py-3.5 bg-white/5 text-xs font-mono font-bold text-white/70 hover:text-white flex items-center justify-between cursor-pointer transition-colors"
+                  className="w-full px-5 py-3.5 bg-white text-xs font-mono font-bold text-[#5C586B] hover:text-[#12101E] flex items-center justify-between cursor-pointer border-b border-[#E8E4DC] transition-colors"
                   onClick={() => setShowAdvanced((prev) => !prev)}
                   type="button"
                 >
                   <span className="flex items-center gap-2">
                     <Sparkles size={14} className="text-[#635BFF]" />
-                    Advanced Settings, Direct Image Upload &amp; Slugs
+                    Advanced Settings, Image Upload &amp; Slugs
                   </span>
                   {showAdvanced ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                 </button>
 
                 {showAdvanced && (
-                  <div className="p-5 sm:p-6 bg-[#0E0C18]/80 border-t border-white/10 flex flex-col gap-4">
+                  <div className="p-5 sm:p-6 bg-white flex flex-col gap-4">
                     <label className="studio-admin-upload">
                       <span>
                         <ImagePlus aria-hidden="true" size={18} className="text-[#635BFF]" />{" "}
@@ -1090,59 +1111,108 @@ export default function AdminPage() {
                       <input accept="image/jpeg,image/png,image/webp" onChange={(event) => chooseImage(event.target.files?.[0] ?? null)} type="file" />
                     </label>
 
-                    <label>
-                      <span>URL Slug</span>
-                      <input maxLength={140} onChange={(event) => updateField("slug", slugify(event.target.value))} value={form.slug} />
-                    </label>
-
-                    <label>
-                      <span>Project Summary</span>
-                      <textarea maxLength={3000} onChange={(event) => updateField("summary", event.target.value)} rows={2} value={form.summary} />
-                    </label>
-
-                    <label>
-                      <span>Director&apos;s Cut Approach</span>
-                      <textarea maxLength={3000} onChange={(event) => updateField("approach", event.target.value)} rows={2} value={form.approach} />
-                    </label>
-
-                    <div className="studio-admin-field-pair">
-                      <label>
-                        <span>Year / Season</span>
-                        <input maxLength={32} onChange={(event) => updateField("year_label", event.target.value)} placeholder="2026" value={form.year_label} />
+                    <div>
+                      <label className="block text-xs font-mono font-bold uppercase tracking-wider text-[#12101E] mb-1.5">
+                        URL Slug
                       </label>
-                      <label>
-                        <span>Display Order</span>
-                        <input min="0" onChange={(event) => updateField("sort_order", event.target.value)} type="number" value={form.sort_order} />
+                      <input
+                        className="w-full bg-white border border-[#E8E4DC] focus:border-[#635BFF] rounded-xl px-4 py-3 text-sm font-mono text-[#12101E]"
+                        maxLength={140}
+                        onChange={(event) => updateField("slug", slugify(event.target.value))}
+                        value={form.slug}
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-mono font-bold uppercase tracking-wider text-[#12101E] mb-1.5">
+                        Project Summary
                       </label>
+                      <textarea
+                        className="w-full bg-white border border-[#E8E4DC] focus:border-[#635BFF] rounded-xl px-4 py-3 text-sm text-[#12101E] font-sans"
+                        maxLength={3000}
+                        onChange={(event) => updateField("summary", event.target.value)}
+                        rows={2}
+                        value={form.summary}
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-mono font-bold uppercase tracking-wider text-[#12101E] mb-1.5">
+                        Director&apos;s Cut Approach
+                      </label>
+                      <textarea
+                        className="w-full bg-white border border-[#E8E4DC] focus:border-[#635BFF] rounded-xl px-4 py-3 text-sm text-[#12101E] font-sans"
+                        maxLength={3000}
+                        onChange={(event) => updateField("approach", event.target.value)}
+                        rows={2}
+                        value={form.approach}
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-mono font-bold uppercase tracking-wider text-[#12101E] mb-1.5">
+                          Year / Season
+                        </label>
+                        <input
+                          className="w-full bg-white border border-[#E8E4DC] focus:border-[#635BFF] rounded-xl px-4 py-3 text-sm font-mono text-[#12101E]"
+                          maxLength={32}
+                          onChange={(event) => updateField("year_label", event.target.value)}
+                          placeholder="2026"
+                          value={form.year_label}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-mono font-bold uppercase tracking-wider text-[#12101E] mb-1.5">
+                          Display Order
+                        </label>
+                        <input
+                          className="w-full bg-white border border-[#E8E4DC] focus:border-[#635BFF] rounded-xl px-4 py-3 text-sm font-mono text-[#12101E]"
+                          min="0"
+                          onChange={(event) => updateField("sort_order", event.target.value)}
+                          type="number"
+                          value={form.sort_order}
+                        />
+                      </div>
                     </div>
                   </div>
                 )}
               </div>
 
-              {feedback && <p aria-live="polite" className="studio-admin-feedback" role="status">{feedback}</p>}
+              {feedback && (
+                <div className="p-4 rounded-xl bg-blue-50 border border-blue-200 text-blue-900 text-xs font-mono mb-4" role="status">
+                  {feedback}
+                </div>
+              )}
 
-              <div className="studio-admin-actions flex flex-wrap items-center gap-3 pt-2">
+              {/* Form Actions */}
+              <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-[#E8E4DC]">
                 <button
-                  className="px-6 py-3.5 rounded-xl font-mono text-xs font-bold uppercase tracking-wider text-white bg-gradient-to-r from-[#FF4D2D] to-[#FF2E93] hover:from-[#FF3D18] hover:to-[#E62080] shadow-[0_0_25px_rgba(255,77,45,0.45)] hover:shadow-[0_0_35px_rgba(255,77,45,0.6)] flex items-center gap-2 transition-all cursor-pointer disabled:opacity-50"
+                  className="button button-gold inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider shadow-sm cursor-pointer disabled:opacity-50"
                   disabled={saving}
                   type="submit"
                 >
                   <Save aria-hidden="true" size={16} /> {saving ? "Saving…" : form.status === "published" ? "Save & Publish Cut" : "Save Draft"}
                 </button>
                 <button
-                  className="px-5 py-3.5 rounded-xl font-mono text-xs font-bold uppercase tracking-wider text-[#00E599] bg-[#00E599]/10 border border-[#00E599]/40 hover:bg-[#00E599]/20 hover:border-[#00E599] flex items-center gap-2 transition-all cursor-pointer"
+                  className="button button-outline inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider cursor-pointer"
                   onClick={() => setShowPreviewModal(true)}
                   type="button"
                 >
                   <Eye aria-hidden="true" size={16} /> Preview Cut
                 </button>
                 {editingId && (
-                  <button className="studio-admin-cancel" onClick={startNewProject} type="button">
+                  <button className="button button-outline text-xs font-mono text-[#5C586B]" onClick={startNewProject} type="button">
                     Cancel Editing
                   </button>
                 )}
                 {editingId && (
-                  <button className="studio-admin-delete" disabled={saving} onClick={deleteProject} type="button">
+                  <button
+                    className="button bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 rounded-full px-5 py-2.5 text-xs font-bold font-mono ml-auto cursor-pointer"
+                    disabled={saving}
+                    onClick={deleteProject}
+                    type="button"
+                  >
                     Delete Cut
                   </button>
                 )}
@@ -1151,12 +1221,12 @@ export default function AdminPage() {
 
             {/* Live Cut Preview Modal */}
             {showPreviewModal && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
-                <div className="bg-[#141122] rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-white/20 relative max-h-[90vh] overflow-y-auto text-white">
-                  <div className="flex items-center justify-between mb-4 pb-3 border-b border-white/10">
+              <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                <div className="bg-[#FCFBF9] rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-[#E8E4DC] relative max-h-[90vh] overflow-y-auto">
+                  <div className="flex items-center justify-between mb-4 pb-3 border-b border-[#E8E4DC]">
                     <div className="flex items-center gap-2">
-                      <span className="w-2.5 h-2.5 rounded-full bg-[#FF4D2D] animate-pulse" />
-                      <span className="font-mono text-xs font-bold uppercase tracking-wider text-white">
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#FF4D2D]" />
+                      <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#12101E]">
                         PREVIEW // {form.status.toUpperCase()}
                       </span>
                     </div>
@@ -1187,10 +1257,10 @@ export default function AdminPage() {
                     }}
                   />
 
-                  <div className="mt-4 pt-4 border-t border-white/10 flex justify-between items-center text-xs font-mono text-white/50">
+                  <div className="mt-4 pt-4 border-t border-[#E8E4DC] flex justify-between items-center text-xs font-mono text-[#5C586B]">
                     <span>Slug: /work/{form.slug || "new-slug"}</span>
                     <button
-                      className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-mono text-xs transition-colors"
+                      className="button button-small button-dark"
                       onClick={() => setShowPreviewModal(false)}
                       type="button"
                     >
@@ -1203,34 +1273,28 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* Enquiries Screen with 1-Click WhatsApp & Email */}
+        {/* Tab 2: Enquiries Screen */}
         {activeTab === "enquiries" && (
-          <section aria-labelledby="enquiries-title" className="studio-admin-enquiries">
-            <div className="studio-admin-list-heading">
+          <section aria-labelledby="enquiries-title" className="bg-white border border-[#E8E4DC] rounded-3xl p-6 sm:p-8 shadow-sm">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 mb-6 border-b border-[#E8E4DC] gap-4">
               <div>
-                <p className="studio-location text-[#FF2E93] font-bold font-mono text-xs tracking-wider">CLIENT BRIEFS INBOX</p>
-                <h2 id="enquiries-title" className="text-2xl font-black text-white">
-                  Project Enquiries <span className="text-[#A59FFF] font-mono">({filteredEnquiries.length})</span>
+                <p className="font-mono text-xs font-bold uppercase tracking-wider text-[#FF4D2D] m-0">CLIENT BRIEFS INBOX</p>
+                <h2 id="enquiries-title" className="text-2xl font-black text-[#12101E] tracking-tight m-0 mt-0.5 font-display">
+                  Project Enquiries <span className="text-[#635BFF] font-mono text-lg">({filteredEnquiries.length})</span>
                 </h2>
               </div>
 
-              {/* Status filter buttons */}
+              {/* Status filter buttons matching WorkPage filter style */}
               <div className="flex flex-wrap gap-2">
                 {["all", "new", "contacted", "closed"].map((st) => (
                   <button
                     key={st}
                     type="button"
                     onClick={() => setEnquiryStatusFilter(st)}
-                    className={`font-mono text-xs uppercase px-3.5 py-1.5 rounded-full border transition-all cursor-pointer ${
+                    className={`font-mono text-xs uppercase px-4 py-1.5 rounded-full border transition-all cursor-pointer ${
                       enquiryStatusFilter === st
-                        ? st === "new"
-                          ? "bg-[#FF2E93] text-white border-[#FF2E93] font-black shadow-[0_0_15px_rgba(255,46,147,0.4)]"
-                          : st === "contacted"
-                          ? "bg-[#00D2FF] text-[#0E0C18] border-[#00D2FF] font-black shadow-[0_0_15px_rgba(0,210,255,0.4)]"
-                          : st === "closed"
-                          ? "bg-white/20 text-white border-white/30 font-bold"
-                          : "bg-[#635BFF] text-white border-[#635BFF] font-black shadow-[0_0_15px_rgba(99,91,255,0.4)]"
-                        : "bg-white/5 text-white/60 border-white/10 hover:text-white hover:border-white/25"
+                        ? "bg-[#12101E] text-white border-[#12101E] font-bold shadow-sm scale-105"
+                        : "bg-white text-[#5C586B] border-[#E8E4DC] hover:border-[#12101E] hover:text-[#12101E]"
                     }`}
                   >
                     {st === "all" ? `ALL (${enquiries.length})` : `${st.toUpperCase()} (${enquiries.filter((e) => e.status === st).length})`}
@@ -1239,16 +1303,20 @@ export default function AdminPage() {
               </div>
             </div>
 
-            {enquiriesLoading && <p aria-live="polite" className="text-[#A59FFF] font-mono text-xs">Loading enquiries…</p>}
+            {enquiriesLoading && (
+              <div className="py-12 text-center text-xs font-mono text-[#5C586B]">
+                <span className="inline-block animate-spin mr-2">●</span> Loading briefs…
+              </div>
+            )}
             {!enquiriesLoading && filteredEnquiries.length === 0 && (
-              <div className="py-16 text-center text-white/50 bg-[#181428] rounded-2xl border border-white/10">
-                <Inbox size={32} className="mx-auto text-white/20 mb-3" />
-                <p className="text-base font-bold text-white mb-1">No enquiries found in this view.</p>
-                <p className="text-xs font-mono text-white/40">Client briefs submitted on the website contact form land directly here.</p>
+              <div className="py-16 text-center text-[#5C586B]">
+                <Inbox size={36} className="mx-auto text-[#8E8A9E] mb-3" />
+                <p className="text-base font-bold text-[#12101E] mb-1">No enquiries found in this view.</p>
+                <p className="text-xs font-sans text-[#5C586B]">Client briefs submitted on the website contact form land directly here.</p>
               </div>
             )}
             {!enquiriesLoading && filteredEnquiries.length > 0 && (
-              <div className="studio-admin-enquiry-list">
+              <div className="flex flex-col gap-4">
                 {filteredEnquiries.map((enquiry) => {
                   const cleanPhone = String(enquiry.phone || "").replace(/[^0-9]/g, "");
                   const whatsAppReplyUrl = cleanPhone
@@ -1258,38 +1326,38 @@ export default function AdminPage() {
                     : null;
 
                   return (
-                    <article className="studio-admin-enquiry p-6 rounded-2xl bg-[#181428] border border-white/10 hover:border-white/20 shadow-xl mb-4 transition-all" key={enquiry.id}>
+                    <article className="p-6 rounded-2xl bg-[#FCFBF9] border border-[#E8E4DC] hover:border-[#12101E] transition-all shadow-sm" key={enquiry.id}>
                       <div className="flex-1">
                         <div className="flex flex-wrap items-center gap-2.5 mb-2">
-                          <strong className="text-lg font-bold text-white">{enquiry.name}</strong>
+                          <strong className="text-lg font-bold text-[#12101E]">{enquiry.name}</strong>
                           {enquiry.company && (
-                            <span className="text-xs font-mono px-2.5 py-0.5 rounded-full bg-[#635BFF]/20 text-[#A59FFF] border border-[#635BFF]/40 font-bold">
+                            <span className="text-xs font-mono px-2.5 py-0.5 rounded-full bg-[#F6F4FE] text-[#635BFF] border border-[#635BFF]/25 font-bold">
                               {enquiry.company}
                             </span>
                           )}
-                          <span className="text-xs text-white/40 font-mono ml-auto">
+                          <span className="text-xs text-[#8E8A9E] font-mono ml-auto">
                             {new Date(enquiry.created_at).toLocaleDateString()}
                           </span>
                         </div>
                         <div className="text-xs font-mono font-bold text-[#FF4D2D] mb-2 flex items-center gap-2">
-                          <span className="px-2 py-0.5 rounded bg-[#FF4D2D]/15 border border-[#FF4D2D]/30">
+                          <span className="px-2.5 py-0.5 rounded bg-red-50 text-[#FF4D2D] border border-red-200">
                             Service: {enquiry.service}
                           </span>
                           {enquiry.deadline && (
-                            <span className="px-2 py-0.5 rounded bg-[#FFB800]/15 text-[#FFD266] border border-[#FFB800]/30">
+                            <span className="px-2.5 py-0.5 rounded bg-amber-50 text-[#B45309] border border-amber-200">
                               Timeline: {enquiry.deadline}
                             </span>
                           )}
                         </div>
-                        <p className="text-sm text-white/80 leading-relaxed bg-[#0E0C18] p-4 rounded-xl border border-white/10 my-3 font-sans">
+                        <p className="text-sm text-[#4E4A5C] leading-relaxed bg-white p-4 rounded-xl border border-[#E8E4DC] my-3 font-sans">
                           {enquiry.requirements}
                         </p>
                       </div>
 
-                      <div className="flex flex-wrap items-center gap-2.5 pt-3.5 border-t border-white/10 w-full">
+                      <div className="flex flex-wrap items-center gap-2.5 pt-3.5 border-t border-[#E8E4DC] w-full">
                         {whatsAppReplyUrl && (
                           <a
-                            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#25D366] hover:bg-[#20ba59] text-[#0E0C18] font-mono font-bold text-xs uppercase tracking-wider shadow-[0_0_15px_rgba(37,211,102,0.35)] transition-all"
+                            className="button button-small bg-[#25D366] hover:bg-[#20ba59] text-white font-mono font-bold text-xs uppercase tracking-wider inline-flex items-center gap-1.5 shadow-sm"
                             href={whatsAppReplyUrl}
                             rel="noreferrer"
                             target="_blank"
@@ -1299,7 +1367,7 @@ export default function AdminPage() {
                         )}
                         {enquiry.email && (
                           <a
-                            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#635BFF] hover:bg-[#5249e0] text-white font-mono font-bold text-xs uppercase tracking-wider shadow-[0_0_15px_rgba(99,91,255,0.35)] transition-all"
+                            className="button button-small button-outline text-xs font-mono font-bold inline-flex items-center gap-1.5"
                             href={`mailto:${enquiry.email}?subject=${encodeURIComponent(`[VIP STUDIOS] Your Project Brief: ${enquiry.service}`)}`}
                           >
                             <Mail size={15} /> Send Email
@@ -1307,7 +1375,7 @@ export default function AdminPage() {
                         )}
                         <select
                           aria-label={`Status for ${enquiry.name}`}
-                          className="font-mono text-xs px-3 py-2 rounded-xl border border-white/20 bg-[#0E0C18] text-white ml-auto focus:border-[#635BFF] focus:outline-none"
+                          className="font-mono text-xs px-3 py-1.5 rounded-xl border border-[#E8E4DC] bg-white text-[#12101E] ml-auto focus:border-[#635BFF] focus:outline-none"
                           onChange={(event) => updateEnquiryStatus(enquiry.id, event.target.value)}
                           value={enquiry.status}
                         >
