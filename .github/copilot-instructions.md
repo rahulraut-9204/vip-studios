@@ -6,14 +6,18 @@ Stack: Vite + React + JavaScript + Tailwind + React Router + Supabase + Motion +
 Deploy target: Cloudflare Pages. Do NOT change the build output config.
 
 ## Design tokens (NON-NEGOTIABLE)
-- bg:        #0A0A0A
-- surface:   #141414
-- border:    #2A2A2A
-- accent:    #FFA000  (ONLY this accent — no gold/yellow/purple/blue/green)
-- text:      #F5F5F5
-- muted:     #A0A0A0
-- radius:    12–16px  (never pill-shaped except tiny tags)
-- font:      Inter (weights 400/500/600/700/800/900). Tight tracking on display sizes.
+- bg:        #FFFDF8
+- surface:   #FFFFFF
+- surface-2: #F4F1FF
+- border:    #EAE6E0
+- accent:    #FF6542
+- accent-2:  #7765F8
+- support:   #B9F4D0 / #FFD76A
+- deep:      #27213D
+- text:      #19162B
+- muted:     #6E6A7C
+- radius:    12–20px (pill shapes only for compact media controls)
+- font:      Space Grotesk for display, DM Sans for body/UI.
 - breakpoints: ONLY 480 / 768 / 1024 / 1280 / 1536px
 
 ## Rules
@@ -38,6 +42,7 @@ Deploy target: Cloudflare Pages. Do NOT change the build output config.
 - Multiple YouTube iframes loaded on page load.
 
 ## Aesthetic direction
-Editorial, cinematic, asymmetric. Big type, strong negative space, thin 1px borders,
-dark surfaces, subtle orange glow accents, image-led sections. Think A24 / Vercel / Linear
-level polish — not a SaaS dashboard, not a college project.
+Light-first editorial contact sheet: ivory space, expressive display type, ink text,
+coral actions, periwinkle wayfinding, small mint/sunshine registration marks, thin
+rules, image-led asymmetric compositions and restrained motion. The result should feel
+like a real creative studio archive — not a SaaS dashboard, not a college project.

@@ -15,10 +15,10 @@ Prospective clients need a clear view of social media management, video and podc
 The typographic hero pairs a clear content-and-growth offer with project and enquiry CTAs. Follow with eight service lines, disclosed concept studies, truthful differentiators, a six-stage discovery-to-review process, a content ecosystem, studio introduction, concise FAQ and project enquiry. Do not imply that stock images are commissioned work, client logos or results. Do not guarantee growth outcomes.
 
 ## Constraints
-Use an editorial sequence with near-black, white, and signature orange (#FFA000); Inter throughout, accessible controls, reduced-motion support, and responsive layouts. Preserve factual service descriptions, concept disclosures, enquiry behavior, SEO, and accessibility. Do not invent clients, testimonials, awards, logos or guaranteed outcomes. Email and WhatsApp come from the configured public environment variables.
+Use a light-first studio contact-sheet system with ivory/white surfaces, coral #FF6542, periwinkle #7765F8, mint #B9F4D0, sunshine #FFD76A and deep ink #27213D; Space Grotesk for display and DM Sans for body/UI. Preserve factual service descriptions, concept disclosures, enquiry behavior, SEO, and accessibility. Do not invent clients, testimonials, awards, logos or guaranteed outcomes. Email and WhatsApp come from the configured public environment variables.
 
 ## Direction and memorable moment
-The stable studio header keeps navigation and the primary action visible, then opens a full-height mobile sheet on smaller screens. The page follows the visitor's decision sequence: complete offer → services → clearly labeled concepts → reasons → process → ecosystem → enquiry. Orange marks primary actions and selection; it is not a performance indicator.
+The light sticky header keeps navigation and the primary action visible, then opens a full-height mobile sheet on smaller screens. The first viewport pairs a large two-line creative statement with a three-image contact sheet of available concept studies. The page follows the visitor's decision sequence: see the point of view → inspect clearly labelled work → understand services and process → enquire.
 
 ## Unresolved decisions
 Approved showreel and commissioned portfolio assets, client permissions and logos, testimonials, team photography, exact service-specific deliverables, shoot logistics, revision/source-file policy, public prices, and any server-side enquiry endpoint or analytics provider.

@@ -1,134 +1,510 @@
-import { ArrowRight, Check, MoveUpRight } from "lucide-react";
+import {
+  ArrowUpRight,
+  Camera,
+  Clapperboard,
+  Film,
+  Instagram,
+  Mic2,
+  Scissors,
+  Sliders,
+  TrendingUp,
+  Volume2,
+  Youtube,
+} from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import { Link } from "react-router-dom";
-import { getWhatsAppHref } from "../data/contact.js";
-import { projects as conceptProjects } from "../data/projects.js";
-import { contentJourney, serviceOfferings } from "../data/services.js";
+import HeroReel from "../components/HeroReel.jsx";
 import ProjectCard from "../components/ProjectCard.jsx";
+import SectionHeading from "../components/SectionHeading.jsx";
+import { getWhatsAppHref } from "../data/contact.js";
+import { projects } from "../data/projects.js";
+import { serviceOfferings, studioReasons } from "../data/services.js";
 import usePublishedProjects from "../hooks/usePublishedProjects.js";
+import { AspectPill, EditRazorIcon, TimecodeBadge } from "../components/StudioGraphics.jsx";
 
-const routeOptions = [
-  { eyebrow: "01 / Make", title: "I need a film, edit or campaign.", service: "Video Editing", tone: "coral" },
-  { eyebrow: "02 / Build", title: "I need a consistent content system.", service: "Content Creation", tone: "lavender" },
-  { eyebrow: "03 / Grow", title: "I need a stronger digital presence.", service: "Digital Growth", tone: "mint" },
+const serviceIcons = [Instagram, Camera, Scissors, Mic2, Youtube, Clapperboard, TrendingUp, Film];
+
+function revealProps(reduceMotion, delay = 0) {
+  return {
+    initial: reduceMotion ? false : { opacity: 0, y: 18 },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: { once: true, amount: 0.12 },
+    transition: {
+      delay: reduceMotion ? 0 : delay,
+      duration: reduceMotion ? 0 : 0.55,
+      ease: [0.22, 1, 0.36, 1],
+    },
+  };
+}
+
+const faqs = [
+  {
+    question: "What creative editing services does VIP STUDIOS provide?",
+    answer:
+      "We provide professional video editing, high-retention vertical Reels and TikToks, long-form YouTube channel production, multi-camera podcast editing, corporate films, color grading in DaVinci Resolve, and complete audio mastering.",
+  },
+  {
+    question: "Can I commission a single project or video edit?",
+    answer:
+      "Yes. You can commission a standalone video edit, a batch campaign of short-form reels, or an ongoing monthly editing partnership. Deliverables, formats, and turnarounds are agreed upon before cutting begins.",
+  },
+  {
+    question: "What is your turnaround time for rough cuts and revisions?",
+    answer:
+      "Standard turnarounds are 48 to 72 hours for first rough cuts depending on footage volume. We provide frame-accurate review links with timestamped feedback to make revisions fast and frictionless.",
+  },
+  {
+    question: "How do we send our footage and get started?",
+    answer:
+      "You can send footage via Google Drive, Dropbox, Frame.io, or WeTransfer. Submit your project details through our contact form or message our studio directly on WhatsApp to get started immediately.",
+  },
 ];
 
-function reveal(reduceMotion, delay = 0) {
-  return {
-    initial: reduceMotion ? false : { opacity: 0, y: 24 },
-    whileInView: { opacity: 1, y: 0 },
-    viewport: { once: true, amount: 0.16 },
-    transition: { delay: reduceMotion ? 0 : delay, duration: reduceMotion ? 0 : 0.55, ease: [0.22, 1, 0.36, 1] },
+function FaqSchema() {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map(({ question, answer }) => ({
+      "@type": "Question",
+      name: question,
+      acceptedAnswer: { "@type": "Answer", text: answer },
+    })),
   };
+
+  return (
+    <script
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      type="application/ld+json"
+    />
+  );
 }
 
 export default function HomePage() {
   const reduceMotion = useReducedMotion();
-  const { projects, isLoading, error } = usePublishedProjects();
-  const work = (projects.length ? projects : conceptProjects).slice(0, 3);
-  const whatsapp = getWhatsAppHref("Hi VIP StudioS, I have a content project to discuss.");
+  const { projects: publishedProjects, isLoading, error } = usePublishedProjects();
+  const featuredProjects = publishedProjects.filter((project) => project.featured);
+  const homeProjects = (featuredProjects.length > 0 ? featuredProjects : publishedProjects).slice(0, 4);
+  const whatsAppHref = getWhatsAppHref(
+    "Hi VIP StudioS, I'd like to discuss a video editing or creative content project.",
+  );
 
   return (
-    <div className="new-home">
-      <section className="new-hero" aria-labelledby="new-home-title">
-        <div className="new-hero-grid">
-          <div className="new-hero-copy">
-            <motion.p className="new-kicker" {...reveal(reduceMotion)}>VIP STUDIOS / CREATIVE PARTNER</motion.p>
-            <motion.h1 id="new-home-title" {...reveal(reduceMotion, .06)}>
-              Make your next
-              <span>frame matter.</span>
-            </motion.h1>
-            <motion.p className="new-hero-lede" {...reveal(reduceMotion, .12)}>
-              Video, content and digital support for brands that want their
-              ideas to land with clarity.
-            </motion.p>
-            <motion.div className="new-hero-actions" {...reveal(reduceMotion, .18)}>
-              <Link className="new-button new-button-dark" to="/contact">Start with a brief <ArrowRight aria-hidden="true" size={16} /></Link>
-              <Link className="new-text-link" to="/work">See selected work <MoveUpRight aria-hidden="true" size={16} /></Link>
-            </motion.div>
+    <div className="vip-home">
+      <FaqSchema />
+      <HeroReel />
+
+      {/* Cinematic Trust Band */}
+      <section aria-label="Studio verified track record" className="studio-stats-band bg-[#F4F1FF] border-y border-[#EAE6E0]">
+        <div className="vip-section-shell">
+          <div className="studio-stats-grid">
+            <div className="studio-stat-item">
+              <span className="studio-stat-number">6<span>+</span></span>
+              <span className="studio-stat-label">Years of Studio Craft</span>
+            </div>
+            <div className="studio-stat-item">
+              <span className="studio-stat-number">1,000<span>+</span></span>
+              <span className="studio-stat-label">Projects Mastered</span>
+            </div>
+            <div className="studio-stat-item">
+              <span className="studio-stat-number">10<span>+</span></span>
+              <span className="studio-stat-label">Editing Specialists</span>
+            </div>
+            <div className="studio-stat-item">
+              <span className="studio-stat-number">12<span>+</span></span>
+              <span className="studio-stat-label">Active Studio Partners</span>
+            </div>
           </div>
-          <motion.div className="new-hero-art" {...reveal(reduceMotion, .1)}>
-            <div className="new-hero-number">01</div>
-            <div className="new-hero-image new-hero-image-main">
-              <img alt={work[0].imageAlt} height="1000" src={work[0].image} width="1200" />
-            </div>
-            <div className="new-hero-image new-hero-image-small">
-              <img alt={work[1]?.imageAlt || work[0].imageAlt} height="800" loading="lazy" src={work[1]?.image || work[0].image} width="900" />
-            </div>
-            <span className="new-hero-sticker">Ideas<br />into motion.</span>
-          </motion.div>
-        </div>
-        <div className="new-hero-bottom">
-          <span>Scroll to choose your route</span>
-          <span className="new-hero-rule" />
-          <span>Social / Video / Digital</span>
         </div>
       </section>
 
-      <motion.section className="new-route-section" aria-labelledby="route-title" {...reveal(reduceMotion)}>
-        <div className="new-section-head">
-          <div>
-            <p className="new-kicker">Start where the need is</p>
-            <h2 id="route-title">What are you<br /><em>trying to make happen?</em></h2>
-          </div>
-          <p>Choose the closest fit. Your enquiry can still cover more than one service.</p>
-        </div>
-        <div className="new-route-grid">
-          {routeOptions.map((route) => (
-            <Link className={`new-route-card new-route-card-${route.tone}`} key={route.service} to={`/contact?service=${encodeURIComponent(route.service)}`}>
-              <span>{route.eyebrow}</span>
-              <h3>{route.title}</h3>
-              <span className="new-route-arrow"><ArrowRight aria-hidden="true" size={18} /></span>
+      {/* FEATURED WORK — Editorial Project Board */}
+      <motion.section
+        {...revealProps(reduceMotion)}
+        aria-labelledby="studio-work-title"
+        className="vip-work"
+        id="featured-cuts"
+      >
+        <div className="vip-section-shell">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="w-2 h-2 rounded-full bg-[#FF6542]" />
+                <span className="font-mono text-xs font-bold uppercase tracking-widest text-[#FF6542]">
+                  PORTFOLIO SHOWCASE // RECENT CUTS
+                </span>
+              </div>
+              <h2 className="text-3xl sm:text-5xl font-black tracking-tight m-0" id="studio-work-title">
+                Make the work the <span className="text-[#FF6542]">first conversation.</span>
+              </h2>
+            </div>
+            <Link className="vip-inline-link font-mono text-sm font-bold uppercase" to="/work">
+              View All Studio Cuts <ArrowUpRight aria-hidden="true" size={16} />
             </Link>
-          ))}
+          </div>
+
+          {error && (
+            <p className="studio-content-error" role="alert">
+              Project work could not be loaded: {error}
+            </p>
+          )}
+
+          {isLoading && (
+            <p aria-live="polite" className="studio-content-loading">
+              Ingesting project media…
+            </p>
+          )}
+
+          {!isLoading && !error && homeProjects.length === 0 && (
+            <p className="studio-content-empty">
+              There are no published projects in the cutting room yet.{" "}
+              <Link to="/contact">Commission the first cut.</Link>
+            </p>
+          )}
+
+          {/* Asymmetric Editorial Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 mb-12">
+            {homeProjects.map((project, index) => {
+              // Asymmetric spanning: Card 0 is 8 columns, Card 1 is 4 columns (vertical), etc.
+              const colSpan =
+                index === 0
+                  ? "md:col-span-8"
+                  : index === 1
+                  ? "md:col-span-4"
+                  : index === 2
+                  ? "md:col-span-5"
+                  : "md:col-span-7";
+
+              const variant = index === 1 ? "vertical" : index === 0 ? "featured" : "auto";
+
+              return (
+                <div className={colSpan} key={project.slug}>
+                  <ProjectCard index={index} project={project} variant={variant} />
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="flex justify-center">
+            <Link className="button button-dark" to="/work">
+              Browse Full Cutting Archive (04 Studies) <ArrowUpRight aria-hidden="true" size={16} />
+            </Link>
+          </div>
         </div>
       </motion.section>
 
-      <motion.section className="new-work-section" aria-labelledby="new-work-title" {...reveal(reduceMotion)}>
-        <div className="new-section-head new-section-head-work">
+      {/* THE ANATOMY OF A CUT — Studio Identity & Discipline */}
+      <motion.section
+        {...revealProps(reduceMotion)}
+        aria-labelledby="studio-craft-title"
+        className="py-20 bg-[#19162B] text-[#FFFDF8] relative overflow-hidden"
+      >
+        <div className="vip-section-shell">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            <div className="lg:col-span-5">
+              <span className="font-mono text-xs font-bold uppercase tracking-widest text-[#FF6542] block mb-3">
+                // THE ANATOMY OF A CUT
+              </span>
+              <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-white mb-6 leading-tight" id="studio-craft-title">
+                Editing is rhythm,
+                <br />
+                <span className="text-[#FF6542]">pacing and psychology.</span>
+              </h2>
+              <p className="text-[#B8B5C6] text-base leading-relaxed mb-6">
+                Most video falls flat not because the camera was wrong, but because the edit lacked
+                tension and purpose. At VIP STUDIOS, we treat every timeline as an emotional curve—shaping
+                sound, speed ramps, and cutaways to hold viewer retention.
+              </p>
+              <div className="flex items-center gap-4 text-xs font-mono text-[#B9F4D0]">
+                <span className="flex items-center gap-1.5 bg-[#27213D] px-3 py-1.5 rounded border border-white/10">
+                  <EditRazorIcon size={14} className="text-[#FF6542]" />
+                  ZERO WASTED FRAMES
+                </span>
+                <span className="flex items-center gap-1.5 bg-[#27213D] px-3 py-1.5 rounded border border-white/10">
+                  <Volume2 size={14} className="text-[#7765F8]" />
+                  DYNAMIC SOUND FOLEY
+                </span>
+              </div>
+            </div>
+
+            <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="p-6 rounded-xl bg-[#27213D]/60 border border-white/10 backdrop-blur-sm">
+                <span className="font-mono text-xl font-bold text-[#FF6542]">01</span>
+                <h3 className="text-lg font-bold text-white mt-2 mb-2">The 3-Second Retention Hook</h3>
+                <p className="text-sm text-[#B8B5C6] m-0 leading-normal">
+                  Opening frames engineered with immediate visual payoff, sound punch, and motion to arrest the infinite scroll.
+                </p>
+              </div>
+
+              <div className="p-6 rounded-xl bg-[#27213D]/60 border border-white/10 backdrop-blur-sm">
+                <span className="font-mono text-xl font-bold text-[#7765F8]">02</span>
+                <h3 className="text-lg font-bold text-white mt-2 mb-2">DaVinci Color Calibration</h3>
+                <p className="text-sm text-[#B8B5C6] m-0 leading-normal">
+                  Cinema-grade color grading that sets an ownable visual tone, matching skin tones and mood across varied lighting.
+                </p>
+              </div>
+
+              <div className="p-6 rounded-xl bg-[#27213D]/60 border border-white/10 backdrop-blur-sm">
+                <span className="font-mono text-xl font-bold text-[#B9F4D0]">03</span>
+                <h3 className="text-lg font-bold text-white mt-2 mb-2">Multi-Track Sound Design</h3>
+                <p className="text-sm text-[#B8B5C6] m-0 leading-normal">
+                  Audio accounts for 50% of the cinematic experience. We build custom whooshes, risers, and dialogue EQ that feel visceral.
+                </p>
+              </div>
+
+              <div className="p-6 rounded-xl bg-[#27213D]/60 border border-white/10 backdrop-blur-sm">
+                <span className="font-mono text-xl font-bold text-[#FFD76A]">04</span>
+                <h3 className="text-lg font-bold text-white mt-2 mb-2">Multi-Format Delivery</h3>
+                <p className="text-sm text-[#B8B5C6] m-0 leading-normal">
+                  Exported specifically for YouTube 4K, 9:16 Instagram Reels, TikTok, and direct broadcast with calibrated bitrates.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.section>
+
+      {/* STUDIO CAPABILITIES — 8 Specialized Services */}
+      <motion.section
+        {...revealProps(reduceMotion)}
+        aria-labelledby="studio-services-title"
+        className="vip-services"
+        id="services"
+      >
+        <div className="vip-section-shell">
+          <div className="vip-section-heading">
+            <div>
+              <p className="vip-eyebrow">Production &amp; Editing Suites</p>
+              <h2 id="studio-services-title">
+                Full-spectrum video craft,
+                <br />
+                <span>from capture to master.</span>
+              </h2>
+            </div>
+            <p>
+              Whether you need high-tempo short-form reels or full channel management,
+              we bring editing rigor and creative vision to every deliverable.
+            </p>
+          </div>
+
+          <div className="vip-service-grid">
+            {serviceOfferings.map((service, index) => {
+              const Icon = serviceIcons[index] || Scissors;
+              const specs = [
+                "9:16 + 16:9",
+                "4K Master",
+                "Color + Audio",
+                "Multi-Cam",
+                "Full Management",
+                "Fast Turnaround",
+                "High Retention",
+                "Brand Consistency",
+              ][index % 8];
+
+              return (
+                <motion.div
+                  {...revealProps(reduceMotion, index * 0.045)}
+                  key={service.slug}
+                >
+                  <Link
+                    className="vip-service-card group"
+                    to={`/services/${service.slug}`}
+                  >
+                    <div className="vip-service-card-top">
+                      <span className="font-mono text-xs font-bold text-[#7765F8]">
+                        SUITE {String(index + 1).padStart(2, "0")}
+                      </span>
+                      <span className="font-mono text-[10px] uppercase tracking-wider px-2 py-0.5 rounded bg-[#F4F1FF] text-[#19162B] border border-[#7765F8]/20">
+                        {specs}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 rounded-lg bg-[#F4F1FF] text-[#FF6542] flex items-center justify-center transition-colors group-hover:bg-[#FF6542] group-hover:text-white">
+                        <Icon size={20} />
+                      </div>
+                      <h3 className="m-0 text-xl font-bold tracking-tight">{service.title}</h3>
+                    </div>
+
+                    <p>{service.shortDescription}</p>
+
+                    <div className="flex flex-wrap gap-1.5 mt-auto pt-3 border-t border-[#EAE6E0]">
+                      {service.scope.slice(0, 3).map((item) => (
+                        <span
+                          className="font-mono text-[10px] text-[#6E6A7C] bg-[#FFFDF8] px-2 py-0.5 rounded border border-[#EAE6E0]"
+                          key={item}
+                        >
+                          {item}
+                        </span>
+                      ))}
+                    </div>
+
+                    <span className="vip-service-link mt-4">
+                      Inspect Suite Details <ArrowUpRight aria-hidden="true" size={15} />
+                    </span>
+                  </Link>
+                </motion.div>
+              );
+            })}
+          </div>
+
+          <div className="flex justify-between items-center flex-wrap gap-4 pt-4 border-t border-[#EAE6E0]">
+            <span className="font-mono text-xs text-[#6E6A7C]">
+              ALL SUITES INCLUDE AUDIO MASTERING &amp; UNLIMITED FRAME-ACCURATE REVIEWS
+            </span>
+            <Link className="vip-inline-link font-mono text-sm font-bold uppercase" to="/services">
+              Explore All Suites <ArrowUpRight aria-hidden="true" size={16} />
+            </Link>
+          </div>
+        </div>
+      </motion.section>
+
+      {/* THE EDITING WORKFLOW — Timeline Pipeline */}
+      <motion.section
+        {...revealProps(reduceMotion)}
+        aria-labelledby="studio-pipeline-title"
+        className="vip-process"
+        id="process"
+      >
+        <div className="vip-section-shell">
+          <div className="vip-section-heading">
+            <div>
+              <p className="vip-eyebrow">The Cutting Pipeline</p>
+              <h2 id="studio-pipeline-title">
+                From raw ingest
+                <br />
+                <span>to locked master.</span>
+              </h2>
+            </div>
+            <p>
+              A dependable production workflow designed for speed, frame-level precision,
+              and seamless client collaboration.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 my-12">
+            {[
+              {
+                step: "01",
+                label: "INGEST & DISCOVERY",
+                timing: "DAY 01",
+                title: "Footage Ingest & Story Sync",
+                desc: "We analyze your raw clips, organize bins, sync audio, and align on visual references and rhythm.",
+              },
+              {
+                step: "02",
+                label: "THE ASSEMBLY",
+                timing: "DAY 02",
+                title: "Narrative Assembly & Rough Cut",
+                desc: "We build the core pacing curve, trimming dead air and locking the story before styling.",
+              },
+              {
+                step: "03",
+                label: "COLOR & SOUND",
+                timing: "DAY 03",
+                title: "DaVinci Color & Audio Mix",
+                desc: "Dialogue cleanup, music ducking, SFX foley, and cinema-grade color balance applied to every shot.",
+              },
+              {
+                step: "04",
+                label: "FINAL MASTER",
+                timing: "DAY 04",
+                title: "4K Master Delivery & Formats",
+                desc: "Platform-optimized exports delivered with frame accuracy, subtitles, and clean thumbnail grabs.",
+              },
+            ].map((stage) => (
+              <div
+                className="p-6 rounded-2xl bg-white border border-[#EAE6E0] shadow-sm relative flex flex-col justify-between"
+                key={stage.step}
+              >
+                <div>
+                  <div className="flex items-center justify-between font-mono text-xs mb-4">
+                    <span className="font-bold text-[#FF6542]">{stage.step} // STAGE</span>
+                    <span className="px-2 py-0.5 rounded bg-[#F4F1FF] text-[#7765F8] font-bold">
+                      {stage.timing}
+                    </span>
+                  </div>
+                  <h3 className="text-lg font-bold tracking-tight mb-2">{stage.title}</h3>
+                  <p className="text-sm text-[#6E6A7C] leading-relaxed mb-6">{stage.desc}</p>
+                </div>
+                <div className="pt-4 border-t border-[#EAE6E0] font-mono text-[11px] text-[#19162B] font-bold flex items-center justify-between">
+                  <span>{stage.label}</span>
+                  <span className="text-[#FF6542]">✓</span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex justify-center">
+            <Link className="vip-inline-link font-mono text-sm font-bold uppercase" to="/process">
+              Read Detailed Workflow &amp; Delivery SLA <ArrowUpRight aria-hidden="true" size={16} />
+            </Link>
+          </div>
+        </div>
+      </motion.section>
+
+      {/* FREQUENTLY ASKED QUESTIONS */}
+      <motion.section
+        {...revealProps(reduceMotion)}
+        aria-labelledby="studio-faq-title"
+        className="vip-faq bg-[#FFFDF8]"
+      >
+        <div className="vip-section-shell vip-faq-layout">
           <div>
-            <p className="new-kicker">Proof, not promises</p>
-            <h2 id="new-work-title">A few frames<br /><em>from the studio.</em></h2>
+            <p className="vip-eyebrow">Studio Transparency</p>
+            <h2 id="studio-faq-title">
+              Clear answers,
+              <br />
+              <span>zero friction.</span>
+            </h2>
+            <p>Everything you need to know about working with VIP STUDIOS before commissioning your cut.</p>
           </div>
-          <Link className="new-text-link" to="/work">Open the full library <MoveUpRight aria-hidden="true" size={16} /></Link>
+          <div className="vip-faq-list">
+            {faqs.map(({ question, answer }) => (
+              <details key={question}>
+                <summary>{question}<span aria-hidden="true">+</span></summary>
+                <p>{answer}</p>
+              </details>
+            ))}
+          </div>
         </div>
-        {error && <p className="studio-content-error" role="alert">Project work could not be loaded: {error}</p>}
-        {isLoading && <p aria-live="polite" className="studio-content-loading">Loading project work…</p>}
-        {!isLoading && <div className="new-work-grid">{work.map((project, index) => <ProjectCard key={project.slug} index={index} project={project} />)}</div>}
       </motion.section>
 
-      <motion.section className="new-system-section" aria-labelledby="system-title" {...reveal(reduceMotion)}>
-        <div className="new-system-intro">
-          <p className="new-kicker">The operating idea</p>
-          <h2 id="system-title">One clear story.<br /><em>Many useful outputs.</em></h2>
-          <p>We help connect the thinking, making and follow-through so every piece of content has a job to do.</p>
-          <Link className="new-button new-button-light" to="/services">Explore the services <ArrowRight aria-hidden="true" size={16} /></Link>
-        </div>
-        <ol className="new-system-list">
-          {contentJourney.slice(0, 4).map((step, index) => (
-            <li key={step.label}>
-              <span>{String(index + 1).padStart(2, "0")}</span>
-              <div><h3>{step.label}</h3><p>{step.detail}</p></div>
-              <Check aria-hidden="true" size={18} />
-            </li>
-          ))}
-        </ol>
-      </motion.section>
-
-      <motion.section className="new-proof-section" aria-labelledby="proof-title" {...reveal(reduceMotion)}>
-        <div className="new-proof-card">
+      {/* CLOSING CINEMATIC CTA */}
+      <motion.section
+        {...revealProps(reduceMotion)}
+        aria-labelledby="studio-cta-title"
+        className="vip-cta"
+      >
+        <div className="vip-section-shell vip-cta-inner bg-[#19162B] text-white">
           <div>
-            <p className="new-kicker">A better first conversation</p>
-            <h2 id="proof-title">Bring the rough idea.<br /><em>Leave with a next step.</em></h2>
+            <div className="flex items-center gap-2 mb-3">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#FF6542] animate-ping" />
+              <p className="vip-eyebrow text-[#FF6542] m-0">READY TO COMMENCE</p>
+            </div>
+            <h2 className="text-4xl sm:text-6xl font-black text-white leading-tight" id="studio-cta-title">
+              Let&apos;s make something
+              <br />
+              <span className="text-[#FF6542]">worth watching.</span>
+            </h2>
+            <p className="text-lg text-white/70 max-w-xl">
+              Have footage ready to edit, or planning your next campaign?
+              Share your brief and let&apos;s engineer a visual cut that drives engagement.
+            </p>
           </div>
-          <div className="new-proof-points">
-            <p><Check aria-hidden="true" size={17} /> No fixed package required</p>
-            <p><Check aria-hidden="true" size={17} /> Scope agreed before work begins</p>
-            <p><Check aria-hidden="true" size={17} /> Email draft or WhatsApp, your choice</p>
-          </div>
-          <div className="new-proof-actions">
-            <Link className="new-button new-button-dark" to="/contact">Build your brief <ArrowRight aria-hidden="true" size={16} /></Link>
-            {whatsapp && <a className="new-text-link" href={whatsapp} rel="noreferrer" target="_blank">Open WhatsApp <MoveUpRight aria-hidden="true" size={16} /></a>}
+          <div className="vip-cta-actions">
+            <Link className="button button-gold text-base py-4 px-8" to="/contact">
+              Commission Your Project <ArrowUpRight aria-hidden="true" size={18} />
+            </Link>
+            {whatsAppHref && (
+              <a
+                className="vip-dark-link font-mono text-sm uppercase tracking-wider text-center"
+                href={whatsAppHref}
+                rel="noreferrer"
+                target="_blank"
+              >
+                Instant WhatsApp Brief <ArrowUpRight aria-hidden="true" size={14} />
+              </a>
+            )}
           </div>
         </div>
       </motion.section>

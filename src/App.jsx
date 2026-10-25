@@ -1,6 +1,7 @@
 import React, { lazy, Suspense } from "react";
 import { Link, Route, Routes } from "react-router-dom";
 import SiteShell from "./components/SiteShell.jsx";
+
 const AboutPage = lazy(() => import("./pages/AboutPage.jsx"));
 const AdminPage = lazy(() => import("./pages/AdminPage.jsx"));
 const ContactPage = lazy(() => import("./pages/ContactPage.jsx"));
@@ -15,7 +16,7 @@ const WorkPage = lazy(() => import("./pages/WorkPage.jsx"));
 function PageLoading() {
   return (
     <div aria-live="polite" className="studio-route-loading">
-      <span>Loading page…</span>
+      <span>Loading…</span>
     </div>
   );
 }
@@ -30,22 +31,23 @@ class RouteErrorBoundary extends React.Component {
     return { hasError: true };
   }
 
-  componentDidCatch(error) {
-    console.error("VIP StudioS route failed to load", error);
+  componentDidCatch(error, errorInfo) {
+    console.error("VIP StudioS route loading error:", error, errorInfo);
   }
 
   render() {
     if (!this.state.hasError) return this.props.children;
 
     return (
-      <main className="route-error page-gutter">
-        <p className="studio-location">VIP STUDIOS · PAGE ERROR</p>
-        <h1>That frame<br /><span>didn&apos;t load.</span></h1>
-        <p>
-          The page could not be loaded. Refresh and try again, or return to the
-          work library.
+      <main className="route-error page-gutter" style={{ padding: "6rem var(--page-pad)", textAlign: "center", maxWidth: "600px", marginInline: "auto" }}>
+        <p className="studio-location">VIP STUDIOS · CONNECTION NOTICE</p>
+        <h1 style={{ fontSize: "2.5rem", marginBottom: "1rem" }}>
+          That frame<br /><span style={{ color: "var(--color-coral)" }}>didn&apos;t load.</span>
+        </h1>
+        <p style={{ color: "var(--text-secondary)", marginBottom: "2rem" }}>
+          The page could not be loaded. Please refresh your browser or return to the project library.
         </p>
-        <div className="route-error-actions">
+        <div style={{ display: "flex", gap: "1rem", justifyContent: "center" }}>
           <button className="button button-gold" onClick={() => window.location.reload()} type="button">
             Refresh page
           </button>
