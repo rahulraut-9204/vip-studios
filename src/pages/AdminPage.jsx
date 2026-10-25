@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { ArrowLeft, Eye, ImagePlus, LogOut, Plus, Save, X } from "lucide-react";
+import { ArrowLeft, Eye, Film, ImagePlus, Inbox, LogOut, Plus, RotateCcw, Save, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { CATEGORIES } from "../config/site.js";
 import { isSupabaseConfigured, supabase } from "../lib/supabase.js";
 import ProjectCard from "../components/ProjectCard.jsx";
+import { DEFAULT_STUDIO_CUTS } from "../data/defaultCuts.js";
 
 const EMPTY_FORM = {
   title: "",
@@ -143,6 +144,9 @@ export default function AdminPage() {
   const [previewError, setPreviewError] = useState("");
   const [previewUrl, setPreviewUrl] = useState("");
   const [showPreviewModal, setShowPreviewModal] = useState(false);
+  const [activeTab, setActiveTab] = useState("projects");
+  const [categoryFilter, setCategoryFilter] = useState("All");
+  const [enquiryStatusFilter, setEnquiryStatusFilter] = useState("all");
 
   useEffect(() => {
     const previousTitle = document.title;
@@ -391,20 +395,46 @@ export default function AdminPage() {
     if (error) setFeedback(`Sign-out failed: ${error.message}`);
   }
 
+  async function updateEnquiryStatus(id, status) {
+    const { error } = await supabase.from("enquiries").update({ status }).eq("id", id);
+    if (error) {
+      setFeedback(`Could not update enquiry: ${error.message}`);
+      return;
+    }
+    setEnquiries((current) =>
+      current.map((enquiry) => (enquiry.id === id ? { ...enquiry, status } : enquiry)),
+    );
+  }
+
+  async function restoreDefaultCuts() {
+    if (!window.confirm("Restore the 5 curated studio showcase cuts? Any missing cuts will be recreated in your library.")) {
+      return;
+    }
+    setSaving(true);
+    setFeedback("");
+    try {
+      for (const cut of DEFAULT_STUDIO_CUTS) {
+        const { error } = await supabase.from("projects").upsert(cut, { onConflict: "slug" });
+        if (error) throw error;
+      }
+      const { data, error: reloadError } = await supabase
+        .from("projects")
+        .select("*")
+        .order("sort_order", { ascending: true })
+        .order("created_at", { ascending: false });
+      if (reloadError) throw reloadError;
+      setProjects(data ?? []);
+      setFeedback("All 5 default studio cuts have been restored and published.");
+    } catch (error) {
+      setFeedback(`Could not restore cuts: ${errorMessage(error)}`);
+    } finally {
+      setSaving(false);
+    }
+  }
+
   async function deleteProject() {
     if (!editingId || !window.confirm(`Delete "${form.title}" permanently? This cannot be undone.`)) {
       return;
-    }
-
-    async function updateEnquiryStatus(id, status) {
-      const { error } = await supabase.from("enquiries").update({ status }).eq("id", id);
-      if (error) {
-        setFeedback(`Could not update enquiry: ${error.message}`);
-        return;
-      }
-      setEnquiries((current) =>
-        current.map((enquiry) => (enquiry.id === id ? { ...enquiry, status } : enquiry)),
-      );
     }
 
     setFeedback("");
@@ -434,6 +464,14 @@ export default function AdminPage() {
       setSaving(false);
     }
   }
+
+  const filteredProjects = projects.filter((project) =>
+    categoryFilter === "All" ? true : project.category === categoryFilter
+  );
+
+  const filteredEnquiries = enquiries.filter((enquiry) =>
+    enquiryStatusFilter === "all" ? true : enquiry.status === enquiryStatusFilter
+  );
 
   if (!isSupabaseConfigured) {
     return (
@@ -500,27 +538,114 @@ export default function AdminPage() {
           ))}
         </section>
 
-        <div className="studio-admin-layout">
-          <aside aria-label="Saved projects" className="studio-admin-list">
-            <div className="studio-admin-list-heading">
-              <h2>Projects <span>{projects.length}</span></h2>
-              <button aria-label="Create a project" className="studio-admin-icon-button" onClick={startNewProject} type="button"><Plus aria-hidden="true" size={18} /></button>
-            </div>
-            {projectsLoading && <p aria-live="polite">Loading projects…</p>}
-            {!projectsLoading && projects.length === 0 && <p>No projects yet. Add a draft to start the library.</p>}
-            {projects.map((project) => (
-              <button
-                aria-current={editingId === project.id ? "true" : undefined}
-                className={`studio-admin-project${editingId === project.id ? " is-active" : ""}`}
-                key={project.id}
-                onClick={() => editProject(project)}
-                type="button"
-              >
-                <span>{project.title}</span>
-                <small>{project.status} · {project.category}</small>
-              </button>
-            ))}
-          </aside>
+        {/* Navigation Tabs */}
+        <div className="flex border-b border-[#EAE6E0] mb-8 gap-4 font-mono text-xs uppercase tracking-wider">
+          <button
+            onClick={() => setActiveTab("projects")}
+            type="button"
+            className={`pb-3 px-2 flex items-center gap-2 border-b-2 font-bold transition-all ${
+              activeTab === "projects"
+                ? "border-[#19162B] text-[#19162B]"
+                : "border-transparent text-[#6E6A7C] hover:text-[#19162B]"
+            }`}
+          >
+            <Film size={16} />
+            <span>Cuts &amp; Projects</span>
+            <span className="px-2 py-0.5 rounded-full bg-[#19162B]/10 text-[10px]">
+              {projects.length}
+            </span>
+          </button>
+          <button
+            onClick={() => setActiveTab("enquiries")}
+            type="button"
+            className={`pb-3 px-2 flex items-center gap-2 border-b-2 font-bold transition-all ${
+              activeTab === "enquiries"
+                ? "border-[#FF6542] text-[#FF6542]"
+                : "border-transparent text-[#6E6A7C] hover:text-[#19162B]"
+            }`}
+          >
+            <Inbox size={16} />
+            <span>Enquiries Inbox</span>
+            {enquiries.filter((e) => e.status === "new").length > 0 && (
+              <span className="px-2 py-0.5 rounded-full bg-[#FF6542] text-white text-[10px] animate-pulse">
+                {enquiries.filter((e) => e.status === "new").length} NEW
+              </span>
+            )}
+          </button>
+        </div>
+
+        {activeTab === "projects" && (
+          <div className="studio-admin-layout">
+            <aside aria-label="Saved projects" className="studio-admin-list">
+              <div className="studio-admin-list-heading">
+                <h2>Projects <span>{filteredProjects.length}</span></h2>
+                <div className="flex items-center gap-1.5">
+                  <button
+                    aria-label="Restore default cuts"
+                    title="Restore default studio showcase cuts"
+                    className="studio-admin-icon-button"
+                    onClick={restoreDefaultCuts}
+                    disabled={saving}
+                    type="button"
+                  >
+                    <RotateCcw size={16} />
+                  </button>
+                  <button
+                    aria-label="Create a project"
+                    title="Add new cut"
+                    className="studio-admin-icon-button"
+                    onClick={() => startNewProject(true)}
+                    type="button"
+                  >
+                    <Plus size={18} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Category filter pills in sidebar */}
+              <div className="flex flex-wrap gap-1 mb-3 pb-3 border-b border-[#EAE6E0]/60">
+                {["All", ...CATEGORIES].map((cat) => (
+                  <button
+                    key={cat}
+                    type="button"
+                    onClick={() => setCategoryFilter(cat)}
+                    className={`text-[10px] font-mono uppercase px-2 py-0.5 rounded-full border transition-all ${
+                      categoryFilter === cat
+                        ? "bg-[#19162B] text-white border-[#19162B] font-bold"
+                        : "bg-white text-[#6E6A7C] border-[#EAE6E0] hover:border-[#19162B]"
+                    }`}
+                  >
+                    {cat === "All" ? "ALL" : cat}
+                  </button>
+                ))}
+              </div>
+
+              {projectsLoading && <p aria-live="polite">Loading projects…</p>}
+              {!projectsLoading && filteredProjects.length === 0 && (
+                <div className="py-6 text-center text-xs text-[#6E6A7C]">
+                  <p>No {categoryFilter !== "All" ? categoryFilter : ""} projects found.</p>
+                  <button
+                    onClick={restoreDefaultCuts}
+                    type="button"
+                    className="mt-2 text-xs text-[#FF6542] underline font-mono"
+                  >
+                    Restore default cuts
+                  </button>
+                </div>
+              )}
+              {filteredProjects.map((project) => (
+                <button
+                  aria-current={editingId === project.id ? "true" : undefined}
+                  className={`studio-admin-project${editingId === project.id ? " is-active" : ""}`}
+                  key={project.id}
+                  onClick={() => editProject(project)}
+                  type="button"
+                >
+                  <span>{project.title}</span>
+                  <small>{project.status} · {project.category}</small>
+                </button>
+              ))}
+            </aside>
 
           <form className="studio-admin-form" onSubmit={saveProject}>
             <div className="studio-admin-form-heading">
@@ -664,42 +789,72 @@ export default function AdminPage() {
             </div>
           )}
         </div>
-        <section aria-labelledby="enquiries-title" className="studio-admin-enquiries">
-          <div className="studio-admin-list-heading">
-            <div>
-              <p className="studio-location">INBOX</p>
-              <h2 id="enquiries-title">Project enquiries <span>{enquiries.length}</span></h2>
+        )}
+
+        {/* Enquiries Screen */}
+        {activeTab === "enquiries" && (
+          <section aria-labelledby="enquiries-title" className="studio-admin-enquiries">
+            <div className="studio-admin-list-heading">
+              <div>
+                <p className="studio-location">CLIENT BRIEFS INBOX</p>
+                <h2 id="enquiries-title">Project enquiries <span>{filteredEnquiries.length}</span></h2>
+              </div>
+
+              {/* Status filter buttons */}
+              <div className="flex flex-wrap gap-2">
+                {["all", "new", "contacted", "closed"].map((st) => (
+                  <button
+                    key={st}
+                    type="button"
+                    onClick={() => setEnquiryStatusFilter(st)}
+                    className={`font-mono text-xs uppercase px-3 py-1 rounded-full border transition-all ${
+                      enquiryStatusFilter === st
+                        ? "bg-[#19162B] text-white border-[#19162B] font-bold"
+                        : "bg-white text-[#6E6A7C] border-[#EAE6E0] hover:border-[#19162B]"
+                    }`}
+                  >
+                    {st === "all" ? `ALL (${enquiries.length})` : `${st.toUpperCase()} (${enquiries.filter((e) => e.status === st).length})`}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
-          {enquiriesLoading && <p aria-live="polite">Loading enquiries…</p>}
-          {!enquiriesLoading && enquiries.length === 0 && <p>No enquiries yet.</p>}
-          {!enquiriesLoading && enquiries.length > 0 && (
-            <div className="studio-admin-enquiry-list">
-              {enquiries.map((enquiry) => (
-                <article className="studio-admin-enquiry" key={enquiry.id}>
-                  <div>
-                    <strong>{enquiry.name}</strong>
-                    <span>{enquiry.service} · {new Date(enquiry.created_at).toLocaleDateString()}</span>
-                    <p>{enquiry.requirements}</p>
-                  </div>
-                  <div className="studio-admin-enquiry-actions">
-                    {enquiry.email && <a href={`mailto:${enquiry.email}`}>Email</a>}
-                    {enquiry.phone && <a href={`tel:${enquiry.phone}`}>Call</a>}
-                    <select
-                      aria-label={`Status for ${enquiry.name}`}
-                      onChange={(event) => updateEnquiryStatus(enquiry.id, event.target.value)}
-                      value={enquiry.status}
-                    >
-                      <option value="new">New</option>
-                      <option value="contacted">Contacted</option>
-                      <option value="closed">Closed</option>
-                    </select>
-                  </div>
-                </article>
-              ))}
-            </div>
-          )}
-        </section>
+
+            {enquiriesLoading && <p aria-live="polite">Loading enquiries…</p>}
+            {!enquiriesLoading && filteredEnquiries.length === 0 && (
+              <div className="py-12 text-center text-[#6E6A7C]">
+                <p className="text-base font-semibold mb-1">No enquiries found in this view.</p>
+                <p className="text-sm">Client briefs submitted on the website will land directly here.</p>
+              </div>
+            )}
+            {!enquiriesLoading && filteredEnquiries.length > 0 && (
+              <div className="studio-admin-enquiry-list">
+                {filteredEnquiries.map((enquiry) => (
+                  <article className="studio-admin-enquiry" key={enquiry.id}>
+                    <div>
+                      <strong>{enquiry.name}</strong>
+                      {enquiry.company && <small className="text-[#6E6A7C] ml-2 font-normal">({enquiry.company})</small>}
+                      <span>{enquiry.service} · {new Date(enquiry.created_at).toLocaleDateString()}</span>
+                      <p>{enquiry.requirements}</p>
+                    </div>
+                    <div className="studio-admin-enquiry-actions">
+                      {enquiry.email && <a href={`mailto:${enquiry.email}`}>Email</a>}
+                      {enquiry.phone && <a href={`tel:${enquiry.phone}`}>Call</a>}
+                      <select
+                        aria-label={`Status for ${enquiry.name}`}
+                        onChange={(event) => updateEnquiryStatus(enquiry.id, event.target.value)}
+                        value={enquiry.status}
+                      >
+                        <option value="new">New</option>
+                        <option value="contacted">Contacted</option>
+                        <option value="closed">Closed</option>
+                      </select>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            )}
+          </section>
+        )}
       </div>
     </main>
   );
