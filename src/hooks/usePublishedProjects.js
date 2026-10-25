@@ -28,8 +28,8 @@ function fromDatabase(project) {
 
 export default function usePublishedProjects() {
   const [state, setState] = useState({
-    projects: supabase ? [] : conceptProjects,
-    isLoading: Boolean(supabase),
+    projects: conceptProjects,
+    isLoading: false,
     error: "",
   });
 

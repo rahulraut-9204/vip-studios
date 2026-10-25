@@ -129,17 +129,35 @@ export default function WorkPage() {
         <AnimatePresence initial={false} mode="popLayout">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8 w-full">
             {visibleProjects.map((project, index) => {
-              // Asymmetric editorial sizing
-              const isHeroCard = index % 3 === 0;
-              const isVerticalCard = project.category === "Reels & Short-form" || index % 3 === 1;
+              const isFiltered = activeCategory !== "All";
+              const isVertical = project.category === "Reels & Short-form";
 
-              const colSpan = isHeroCard
-                ? "md:col-span-8"
-                : isVerticalCard
-                ? "md:col-span-4"
-                : "md:col-span-6";
+              let colSpan = "md:col-span-6";
+              let variant = isVertical ? "vertical" : "auto";
 
-              const variant = isVerticalCard ? "vertical" : isHeroCard ? "featured" : "auto";
+              if (isFiltered) {
+                if (visibleProjects.length === 1) {
+                  colSpan = isVertical ? "md:col-span-6 md:col-start-4" : "md:col-span-10 md:col-start-2";
+                  variant = isVertical ? "vertical" : "featured";
+                } else if (visibleProjects.length === 2) {
+                  colSpan = "md:col-span-6";
+                }
+              } else {
+                // Editorial asymmetric rhythm for All Cuts
+                if (index === 0) {
+                  colSpan = "md:col-span-8";
+                  variant = "featured";
+                } else if (index === 1) {
+                  colSpan = "md:col-span-4";
+                  variant = "vertical";
+                } else if (index === 2) {
+                  colSpan = "md:col-span-5";
+                } else if (index === 3) {
+                  colSpan = "md:col-span-7";
+                } else {
+                  colSpan = "md:col-span-6";
+                }
+              }
 
               return (
                 <motion.div
