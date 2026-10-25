@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ArrowLeft, Eye, Film, ImagePlus, Inbox, LogOut, Plus, RotateCcw, Save, X } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff, Film, ImagePlus, Inbox, Lock, LogOut, Mail, Plus, RotateCcw, Save, ShieldCheck, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { CATEGORIES } from "../config/site.js";
 import { isSupabaseConfigured, supabase } from "../lib/supabase.js";
@@ -147,6 +147,8 @@ export default function AdminPage() {
   const [activeTab, setActiveTab] = useState("projects");
   const [categoryFilter, setCategoryFilter] = useState("All");
   const [enquiryStatusFilter, setEnquiryStatusFilter] = useState("all");
+  const [showPassword, setShowPassword] = useState(false);
+  const [isSigningIn, setIsSigningIn] = useState(false);
 
   useEffect(() => {
     const previousTitle = document.title;
@@ -384,9 +386,16 @@ export default function AdminPage() {
   async function signIn(event) {
     event.preventDefault();
     setFeedback("");
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) setFeedback(`Sign-in failed: ${error.message}`);
-    setPassword("");
+    setIsSigningIn(true);
+    try {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) setFeedback(`Sign-in failed: ${error.message}`);
+    } catch (err) {
+      setFeedback(`Sign-in error: ${err.message}`);
+    } finally {
+      setIsSigningIn(false);
+      setPassword("");
+    }
   }
 
   async function signOut() {
@@ -477,7 +486,7 @@ export default function AdminPage() {
     return (
       <main className="studio-admin">
         <div className="studio-admin-card">
-          <p className="studio-location">VIP STUDIOS · CONTENT DESK</p>
+          <p className="studio-location">VIP STUDIOS · STUDIO CMS</p>
           <h1>CMS setup needed.</h1>
           <p>
             Add the public Supabase project URL and anon key as
@@ -496,17 +505,94 @@ export default function AdminPage() {
 
   if (!session) {
     return (
-      <main className="studio-admin">
-        <form className="studio-admin-card studio-admin-login" onSubmit={signIn}>
-          <Link className="studio-admin-back" to="/"><ArrowLeft aria-hidden="true" size={16} /> Public website</Link>
-          <p className="studio-location">VIP STUDIOS · CONTENT DESK</p>
-          <h1>Sign in.</h1>
-          <p>Admin access is restricted to accounts explicitly approved in the database.</p>
-          <label>Email<input autoComplete="username" onChange={(event) => setEmail(event.target.value)} required type="email" value={email} /></label>
-          <label>Password<input autoComplete="current-password" onChange={(event) => setPassword(event.target.value)} required type="password" value={password} /></label>
-          {feedback && <p className="studio-admin-feedback" role="alert">{feedback}</p>}
-          <button className="button button-gold" type="submit">Sign in</button>
-        </form>
+      <main className="min-h-screen bg-[#0E0C18] flex items-center justify-center p-4 py-12">
+        <div className="w-full max-w-md bg-[#161324] border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl text-white">
+          <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/10">
+            <Link className="inline-flex items-center gap-1.5 text-xs font-mono text-white/60 hover:text-white transition-colors" to="/">
+              <ArrowLeft size={14} /> Public Website
+            </Link>
+            <div className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#FF4D2D] animate-pulse" />
+              <span className="text-[10px] font-mono uppercase tracking-wider text-[#FF4D2D] font-bold">STUDIO CMS</span>
+            </div>
+          </div>
+
+          <div className="mb-6">
+            <span className="font-mono text-xs uppercase tracking-widest text-[#635BFF] font-bold block mb-1">
+              VIP STUDIOS // CMS PORTAL
+            </span>
+            <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight m-0 mb-2">
+              Studio Sign In
+            </h1>
+            <p className="text-xs text-white/60 m-0 leading-relaxed">
+              Enter your authorized administrator credentials to manage portfolio projects, publishing status, and client enquiries.
+            </p>
+          </div>
+
+          <form className="flex flex-col gap-4" onSubmit={signIn}>
+            <div>
+              <label className="block text-xs font-mono font-bold uppercase tracking-wider text-white/80 mb-1.5">
+                Admin Email
+              </label>
+              <div className="relative">
+                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none" size={16} />
+                <input
+                  autoComplete="username"
+                  className="w-full bg-[#0E0C18] border border-white/15 focus:border-[#635BFF] rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none transition-colors font-mono"
+                  onChange={(event) => setEmail(event.target.value)}
+                  placeholder="admin@example.com"
+                  required
+                  type="email"
+                  value={email}
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-mono font-bold uppercase tracking-wider text-white/80 mb-1.5">
+                Password
+              </label>
+              <div className="relative">
+                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none" size={16} />
+                <input
+                  autoComplete="current-password"
+                  className="w-full bg-[#0E0C18] border border-white/15 focus:border-[#635BFF] rounded-xl pl-10 pr-11 py-3 text-sm text-white placeholder-white/30 focus:outline-none transition-colors font-mono"
+                  onChange={(event) => setPassword(event.target.value)}
+                  placeholder="••••••••••••"
+                  required
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                />
+                <button
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition-colors cursor-pointer"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  type="button"
+                >
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
+            </div>
+
+            {feedback && (
+              <div className="p-3.5 rounded-xl bg-red-950/60 border border-red-800 text-red-200 text-xs font-mono" role="alert">
+                {feedback}
+              </div>
+            )}
+
+            <button
+              className="button button-gold w-full py-3.5 text-sm font-mono font-bold uppercase tracking-wider mt-2 shadow-[0_0_20px_rgba(255,77,45,0.4)] cursor-pointer"
+              disabled={isSigningIn}
+              type="submit"
+            >
+              {isSigningIn ? "Signing in to Studio Desk…" : "Sign In to Studio Desk"}
+            </button>
+          </form>
+
+          <div className="mt-6 pt-5 border-t border-white/10 text-center text-[11px] font-mono text-white/40">
+            Protected studio administration console · All activities monitored
+          </div>
+        </div>
       </main>
     );
   }
@@ -517,8 +603,8 @@ export default function AdminPage() {
         <header className="studio-admin-header">
           <div>
             <Link className="studio-admin-back" to="/"><ArrowLeft aria-hidden="true" size={16} /> Public website</Link>
-            <p className="studio-location">VIP STUDIOS · CONTENT DESK</p>
-            <h1>Project library.</h1>
+            <p className="studio-location">VIP STUDIOS · STUDIO CMS</p>
+            <h1>Project Library &amp; Studio Desk</h1>
           </div>
           <button className="studio-admin-signout" onClick={signOut} type="button"><LogOut aria-hidden="true" size={16} /> Sign out</button>
         </header>

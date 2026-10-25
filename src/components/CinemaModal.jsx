@@ -7,6 +7,7 @@ import {
   getMediaPlatformLabel,
   getYouTubeId,
 } from "../data/media.js";
+import { getFallbackImage } from "../data/fallbackImages.js";
 import { AspectPill, AudioEqualizer, RecIndicator, TimecodeBadge } from "./StudioGraphics.jsx";
 
 export default function CinemaModal({ project, isOpen, onClose }) {
@@ -31,6 +32,7 @@ export default function CinemaModal({ project, isOpen, onClose }) {
   const directVideoUrl = getDirectVideoUrl(project.videoUrl);
   const instagramUrl = getInstagramUrl(project.videoUrl);
   const isVertical = project.category === "Reels & Short-form";
+  const fallback = getFallbackImage(project.slug);
 
   return (
     <div
@@ -51,7 +53,7 @@ export default function CinemaModal({ project, isOpen, onClose }) {
           <div className="flex items-center gap-2.5">
             <RecIndicator />
             <span className="hidden sm:inline font-bold text-white/90">
-              PREVIEW // {project.slug.toUpperCase()}
+              VIDEO PREVIEW // {project.slug.toUpperCase()}
             </span>
           </div>
 
@@ -63,7 +65,7 @@ export default function CinemaModal({ project, isOpen, onClose }) {
             <TimecodeBadge timecode="00:01:24:18" />
             <button
               aria-label="Close cinema preview"
-              className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors ml-1"
+              className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors ml-1 cursor-pointer"
               onClick={onClose}
               type="button"
             >
@@ -95,17 +97,18 @@ export default function CinemaModal({ project, isOpen, onClose }) {
             />
           ) : (
             <div className="relative w-full h-full flex items-center justify-center">
-              {project.image && (
-                <img
-                  alt={project.imageAlt || project.title}
-                  className="w-full h-full object-cover opacity-85"
-                  src={project.image}
-                  style={{ objectPosition: project.imagePosition || "center" }}
-                />
-              )}
+              <img
+                alt={project.imageAlt || project.title}
+                className="w-full h-full object-cover opacity-85"
+                onError={(e) => {
+                  e.currentTarget.src = fallback;
+                }}
+                src={project.image || fallback}
+                style={{ objectPosition: project.imagePosition || "center" }}
+              />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent flex flex-col justify-end p-6">
                 <span className="font-mono text-xs text-[#FF4D2D] font-bold uppercase mb-1">
-                  CURATED STUDIO DIRECTION
+                  FEATURED VIDEO DIRECTION
                 </span>
                 <p className="text-white/80 text-sm max-w-lg mb-4">
                   {project.summary}
@@ -163,7 +166,7 @@ export default function CinemaModal({ project, isOpen, onClose }) {
               onClick={onClose}
               to={`/contact?service=${encodeURIComponent(project.category)}&project=${encodeURIComponent(project.title)}`}
             >
-              Commission Similar Cut <ArrowUpRight size={14} />
+              Start a Project <ArrowUpRight size={14} />
             </Link>
           </div>
         </div>

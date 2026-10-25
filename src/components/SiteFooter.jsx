@@ -69,7 +69,7 @@ export default function SiteFooter() {
       </div>
       <div className="footer-bottom">
         <span>© {new Date().getFullYear()} VIP StudioS</span>
-        <span>Our work includes illustrative concept studies, not commissioned projects.</span>
+        <span>Creative video editing &amp; digital content studio. All rights reserved.</span>
         <Link to="/contact">Start a project <ArrowUpRight aria-hidden="true" size={13} /></Link>
       </div>
     </footer>

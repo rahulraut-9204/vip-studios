@@ -12,34 +12,34 @@ const siteOrigin = "https://vip-studios.pages.dev";
 
 const pageMetadata = {
   "/": {
-    title: "Content, Social Media & Video Production | VIP StudioS",
+    title: "VIP STUDIOS | Creative Video Editing & Content Studio",
     description:
-      "Social media management, video production, editing, podcasts and YouTube support for businesses. Build your digital content journey with VIP StudioS.",
+      "Commercial video editing, high-retention vertical reels, YouTube series, podcasts, and digital content crafted for brands and creators.",
   },
   "/services": {
-    title: "Social Media, Video, Podcast & YouTube Services | VIP StudioS",
+    title: "Video Editing & Production Services | VIP STUDIOS",
     description:
-      "Explore social media management, video production and editing, podcast production, YouTube management, content creation and brand content.",
+      "Explore video editing, commercial brand films, 9:16 vertical reels, podcasts, YouTube management, and DaVinci color grading.",
   },
   "/work": {
-    title: "Portfolio concepts — VIP StudioS",
+    title: "Selected Work & Portfolio | VIP STUDIOS",
     description:
-      "Explore illustrative social-media and video concept studies from VIP StudioS. Concept imagery is not commissioned client work.",
+      "Explore commercial video edits, high-retention vertical reels, YouTube productions, and brand films crafted by VIP STUDIOS.",
   },
   "/about": {
-    title: "The studio — VIP StudioS",
+    title: "About the Studio | VIP STUDIOS",
     description:
-      "Meet VIP StudioS: a creative and digital team connecting social media, content, video production and digital execution for businesses.",
+      "Meet VIP STUDIOS: a creative video editing and digital content studio crafting high-impact visual stories for businesses and creators.",
   },
   "/process": {
-    title: "Our Process — VIP StudioS",
+    title: "Our Process | VIP STUDIOS",
     description:
-      "See how VIP StudioS takes a project from discovery and strategy through content creation, editing, publishing and review.",
+      "See how VIP STUDIOS takes a project from creative brief through rough cut, DaVinci color grading, sound design, and master delivery.",
   },
   "/contact": {
-    title: "Start a conversation — VIP StudioS",
+    title: "Start a Project | VIP STUDIOS",
     description:
-      "Share your social-media or video brief with VIP StudioS by email or WhatsApp.",
+      "Share your video editing or content brief with VIP STUDIOS by email or direct WhatsApp chat.",
   },
 };
 
@@ -47,27 +47,23 @@ function applyRouteMetadata(pathname, project, service, pendingProject = false) 
   const normalizedPath = pathname.replace(/\/$/, "") || "/";
   const metadata = pendingProject
     ? {
-        title: "Selected project — VIP StudioS",
-        description: "Explore selected video and content work from VIP StudioS.",
+        title: "Selected Project — VIP STUDIOS",
+        description: "Explore selected video and content work from VIP STUDIOS.",
       }
     : project
     ? {
-        title: project.concept
-          ? `${project.title} — Concept project — VIP StudioS`
-          : `${project.title} — VIP StudioS`,
-        description: project.concept
-          ? `${project.summary} This is illustrative concept work, not a commissioned client project.`
-          : project.summary,
+        title: `${project.title} — VIP STUDIOS`,
+        description: project.summary,
       }
     : service
       ? {
-          title: `${service.title} — VIP StudioS`,
+          title: `${service.title} — VIP STUDIOS`,
           description: service.description,
         }
       : pageMetadata[normalizedPath] ?? {
-          title: "Page not found — VIP StudioS",
+          title: "Page Not Found — VIP STUDIOS",
           description:
-            "This page is not available. Explore VIP StudioS services or contact the studio.",
+            "This page is not available. Explore VIP STUDIOS services or contact the studio.",
         };
   const canonicalUrl = new URL(pathname, siteOrigin).href;
   const isNotFound =

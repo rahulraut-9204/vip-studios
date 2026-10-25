@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
-import { ArrowLeft, ArrowUpRight, ExternalLink, Play, Sparkles, Volume2 } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, ExternalLink, Play } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import NotFoundPage from "./NotFoundPage.jsx";
 import ProjectCard from "../components/ProjectCard.jsx";
-import SectionHeading from "../components/SectionHeading.jsx";
 import {
   getDirectVideoUrl,
   getInstagramUrl,
@@ -13,6 +12,7 @@ import {
   getYouTubeId,
   getYouTubeThumbnail,
 } from "../data/media.js";
+import { getFallbackImage } from "../data/fallbackImages.js";
 import usePublishedProjects from "../hooks/usePublishedProjects.js";
 import { AspectPill, RecIndicator, TimecodeBadge, ViewfinderCorners } from "../components/StudioGraphics.jsx";
 
@@ -43,12 +43,13 @@ export default function ProjectPage() {
 
   if (!project) return <NotFoundPage />;
 
+  const fallback = getFallbackImage(project.slug);
   const youtubeId = getYouTubeId(project.videoUrl);
   const directVideoUrl = getDirectVideoUrl(project.videoUrl);
   const instagramUrl = getInstagramUrl(project.videoUrl);
   const externalMediaUrl = getSafeExternalUrl(project.videoUrl);
   const hasPlayableMedia = Boolean(youtubeId || directVideoUrl);
-  const mediaPoster = project.image || (youtubeId ? getYouTubeThumbnail(project.videoUrl) : "");
+  const mediaPoster = project.image || (youtubeId ? getYouTubeThumbnail(project.videoUrl) : fallback);
   const hasImage = Boolean(mediaPoster);
   const mediaAlt = project.imageAlt || `${project.title} project still`;
 
@@ -146,6 +147,9 @@ export default function ProjectPage() {
                 alt={mediaAlt}
                 className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                 height="1000"
+                onError={(e) => {
+                  e.currentTarget.src = fallback;
+                }}
                 src={mediaPoster}
                 style={{ objectPosition: project.imagePosition }}
                 width="1800"
@@ -213,7 +217,7 @@ export default function ProjectPage() {
           </h2>
           <p className="text-base text-[#6E6A7C] leading-relaxed mb-6">
             {project.summary ||
-              "An illustrative video editing study highlighting deliberate pacing, visual rhythm, and focused narrative tension."}
+              "A high-impact video edit highlighting deliberate pacing, visual rhythm, and focused narrative tension."}
           </p>
 
           {project.approach && (
@@ -289,7 +293,7 @@ export default function ProjectPage() {
       <div className="my-16 p-8 sm:p-12 rounded-2xl bg-[#0E0C18] text-white flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-2xl border border-white/10">
         <div>
           <span className="font-mono text-xs font-bold uppercase tracking-widest text-[#FF4D2D] block mb-2">
-            // COMMISSION A SIMILAR CUT
+            // START A SIMILAR PROJECT
           </span>
           <h2 className="text-3xl font-black text-white m-0 mb-2">
             Ready to shape a cut like {project.title}?
@@ -302,7 +306,7 @@ export default function ProjectPage() {
           className="button button-gold shrink-0 py-3.5 px-8 shadow-[0_0_24px_rgba(255,77,45,0.4)]"
           to={`/contact?service=${encodeURIComponent(project.category)}&project=${encodeURIComponent(project.title)}`}
         >
-          Commission This Cut <ArrowUpRight size={16} />
+          Start Similar Project <ArrowUpRight size={16} />
         </Link>
       </div>
     </motion.article>

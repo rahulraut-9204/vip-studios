@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import { motion, useReducedMotion } from "motion/react";
-import { ArrowDown, ArrowUpRight, Play, Volume2, Sparkles } from "lucide-react";
+import { ArrowDown, ArrowUpRight, Play, Volume2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { projects as fallbackProjects } from "../data/projects.js";
+import { getFallbackImage } from "../data/fallbackImages.js";
 import {
   AspectPill,
   AudioEqualizer,
   RecIndicator,
-  ResolutionBadge,
   TimecodeBadge,
   ViewfinderCorners,
 } from "./StudioGraphics.jsx";
@@ -24,6 +24,7 @@ export default function HeroReel({ projects: customProjects }) {
   const [cinemaModalProject, setCinemaModalProject] = useState(null);
 
   const activeProject = heroProjects[activeProjectIndex] || heroProjects[0] || fallbackProjects[0];
+  const activeFallback = getFallbackImage(activeProject?.slug);
 
   // Subtle ticking frame counter for authentic editing room feel
   useEffect(() => {
@@ -55,7 +56,7 @@ export default function HeroReel({ projects: customProjects }) {
               VIP STUDIOS // 2026 EDITORIAL SUITE
             </span>
             <span className="font-mono text-[11px] font-bold tracking-wider uppercase px-3 py-1 rounded-full bg-[#F5F3FF] text-[#635BFF] border border-[#635BFF]/25 shadow-sm">
-              COMMISSIONS OPEN
+              TAKING NEW CLIENTS
             </span>
           </motion.div>
 
@@ -103,7 +104,6 @@ export default function HeroReel({ projects: customProjects }) {
             </Link>
             <Link className="button button-outline" to="/contact">
               Start a Project
-              <span className="font-mono text-[11px] text-[#FF4D2D] ml-1 font-bold">[BRIEF]</span>
             </Link>
           </motion.div>
 
@@ -161,14 +161,17 @@ export default function HeroReel({ projects: customProjects }) {
             <div
               className="relative aspect-[16/10] sm:aspect-[16/9] rounded-xl overflow-hidden bg-black/60 group cursor-pointer shadow-inner"
               onClick={() => setCinemaModalProject(activeProject)}
-              title="Click to preview in cinema mode"
+              title="Click to preview video"
             >
               <img
                 alt={activeProject?.imageAlt || activeProject?.title}
                 className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                 height="900"
                 loading="eager"
-                src={activeProject?.image}
+                onError={(e) => {
+                  e.currentTarget.src = activeFallback;
+                }}
+                src={activeProject?.image || activeFallback}
                 style={{ objectPosition: activeProject?.imagePosition || "center" }}
                 width="1400"
               />
@@ -202,7 +205,7 @@ export default function HeroReel({ projects: customProjects }) {
                   }}
                   type="button"
                 >
-                  <Play size={11} fill="currentColor" />
+                  <Play fill="currentColor" size={11} />
                   <span>PREVIEW CUT</span>
                 </button>
               </div>
@@ -233,7 +236,7 @@ export default function HeroReel({ projects: customProjects }) {
                 onClick={() => setIsPlayingAudio((prev) => !prev)}
                 title="Toggle visualizer"
               >
-                <Volume2 size={13} className={isPlayingAudio ? "text-[#00E599]" : "text-white/40"} />
+                <Volume2 className={isPlayingAudio ? "text-[#00E599]" : "text-white/40"} size={13} />
                 <AudioEqualizer isPlaying={isPlayingAudio} />
                 <span className="hidden sm:inline text-[10px] text-white/50">48kHz MASTER</span>
               </div>

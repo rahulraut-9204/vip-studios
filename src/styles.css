@@ -7,19 +7,19 @@
 
 :root {
   /* Color Palette — Primary Design Tokens */
-  --bg-primary: #FCFBF8;         /* Editorial Gallery Canvas (Warm Luxury Ivory) */
-  --bg-secondary: #F5F3FF;       /* Pale Creative Ultraviolet (Soft Tint) */
+  --bg-primary: #FCFBF9;         /* Editorial Gallery Canvas (Warm Luxury Ivory) */
+  --bg-secondary: #F6F4FE;       /* Pale Creative Ultraviolet (Soft Tint) */
   --bg-surface: #FFFFFF;         /* Crisp White (Cards, Surfaces) */
-  --bg-surface-raised: #F8F6F0;  /* Tinted Ivory Surface */
+  --bg-surface-raised: #F8F6F2;  /* Tinted Ivory Surface */
   --bg-dark: #0E0C18;            /* Obsidian Cinema Ink (True Monitor Dark) */
   --bg-dark-surface: #181528;    /* NLE Editing Suite Console */
 
   /* Text Colors */
-  --text-primary: #12101E;       /* Deep Obsidian Ink */
-  --text-secondary: #5C586B;     /* Refined Slate Violet */
-  --text-muted: #8E8A9E;         /* Soft Caption Muted */
-  --text-inverse: #FCFBF8;       /* Warm Ivory on Dark */
-  --text-inverse-muted: #B8B5C6; /* Muted on Dark */
+  --text-primary: #0F0E17;       /* Deep Obsidian Ink (High Contrast) */
+  --text-secondary: #4E4A5C;     /* Refined Slate Violet (Rich, Accessible) */
+  --text-muted: #7A7688;         /* Soft Caption Muted */
+  --text-inverse: #FCFBF9;       /* Warm Ivory on Dark */
+  --text-inverse-muted: #C0BDCC; /* Muted on Dark */
 
   /* Brand Accents */
   --color-coral: #FF4D2D;        /* High-Voltage Cinema Record Red/Coral */
@@ -745,11 +745,16 @@ p {
   padding-block: clamp(4rem, 8vw, 7rem);
 }
 
-.vip-work-grid,
-.work-project-grid {
+.vip-work-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
   gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.work-project-grid {
+  display: block;
+  width: 100%;
   margin-bottom: 3rem;
 }
 

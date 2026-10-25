@@ -1,16 +1,24 @@
-import { ArrowUpRight, Play, Volume2, Sparkles } from "lucide-react";
+import { ArrowUpRight, Play, Volume2 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { getDirectVideoUrl, getMediaPlatformLabel } from "../data/media.js";
 import { AspectPill, AudioEqualizer, TimecodeBadge, ViewfinderCorners } from "./StudioGraphics.jsx";
+import { getFallbackImage } from "../data/fallbackImages.js";
 
 export default function ProjectCard({ project, index = 0, variant = "auto", onPreviewCut }) {
   const videoRef = useRef(null);
   const [isPreviewing, setIsPreviewing] = useState(false);
-  const directVideoUrl = getDirectVideoUrl(project.videoUrl);
+  const directVideoUrl = getDirectVideoUrl(project?.videoUrl);
 
-  const isVertical = variant === "vertical" || (variant === "auto" && project.category === "Reels & Short-form");
-  const isFeatured = variant === "featured" || project.featured;
+  const fallback = getFallbackImage(project?.slug);
+  const [imgSrc, setImgSrc] = useState(project?.image || fallback);
+
+  useEffect(() => {
+    setImgSrc(project?.image || fallback);
+  }, [project?.image, fallback]);
+
+  const isVertical = variant === "vertical" || project?.category === "Reels & Short-form";
+  const isFeatured = variant === "featured" || project?.featured;
 
   const aspectLabel = isVertical ? "9:16" : "16:9";
   const dummyTimecodes = ["00:00:45:12", "00:01:12:04", "00:03:20:18", "00:00:30:00", "00:02:15:22"];
@@ -43,35 +51,79 @@ export default function ProjectCard({ project, index = 0, variant = "auto", onPr
       className={`project-card group ${isFeatured ? "is-featured-card" : ""} ${isVertical ? "is-vertical-card" : ""}`}
     >
       <Link
-        aria-label={`View ${project.title}${project.concept ? ", a concept project" : ""}`}
+        aria-label={`View ${project.title}`}
         className="project-link"
         onMouseEnter={startPreview}
         onMouseLeave={stopPreview}
         to={`/work/${project.slug}`}
       >
         <div
-          className={`project-image relative overflow-hidden rounded-2xl ${
-            isVertical ? "aspect-[9/16] max-h-[580px]" : "aspect-[16/10]"
-          } ${project.image ? `image-tone-${project.accent}` : "project-image-empty"}`}
+          className={`project-image relative overflow-hidden rounded-2xl aspect-[16/10] bg-[#0E0C18] ${
+            isVertical ? "flex items-center justify-center p-3" : ""
+          }`}
         >
-          {project.image ? (
+          {isVertical ? (
+            /* Vertical Reel Frame with Ambient Glow */
+            <>
+              {/* Blurred Ambient Backdrop */}
+              <img
+                alt=""
+                aria-hidden="true"
+                className="absolute inset-0 w-full h-full object-cover blur-2xl opacity-35 scale-125 pointer-events-none select-none"
+                loading="lazy"
+                onError={() => setImgSrc(fallback)}
+                src={imgSrc}
+              />
+              {/* Focused 9:16 Vertical Phone/Frame */}
+              <div className="relative h-full aspect-[9/16] rounded-xl overflow-hidden shadow-2xl border border-white/20 z-10">
+                <img
+                  alt={project.imageAlt || project.title}
+                  className={`w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 ${
+                    isPreviewing ? "opacity-0" : "opacity-100"
+                  }`}
+                  height="900"
+                  loading="lazy"
+                  onError={() => setImgSrc(fallback)}
+                  src={imgSrc}
+                  style={{ objectPosition: project.imagePosition || "center" }}
+                  width="506"
+                />
+                {directVideoUrl && (
+                  <video
+                    aria-hidden="true"
+                    className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${
+                      isPreviewing ? "opacity-100" : "opacity-0"
+                    }`}
+                    loop
+                    muted
+                    playsInline
+                    preload="none"
+                    ref={videoRef}
+                    src={directVideoUrl}
+                  />
+                )}
+              </div>
+            </>
+          ) : (
+            /* Standard Widescreen 16:9 / 16:10 Frame */
             <>
               <img
                 alt={project.imageAlt || project.title}
                 className={`w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 ${
-                  isPreviewing ? "is-preview-hidden opacity-0" : "opacity-100"
+                  isPreviewing ? "opacity-0" : "opacity-100"
                 }`}
                 height="900"
                 loading="lazy"
-                src={project.image}
+                onError={() => setImgSrc(fallback)}
+                src={imgSrc}
                 style={{ objectPosition: project.imagePosition || "center" }}
                 width="1400"
               />
               {directVideoUrl && (
                 <video
                   aria-hidden="true"
-                  className={`project-video-preview absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${
-                    isPreviewing ? "is-visible opacity-100" : "opacity-0"
+                  className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${
+                    isPreviewing ? "opacity-100" : "opacity-0"
                   }`}
                   loop
                   muted
@@ -82,11 +134,6 @@ export default function ProjectCard({ project, index = 0, variant = "auto", onPr
                 />
               )}
             </>
-          ) : (
-            <span className="project-image-empty-copy">
-              <strong>{project.title}</strong>
-              <small>No preview</small>
-            </span>
           )}
 
           {/* Viewfinder HUD Overlays */}
@@ -112,7 +159,7 @@ export default function ProjectCard({ project, index = 0, variant = "auto", onPr
             <span
               className="w-12 h-12 rounded-full bg-[#FF4D2D] text-white flex items-center justify-center shadow-[0_0_24px_rgba(255,77,45,0.7)] transform scale-90 group-hover:scale-100 transition-transform pointer-events-auto cursor-pointer"
               onClick={handlePreviewClick}
-              title="Click to preview cut"
+              title="Click to preview video"
             >
               <Play className="ml-0.5" fill="currentColor" size={18} />
             </span>
@@ -134,7 +181,7 @@ export default function ProjectCard({ project, index = 0, variant = "auto", onPr
                 aria-label={`Preview ${project.title}`}
                 className="pointer-events-auto w-8 h-8 rounded-full bg-black/80 hover:bg-[#FF4D2D] border border-white/20 text-white flex items-center justify-center backdrop-blur-md transition-all shadow-md hover:scale-105"
                 onClick={handlePreviewClick}
-                title="Preview video cut"
+                title="Preview video"
                 type="button"
               >
                 <Play className="ml-0.5" fill="currentColor" size={12} />
@@ -168,11 +215,6 @@ export default function ProjectCard({ project, index = 0, variant = "auto", onPr
           </div>
           <span className="project-format font-mono text-xs text-[#5C586B]">{project.format}</span>
         </div>
-        {project.concept && !project.videoUrl && (
-          <p className="project-concept-label font-mono text-[11px] text-[#8E8A9E] mt-1">
-            Curated concept study · Authentic studio direction
-          </p>
-        )}
       </Link>
     </article>
   );
