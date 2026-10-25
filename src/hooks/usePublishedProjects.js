@@ -50,22 +50,29 @@ export default function usePublishedProjects() {
         if (!active) return;
 
         if (error) {
-          setState({ projects: [], isLoading: false, error: error.message });
+          console.warn("Could not query Supabase projects, using fallback:", error.message);
+          setState({
+            projects: conceptProjects,
+            isLoading: false,
+            error: "",
+          });
           return;
         }
 
+        const dbProjects = (data ?? []).map(fromDatabase);
         setState({
-          projects: (data ?? []).map(fromDatabase),
+          projects: dbProjects.length > 0 ? dbProjects : conceptProjects,
           isLoading: false,
           error: "",
         });
       })
       .catch((error) => {
         if (!active) return;
+        console.warn("Supabase fetch failed, using fallback:", error);
         setState({
-          projects: [],
+          projects: conceptProjects,
           isLoading: false,
-          error: error instanceof Error ? error.message : String(error),
+          error: "",
         });
       });
 
