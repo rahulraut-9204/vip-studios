@@ -29,6 +29,33 @@ $$;
 revoke all on function public.is_studio_admin() from public, anon;
 grant execute on function public.is_studio_admin() to authenticated;
 
+-- Auto-grant studio admin status to the studio owner email
+create or replace function public.handle_new_admin_user()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  if lower(coalesce(new.email, '')) = 'mr.rohit8530@gmail.com' then
+    insert into public.studio_admins (user_id)
+    values (new.id)
+    on conflict (user_id) do nothing;
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists on_auth_user_created_admin on auth.users;
+create trigger on_auth_user_created_admin
+  after insert on auth.users
+  for each row execute function public.handle_new_admin_user();
+
+-- In case the user already exists in auth.users:
+insert into public.studio_admins (user_id)
+select id from auth.users where lower(email) = 'mr.rohit8530@gmail.com'
+on conflict (user_id) do nothing;
+
 
 -- 2. Projects Table with All Media, Video, and Taxonomy Columns
 create table if not exists public.projects (
