@@ -159,7 +159,7 @@ export default function ProjectPage() {
                   onClick={() => setIsMediaOpen(true)}
                   type="button"
                 >
-                  <span className="inline-flex items-center gap-3 px-6 py-3.5 rounded-full bg-[#FF6542] hover:bg-[#E85331] text-white font-mono text-sm font-bold shadow-2xl transform transition-transform group-hover:scale-110">
+                  <span className="inline-flex items-center gap-3 px-6 py-3.5 rounded-full bg-[#FF4D2D] hover:bg-[#E63B19] text-white font-mono text-sm font-bold shadow-[0_0_30px_rgba(255,77,45,0.6)] transform transition-transform group-hover:scale-110">
                     <Play fill="currentColor" size={18} />
                     <span>PLAY MASTER REEL</span>
                   </span>
@@ -286,9 +286,9 @@ export default function ProjectPage() {
       )}
 
       {/* CTA Box */}
-      <div className="my-16 p-8 sm:p-12 rounded-2xl bg-[#19162B] text-white flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-xl">
+      <div className="my-16 p-8 sm:p-12 rounded-2xl bg-[#0E0C18] text-white flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-2xl border border-white/10">
         <div>
-          <span className="font-mono text-xs font-bold uppercase tracking-widest text-[#FF6542] block mb-2">
+          <span className="font-mono text-xs font-bold uppercase tracking-widest text-[#FF4D2D] block mb-2">
             // COMMISSION A SIMILAR CUT
           </span>
           <h2 className="text-3xl font-black text-white m-0 mb-2">
@@ -299,8 +299,8 @@ export default function ProjectPage() {
           </p>
         </div>
         <Link
-          className="button button-gold shrink-0 py-3.5 px-7"
-          to={`/contact?service=${encodeURIComponent(project.category)}`}
+          className="button button-gold shrink-0 py-3.5 px-8 shadow-[0_0_24px_rgba(255,77,45,0.4)]"
+          to={`/contact?service=${encodeURIComponent(project.category)}&project=${encodeURIComponent(project.title)}`}
         >
           Commission This Cut <ArrowUpRight size={16} />
         </Link>

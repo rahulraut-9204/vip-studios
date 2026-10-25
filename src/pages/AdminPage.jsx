@@ -539,35 +539,35 @@ export default function AdminPage() {
         </section>
 
         {/* Navigation Tabs */}
-        <div className="flex border-b border-[#EAE6E0] mb-8 gap-4 font-mono text-xs uppercase tracking-wider">
+        <div className="flex border-b border-[#E8E4DC] mb-8 gap-4 font-mono text-xs uppercase tracking-wider">
           <button
             onClick={() => setActiveTab("projects")}
             type="button"
-            className={`pb-3 px-2 flex items-center gap-2 border-b-2 font-bold transition-all ${
+            className={`pb-3 px-2.5 flex items-center gap-2 border-b-2 font-bold transition-all ${
               activeTab === "projects"
-                ? "border-[#19162B] text-[#19162B]"
-                : "border-transparent text-[#6E6A7C] hover:text-[#19162B]"
+                ? "border-[#12101E] text-[#12101E]"
+                : "border-transparent text-[#5C586B] hover:text-[#12101E]"
             }`}
           >
             <Film size={16} />
             <span>Cuts &amp; Projects</span>
-            <span className="px-2 py-0.5 rounded-full bg-[#19162B]/10 text-[10px]">
+            <span className="px-2 py-0.5 rounded-full bg-[#12101E]/10 text-[10px]">
               {projects.length}
             </span>
           </button>
           <button
             onClick={() => setActiveTab("enquiries")}
             type="button"
-            className={`pb-3 px-2 flex items-center gap-2 border-b-2 font-bold transition-all ${
+            className={`pb-3 px-2.5 flex items-center gap-2 border-b-2 font-bold transition-all ${
               activeTab === "enquiries"
-                ? "border-[#FF6542] text-[#FF6542]"
-                : "border-transparent text-[#6E6A7C] hover:text-[#19162B]"
+                ? "border-[#FF4D2D] text-[#FF4D2D]"
+                : "border-transparent text-[#5C586B] hover:text-[#12101E]"
             }`}
           >
             <Inbox size={16} />
             <span>Enquiries Inbox</span>
             {enquiries.filter((e) => e.status === "new").length > 0 && (
-              <span className="px-2 py-0.5 rounded-full bg-[#FF6542] text-white text-[10px] animate-pulse">
+              <span className="px-2 py-0.5 rounded-full bg-[#FF4D2D] text-white text-[10px] animate-pulse">
                 {enquiries.filter((e) => e.status === "new").length} NEW
               </span>
             )}

@@ -1,13 +1,15 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { ArrowUpRight, Filter, RotateCcw } from "lucide-react";
+import { ArrowUpRight, Filter, Play, RotateCcw } from "lucide-react";
 import { Link, useSearchParams } from "react-router-dom";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import ProjectCard from "../components/ProjectCard.jsx";
+import CinemaModal from "../components/CinemaModal.jsx";
 import { CATEGORIES } from "../config/site.js";
 import usePublishedProjects from "../hooks/usePublishedProjects.js";
 
 export default function WorkPage() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [cinemaProject, setCinemaProject] = useState(null);
   const currentCategoryParam = searchParams.get("category");
   const activeCategory = CATEGORIES.includes(currentCategoryParam) ? currentCategoryParam : "All";
 
@@ -56,21 +58,29 @@ export default function WorkPage() {
       {/* Filter Toolbar */}
       <div className="work-toolbar studio-work-toolbar border-b border-[#EAE6E0] pb-6 mb-8 flex flex-wrap items-center justify-between gap-4">
         <div aria-label="Filter portfolio by category" className="filter-list flex flex-wrap gap-2" role="group">
-          {["All", ...CATEGORIES].map((category) => (
-            <button
-              aria-pressed={activeCategory === category}
-              className={`filter-button font-mono text-xs uppercase tracking-wider px-3.5 py-1.5 rounded-full border transition-all ${
-                activeCategory === category
-                  ? "bg-[#19162B] text-white border-[#19162B] shadow-sm font-bold"
-                  : "bg-white text-[#6E6A7C] border-[#EAE6E0] hover:border-[#19162B] hover:text-[#19162B]"
-              }`}
-              key={category}
-              onClick={() => handleCategoryChange(category)}
-              type="button"
-            >
-              {category === "All" ? "ALL CUTS" : category}
-            </button>
-          ))}
+          {["All", ...CATEGORIES].map((category) => {
+            const count = category === "All" ? projects.length : projects.filter((p) => p.category === category).length;
+            return (
+              <button
+                aria-pressed={activeCategory === category}
+                className={`filter-button font-mono text-xs uppercase tracking-wider px-3.5 py-1.5 rounded-full border transition-all ${
+                  activeCategory === category
+                    ? "bg-[#12101E] text-white border-[#12101E] shadow-sm font-bold scale-105"
+                    : "bg-white text-[#5C586B] border-[#E8E4DC] hover:border-[#12101E] hover:text-[#12101E]"
+                }`}
+                key={category}
+                onClick={() => handleCategoryChange(category)}
+                type="button"
+              >
+                <span>{category === "All" ? "ALL CUTS" : category}</span>
+                <span className={`ml-1.5 px-1.5 py-0.2 rounded-full text-[10px] ${
+                  activeCategory === category ? "bg-white/20 text-white" : "bg-black/5 text-[#5C586B]"
+                }`}>
+                  {count}
+                </span>
+              </button>
+            );
+          })}
         </div>
 
         <div className="flex items-center gap-3 font-mono text-xs text-[#6E6A7C]">
@@ -145,7 +155,12 @@ export default function WorkPage() {
                     ease: "easeOut",
                   }}
                 >
-                  <ProjectCard index={index} project={project} variant={variant} />
+                  <ProjectCard
+                    index={index}
+                    onPreviewCut={setCinemaProject}
+                    project={project}
+                    variant={variant}
+                  />
                 </motion.div>
               );
             })}
@@ -171,6 +186,13 @@ export default function WorkPage() {
           Commission a Project <ArrowUpRight aria-hidden="true" size={17} />
         </Link>
       </div>
+
+      {/* Lightbox Cinema Preview Modal */}
+      <CinemaModal
+        isOpen={Boolean(cinemaProject)}
+        onClose={() => setCinemaProject(null)}
+        project={cinemaProject}
+      />
     </section>
   );
 }

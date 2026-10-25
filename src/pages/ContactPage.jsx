@@ -28,8 +28,13 @@ export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [searchParams] = useSearchParams();
   const requestedService = searchParams.get("service") || "";
-  const validService = serviceOfferings.some((service) => service.enquiryValue === requestedService)
-    ? requestedService
+  const requestedProject = searchParams.get("project") || "";
+  const validService = serviceOfferings.some(
+    (service) => service.enquiryValue === requestedService || service.title.toLowerCase() === requestedService.toLowerCase(),
+  )
+    ? serviceOfferings.find(
+        (service) => service.enquiryValue === requestedService || service.title.toLowerCase() === requestedService.toLowerCase(),
+      )?.enquiryValue || ""
     : "";
   const whatsAppHref = getWhatsAppHref(
     "Hi VIP StudioS, I'd like to discuss a video editing or creative project.",
@@ -214,6 +219,13 @@ export default function ContactPage() {
               <p className="text-xs text-[#6E6A7C] mt-1 m-0">Share what you know so far. We will guide the rest.</p>
             </div>
 
+            {requestedProject && (
+              <div className="mb-6 p-3.5 rounded-xl bg-[#F5F3FF] border border-[#635BFF]/30 flex items-center justify-between text-xs font-mono text-[#635BFF]">
+                <span>Inquiring about cut style: <strong>&ldquo;{requestedProject}&rdquo;</strong></span>
+                <span className="text-[10px] uppercase font-bold bg-[#635BFF] text-white px-2.5 py-0.5 rounded-full shadow-sm">Referenced Cut</span>
+              </div>
+            )}
+
             {isSuccess && (
               <div className="p-4 mb-6 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm flex items-center gap-3">
                 <CheckCircle2 className="text-emerald-600 shrink-0" size={20} />
@@ -295,6 +307,11 @@ export default function ContactPage() {
             <label>
               Brief &amp; Project Requirements <span aria-hidden="true">*</span>
               <textarea
+                defaultValue={
+                  requestedProject
+                    ? `I'm interested in a video cut style similar to your work on "${requestedProject}". Here are our footage details and goals:`
+                    : ""
+                }
                 maxLength={3000}
                 name="requirements"
                 placeholder="Describe your project, footage volume, narrative style, audio preferences, and deliverables needed."

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   ArrowUpRight,
   Camera,
@@ -15,6 +16,7 @@ import { motion, useReducedMotion } from "motion/react";
 import { Link } from "react-router-dom";
 import HeroReel from "../components/HeroReel.jsx";
 import ProjectCard from "../components/ProjectCard.jsx";
+import CinemaModal from "../components/CinemaModal.jsx";
 import SectionHeading from "../components/SectionHeading.jsx";
 import { getWhatsAppHref } from "../data/contact.js";
 import { projects } from "../data/projects.js";
@@ -81,6 +83,7 @@ function FaqSchema() {
 
 export default function HomePage() {
   const reduceMotion = useReducedMotion();
+  const [previewProject, setPreviewProject] = useState(null);
   const { projects: publishedProjects, isLoading, error } = usePublishedProjects();
   const featuredProjects = publishedProjects.filter((project) => project.featured);
   const homeProjects = (featuredProjects.length > 0 ? featuredProjects : publishedProjects).slice(0, 4);
@@ -91,7 +94,7 @@ export default function HomePage() {
   return (
     <div className="vip-home">
       <FaqSchema />
-      <HeroReel />
+      <HeroReel projects={homeProjects} />
 
       {/* Cinematic Trust Band */}
       <section aria-label="Studio verified track record" className="studio-stats-band bg-[#F4F1FF] border-y border-[#EAE6E0]">
@@ -178,7 +181,12 @@ export default function HomePage() {
 
               return (
                 <div className={colSpan} key={project.slug}>
-                  <ProjectCard index={index} project={project} variant={variant} />
+                  <ProjectCard
+                    index={index}
+                    onPreviewCut={setPreviewProject}
+                    project={project}
+                    variant={variant}
+                  />
                 </div>
               );
             })}
@@ -508,6 +516,13 @@ export default function HomePage() {
           </div>
         </div>
       </motion.section>
+
+      {/* Lightbox Cinema Preview Modal */}
+      <CinemaModal
+        isOpen={Boolean(previewProject)}
+        onClose={() => setPreviewProject(null)}
+        project={previewProject}
+      />
     </div>
   );
 }

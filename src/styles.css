@@ -7,34 +7,36 @@
 
 :root {
   /* Color Palette — Primary Design Tokens */
-  --bg-primary: #FFFDF8;         /* Warm Ivory (Site Background) */
-  --bg-secondary: #F4F1FF;       /* Pale Lavender (Alternative Sections) */
-  --bg-surface: #FFFFFF;         /* Pure White (Cards, Dropdowns) */
-  --bg-surface-raised: #F9F7F2;  /* Slightly tinted Ivory */
-  --bg-dark: #19162B;            /* Deep Ink (Footer, Dark Elements) */
-  --bg-dark-surface: #27213D;    /* Rich Ink Surface */
+  --bg-primary: #FCFBF8;         /* Editorial Gallery Canvas (Warm Luxury Ivory) */
+  --bg-secondary: #F5F3FF;       /* Pale Creative Ultraviolet (Soft Tint) */
+  --bg-surface: #FFFFFF;         /* Crisp White (Cards, Surfaces) */
+  --bg-surface-raised: #F8F6F0;  /* Tinted Ivory Surface */
+  --bg-dark: #0E0C18;            /* Obsidian Cinema Ink (True Monitor Dark) */
+  --bg-dark-surface: #181528;    /* NLE Editing Suite Console */
 
   /* Text Colors */
-  --text-primary: #19162B;       /* Deep Ink */
-  --text-secondary: #6E6A7C;     /* Muted Violet-Grey */
-  --text-muted: #9490A2;         /* Soft Caption Grey */
-  --text-inverse: #FFFDF8;       /* Warm Ivory on Dark */
+  --text-primary: #12101E;       /* Deep Obsidian Ink */
+  --text-secondary: #5C586B;     /* Refined Slate Violet */
+  --text-muted: #8E8A9E;         /* Soft Caption Muted */
+  --text-inverse: #FCFBF8;       /* Warm Ivory on Dark */
   --text-inverse-muted: #B8B5C6; /* Muted on Dark */
 
   /* Brand Accents */
-  --color-coral: #FF6542;        /* Primary Accent (Calls to action, links) */
-  --color-coral-hover: #E85331;  /* Darker Coral for hover */
-  --color-periwinkle: #7765F8;   /* Secondary Accent (Navigation, category badges) */
-  --color-periwinkle-subtle: #ECE9FE; /* Tinted Lavender-Periwinkle */
-  --color-mint: #B9F4D0;         /* Supporting Accent (Highlights, tags) */
-  --color-mint-text: #11683B;    /* Accessible dark mint text */
-  --color-sunshine: #FFD76A;     /* Highlight (Warm Yellow) */
-  --color-sunshine-text: #664E03;/* Accessible dark sunshine text */
+  --color-coral: #FF4D2D;        /* High-Voltage Cinema Record Red/Coral */
+  --color-coral-hover: #E63B19;  /* Deepened Coral on Hover */
+  --color-coral-glow: rgba(255, 77, 45, 0.35); /* Vibrant Glow */
+  --color-periwinkle: #635BFF;   /* Modern Luminous Studio Violet */
+  --color-periwinkle-subtle: #EEEDFF; /* Tinted Ultra Violet */
+  --color-mint: #00E599;         /* Electric Audio Meter Mint */
+  --color-mint-text: #057A4E;    /* Accessible dark mint text */
+  --color-sunshine: #FFB800;     /* Timeline Gold / Amber Highlight */
+  --color-sunshine-text: #5A3E00;/* Accessible dark sunshine text */
+  --color-cyan: #00D2FF;         /* Colorist Scopes Cyan */
 
   /* Borders & Dividers */
-  --border-subtle: #EAE6E0;      /* Subtle Warm Border */
-  --border-medium: #DDD8D0;      /* Distinct Border */
-  --border-dark: #322C4E;        /* Dark Element Border */
+  --border-subtle: #E8E4DC;      /* Subtle Warm Border */
+  --border-medium: #D8D2C6;      /* Distinct Border */
+  --border-dark: #2A2444;        /* Dark Element Border */
 
   /* Typography */
   --font-display: "Space Grotesk", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -52,11 +54,11 @@
   --radius-lg: 24px;
   --radius-pill: 9999px;
 
-  /* Shadows */
-  --shadow-subtle: 0 2px 10px -2px rgba(25, 22, 43, 0.04);
-  --shadow-card: 0 8px 30px -4px rgba(25, 22, 43, 0.06), 0 2px 8px -2px rgba(25, 22, 43, 0.03);
-  --shadow-hover: 0 16px 40px -8px rgba(25, 22, 43, 0.12), 0 4px 12px -2px rgba(25, 22, 43, 0.04);
-  --shadow-float: 0 24px 60px -12px rgba(25, 22, 43, 0.2);
+  /* Shadows with modern ambient occlusion */
+  --shadow-subtle: 0 2px 10px -2px rgba(18, 16, 30, 0.04);
+  --shadow-card: 0 8px 30px -4px rgba(18, 16, 30, 0.06), 0 2px 8px -2px rgba(18, 16, 30, 0.03);
+  --shadow-hover: 0 16px 40px -8px rgba(18, 16, 30, 0.12), 0 4px 12px -2px rgba(18, 16, 30, 0.04);
+  --shadow-float: 0 24px 60px -12px rgba(18, 16, 30, 0.22);
 
   /* Transitions & Animation */
   --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
@@ -101,6 +103,21 @@
 
 .animate-audio-3 {
   animation: audio-bar-3 0.65s ease-in-out infinite;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* ==========================================================================
@@ -239,17 +256,19 @@ p {
 /* Primary Action: Coral */
 .button-gold,
 .button-primary {
-  background-color: var(--color-coral);
+  background: linear-gradient(135deg, var(--color-coral) 0%, #FF6442 100%);
   color: #FFFFFF;
   border: 1px solid var(--color-coral);
-  box-shadow: 0 4px 14px rgba(255, 101, 66, 0.28);
+  box-shadow: 0 4px 18px rgba(255, 77, 45, 0.35);
+  font-weight: 700;
 }
 
 .button-gold:hover,
 .button-primary:hover {
-  background-color: var(--color-coral-hover);
+  background: linear-gradient(135deg, var(--color-coral-hover) 0%, var(--color-coral) 100%);
   border-color: var(--color-coral-hover);
-  box-shadow: 0 8px 24px rgba(255, 101, 66, 0.38);
+  box-shadow: 0 8px 28px rgba(255, 77, 45, 0.5);
+  transform: translateY(-2px);
   color: #FFFFFF;
 }
 
@@ -401,17 +420,17 @@ p {
   left: 0;
   right: 0;
   z-index: 900;
-  background-color: rgba(255, 253, 248, 0.88);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background-color: rgba(252, 251, 248, 0.82);
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
   border-bottom: 1px solid var(--border-subtle);
   transition: all var(--motion-base) var(--ease-smooth);
 }
 
 .site-header.is-condensed {
-  background-color: rgba(255, 253, 248, 0.96);
+  background-color: rgba(252, 251, 248, 0.95);
   border-bottom-color: var(--border-medium);
-  box-shadow: 0 4px 20px -4px rgba(25, 22, 43, 0.05);
+  box-shadow: 0 4px 24px -4px rgba(18, 16, 30, 0.07);
 }
 
 .header-inner {
@@ -747,9 +766,9 @@ p {
 }
 
 .project-card:hover {
-  transform: translateY(-4px);
-  border-color: var(--border-medium);
-  box-shadow: var(--shadow-hover);
+  transform: translateY(-5px);
+  border-color: rgba(99, 91, 255, 0.35);
+  box-shadow: 0 20px 45px -10px rgba(18, 16, 30, 0.12), 0 0 0 1px rgba(99, 91, 255, 0.15);
 }
 
 .project-link {
@@ -924,9 +943,9 @@ p {
 }
 
 .vip-service-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-5px);
   border-color: var(--color-periwinkle);
-  box-shadow: var(--shadow-hover);
+  box-shadow: 0 20px 45px -10px rgba(99, 91, 255, 0.16), 0 0 0 1px rgba(99, 91, 255, 0.2);
 }
 
 .vip-service-card-top {
