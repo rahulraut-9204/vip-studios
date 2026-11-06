@@ -6,41 +6,42 @@
    ========================================================================== */
 
 :root {
-  /* Color Palette — Primary Design Tokens */
-  --bg-primary: #FCFBF9;         /* Editorial Gallery Canvas (Warm Luxury Ivory) */
-  --bg-secondary: #F6F4FE;       /* Pale Creative Ultraviolet (Soft Tint) */
-  --bg-surface: #FFFFFF;         /* Crisp White (Cards, Surfaces) */
-  --bg-surface-raised: #F8F6F2;  /* Tinted Ivory Surface */
-  --bg-dark: #0E0C18;            /* Obsidian Cinema Ink (True Monitor Dark) */
-  --bg-dark-surface: #181528;    /* NLE Editing Suite Console */
+  /* Color Palette — Primary Design Tokens (70% Near-Black, 20% White, 10% Yellow) */
+  --bg-primary: #0A0A0A;         /* Cinematic Obsidian Black (Dominant Background) */
+  --bg-secondary: #121212;       /* Raised Secondary Dark */
+  --bg-surface: #141414;         /* Panel / Card Surface */
+  --bg-surface-raised: #1A1A1A;  /* Elevated Container Surface */
+  --bg-dark: #0A0A0A;            /* Deep Obsidian Monitor */
+  --bg-dark-surface: #161616;    /* NLE Console Surface */
 
   /* Text Colors */
-  --text-primary: #0F0E17;       /* Deep Obsidian Ink (High Contrast) */
-  --text-secondary: #4E4A5C;     /* Refined Slate Violet (Rich, Accessible) */
-  --text-muted: #7A7688;         /* Soft Caption Muted */
-  --text-inverse: #FCFBF9;       /* Warm Ivory on Dark */
-  --text-inverse-muted: #C0BDCC; /* Muted on Dark */
+  --text-primary: #FFFFFF;       /* Crisp Studio White (High Contrast) */
+  --text-secondary: #A1A1AA;     /* Refined Muted Silver (Accessible) */
+  --text-muted: #71717A;         /* Soft Dimmed Caption */
+  --text-inverse: #0A0A0A;       /* Deep Obsidian on Yellow/White */
+  --text-inverse-muted: #27272A; /* Dimmed Inverse */
 
-  /* Brand Accents */
-  --color-coral: #FF4D2D;        /* High-Voltage Cinema Record Red/Coral */
-  --color-coral-hover: #E63B19;  /* Deepened Coral on Hover */
-  --color-coral-glow: rgba(255, 77, 45, 0.35); /* Vibrant Glow */
-  --color-periwinkle: #635BFF;   /* Modern Luminous Studio Violet */
-  --color-periwinkle-subtle: #EEEDFF; /* Tinted Ultra Violet */
+  /* Brand Accents — Electric Yellow */
+  --color-yellow: #FFD21C;       /* Signature VIP StudioS Neon Yellow (10% Accent) */
+  --color-coral: #FFD21C;        /* Map accent to signature yellow */
+  --color-coral-hover: #E5BC10;  /* Deepened Yellow on Hover */
+  --color-coral-glow: rgba(255, 210, 28, 0.35); /* Luminous Yellow Glow */
+  --color-periwinkle: #FFD21C;   /* Studio Accent */
+  --color-periwinkle-subtle: rgba(255, 210, 28, 0.12); /* Subtle Yellow Tint */
   --color-mint: #00E599;         /* Electric Audio Meter Mint */
-  --color-mint-text: #057A4E;    /* Accessible dark mint text */
-  --color-sunshine: #FFB800;     /* Timeline Gold / Amber Highlight */
-  --color-sunshine-text: #5A3E00;/* Accessible dark sunshine text */
+  --color-mint-text: #00E599;    /* Accessible mint text */
+  --color-sunshine: #FFD21C;     /* Highlight Yellow */
+  --color-sunshine-text: #FFD21C;/* Highlight Yellow text */
   --color-cyan: #00D2FF;         /* Colorist Scopes Cyan */
 
   /* Borders & Dividers */
-  --border-subtle: #E8E4DC;      /* Subtle Warm Border */
-  --border-medium: #D8D2C6;      /* Distinct Border */
-  --border-dark: #2A2444;        /* Dark Element Border */
+  --border-subtle: #1E1E1E;      /* Subtle Dark Border */
+  --border-medium: #2A2A2A;      /* Distinct Dark Border */
+  --border-dark: #333333;        /* Prominent Dark Border */
 
-  /* Typography */
-  --font-display: "Space Grotesk", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-body: "DM Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  /* Typography — Sora for display headings, Manrope for body */
+  --font-display: "Sora", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-body: "Manrope", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
   /* Layout Spacing */
   --page-max: 1440px;
@@ -55,10 +56,10 @@
   --radius-pill: 9999px;
 
   /* Shadows with modern ambient occlusion */
-  --shadow-subtle: 0 2px 10px -2px rgba(18, 16, 30, 0.04);
-  --shadow-card: 0 8px 30px -4px rgba(18, 16, 30, 0.06), 0 2px 8px -2px rgba(18, 16, 30, 0.03);
-  --shadow-hover: 0 16px 40px -8px rgba(18, 16, 30, 0.12), 0 4px 12px -2px rgba(18, 16, 30, 0.04);
-  --shadow-float: 0 24px 60px -12px rgba(18, 16, 30, 0.22);
+  --shadow-subtle: 0 2px 10px -2px rgba(0, 0, 0, 0.4);
+  --shadow-card: 0 8px 30px -4px rgba(0, 0, 0, 0.5), 0 2px 8px -2px rgba(0, 0, 0, 0.3);
+  --shadow-hover: 0 16px 40px -8px rgba(0, 0, 0, 0.7), 0 4px 12px -2px rgba(255, 210, 28, 0.08);
+  --shadow-float: 0 24px 60px -12px rgba(0, 0, 0, 0.85);
 
   /* Transitions & Animation */
   --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
@@ -72,7 +73,7 @@
   --color-surface: var(--bg-surface);
   --color-surface-raised: var(--bg-secondary);
   --color-border: var(--border-subtle);
-  --color-accent: var(--color-coral);
+  --color-accent: var(--color-yellow);
   --color-text: var(--text-primary);
   --color-text-secondary: var(--text-secondary);
   --color-text-muted: var(--text-muted);
@@ -253,53 +254,53 @@ p {
   transform: translateY(0);
 }
 
-/* Primary Action: Coral */
+/* Primary Action: Signature Cinema Gold / Yellow (#FFD21C) */
 .button-gold,
 .button-primary {
-  background: linear-gradient(135deg, var(--color-coral) 0%, #FF6442 100%);
-  color: #FFFFFF;
-  border: 1px solid var(--color-coral);
-  box-shadow: 0 4px 18px rgba(255, 77, 45, 0.35);
+  background-color: var(--color-yellow);
+  color: #0A0A0A;
+  border: 1px solid var(--color-yellow);
+  box-shadow: 0 4px 18px rgba(255, 210, 28, 0.25);
   font-weight: 700;
 }
 
 .button-gold:hover,
 .button-primary:hover {
-  background: linear-gradient(135deg, var(--color-coral-hover) 0%, var(--color-coral) 100%);
+  background-color: var(--color-coral-hover);
   border-color: var(--color-coral-hover);
-  box-shadow: 0 8px 28px rgba(255, 77, 45, 0.5);
+  box-shadow: 0 8px 26px rgba(255, 210, 28, 0.4);
   transform: translateY(-2px);
-  color: #FFFFFF;
+  color: #0A0A0A;
 }
 
 /* Secondary Action: Outline */
 .button-outline,
 .button-secondary {
   background-color: transparent;
-  color: var(--text-primary);
+  color: #FFFFFF;
   border: 1.5px solid var(--border-medium);
 }
 
 .button-outline:hover,
 .button-secondary:hover {
-  border-color: var(--text-primary);
+  border-color: var(--color-yellow);
   background-color: var(--bg-surface);
-  color: var(--text-primary);
+  color: var(--color-yellow);
 }
 
-/* Dark Action: Deep Ink */
+/* Dark Action: Deep Obsidian Panel */
 .button-dark {
-  background-color: var(--bg-dark);
-  color: var(--text-inverse);
-  border: 1px solid var(--bg-dark);
-  box-shadow: 0 4px 16px rgba(25, 22, 43, 0.2);
+  background-color: var(--bg-surface-raised);
+  color: #FFFFFF;
+  border: 1px solid var(--border-medium);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
 .button-dark:hover {
-  background-color: #0F0D1C;
-  border-color: #0F0D1C;
-  color: #FFFFFF;
-  box-shadow: 0 8px 24px rgba(25, 22, 43, 0.3);
+  background-color: #222222;
+  border-color: var(--color-yellow);
+  color: var(--color-yellow);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
 }
 
 .button-small {
@@ -420,7 +421,7 @@ p {
   left: 0;
   right: 0;
   z-index: 900;
-  background-color: rgba(252, 251, 249, 0.88);
+  background-color: rgba(10, 10, 10, 0.88);
   backdrop-filter: blur(18px) saturate(180%);
   -webkit-backdrop-filter: blur(18px) saturate(180%);
   border-bottom: 1px solid var(--border-subtle);
@@ -428,9 +429,9 @@ p {
 }
 
 .site-header.is-condensed {
-  background-color: rgba(252, 251, 249, 0.96);
+  background-color: rgba(10, 10, 10, 0.96);
   border-bottom-color: var(--border-medium);
-  box-shadow: 0 4px 24px -4px rgba(18, 16, 30, 0.07);
+  box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.8);
 }
 
 .header-inner {
@@ -489,13 +490,13 @@ p {
 }
 
 .primary-navigation .nav-link:hover {
-  color: var(--text-primary);
-  background-color: rgba(25, 22, 43, 0.04);
+  color: #FFFFFF;
+  background-color: rgba(255, 255, 255, 0.08);
 }
 
 .primary-navigation .nav-link.active {
-  color: var(--text-primary);
-  background-color: var(--color-periwinkle-subtle);
+  color: var(--color-yellow);
+  background-color: rgba(255, 210, 28, 0.12);
 }
 
 .primary-navigation .nav-link.active::after {
@@ -507,7 +508,7 @@ p {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background-color: var(--color-periwinkle);
+  background-color: var(--color-yellow);
 }
 
 .header-cta {
@@ -719,13 +720,13 @@ p {
   font-size: clamp(2.4rem, 4vw, 3.6rem);
   font-weight: 700;
   line-height: 1;
-  color: var(--text-primary);
+  color: var(--color-yellow);
   letter-spacing: -0.04em;
   margin-bottom: 0.4rem;
 }
 
 .studio-stat-number span {
-  color: var(--color-coral);
+  color: var(--color-yellow);
 }
 
 .studio-stat-label {
@@ -2569,17 +2570,18 @@ p {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(255, 253, 248, 0.98);
+    background: rgba(10, 10, 10, 0.98);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     flex-direction: column;
     align-items: flex-start;
     padding: 2.5rem var(--page-pad);
-    gap: 1rem;
+    gap: 1.25rem;
     transform: translateY(-100%);
     opacity: 0;
     visibility: hidden;
     transition: all var(--motion-base) var(--ease-spring);
+    border-top: 1px solid var(--border-subtle);
   }
 
   .primary-navigation.is-open {
@@ -2593,6 +2595,13 @@ p {
     padding: 0.5rem 0;
     width: 100%;
     border-radius: 0;
+    color: var(--text-secondary);
+  }
+
+  .primary-navigation .nav-link:hover,
+  .primary-navigation .nav-link.active {
+    color: var(--color-yellow);
+    background-color: transparent;
   }
 
   .header-cta-group {
@@ -2680,6 +2689,16 @@ p {
   .footer-intro,
   .footer-details {
     grid-column: span 1;
+  }
+}
+
+@media (max-width: 640px) {
+  body {
+    padding-bottom: 58px;
+  }
+  .whatsapp-float {
+    bottom: 4.8rem !important;
+    right: 1.25rem !important;
   }
 }
 

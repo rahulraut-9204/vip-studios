@@ -7,6 +7,7 @@ import { supabase } from "../lib/supabase.js";
 import SiteFooter from "./SiteFooter.jsx";
 import SiteHeader from "./SiteHeader.jsx";
 import WhatsAppButton from "./WhatsAppButton.jsx";
+import MobilePersistentCTA from "./MobilePersistentCTA.jsx";
 
 const siteOrigin = "https://vip-studios.pages.dev";
 
@@ -278,6 +279,7 @@ export default function SiteShell() {
         <Outlet />
       </main>
       <WhatsAppButton />
+      <MobilePersistentCTA />
       <SiteFooter />
     </>
   );

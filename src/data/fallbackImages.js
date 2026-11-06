@@ -5,9 +5,11 @@ import socialPlanning from "../assets/studies/social-planning.webp";
 import studioProcess from "../assets/studies/studio-process.webp";
 
 export const localFallbackImages = {
+  "brand-film-production": cameraCloseup,
   "the-long-take": editingTimeline,
   "feed-in-motion": socialPlanning,
   "behind-the-frame": cameraCloseup,
+  "the-dialogue-room": studioProcess,
   "product-in-focus": productFocus,
   "velocity-reel": studioProcess,
   default: editingTimeline,

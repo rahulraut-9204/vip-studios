@@ -1,26 +1,27 @@
-import { ArrowUpRight, CheckCircle2, Clock, Mail, MessageCircle, Phone, Send, Sparkles } from "lucide-react";
+import { ArrowUpRight, CheckCircle2, Clock, Mail, MessageCircle, Phone, Send } from "lucide-react";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { trackEvent } from "../data/analytics.js";
 import { contactConfig, getWhatsAppHref } from "../data/contact.js";
-import { serviceOfferings } from "../data/services.js";
 import { isSupabaseConfigured, supabase } from "../lib/supabase.js";
 import { RecIndicator } from "../components/StudioGraphics.jsx";
 
 const SERVICE_PILLS = [
-  { label: "Commercial Video", value: "commercial-brand-film" },
-  { label: "Reels & Short-form", value: "short-form-reels" },
-  { label: "YouTube Editing", value: "youtube-management" },
+  { label: "Social Media Management & Strategy", value: "social-media-management" },
+  { label: "Video Production & Editing", value: "video-shoots" },
+  { label: "Reels & Short-Form Content", value: "professional-video-editing" },
   { label: "Podcast Production", value: "podcast-production" },
-  { label: "Corporate Video", value: "corporate-culture-documentary" },
-  { label: "Color & Sound Mix", value: "event-highlights-turnaround" },
+  { label: "YouTube Channel Management", value: "youtube-channel-management" },
+  { label: "Content Creation", value: "content-creation" },
+  { label: "Creative Branding", value: "brand-content" },
+  { label: "Digital Growth", value: "digital-growth" },
 ];
 
 const TIMELINE_OPTIONS = [
   "Within 48 hours (Rush)",
   "Next 5-7 days",
   "2-3 weeks",
-  "Monthly Retainer",
+  "Ongoing Monthly Retainer",
 ];
 
 function createEmailBody(data) {
@@ -48,8 +49,7 @@ export default function ContactPage() {
       (p) =>
         p.value === requestedService ||
         p.label.toLowerCase() === requestedService.toLowerCase(),
-    )?.value ||
-    (requestedService ? requestedService : SERVICE_PILLS[0].value);
+    )?.value || SERVICE_PILLS[0].value;
 
   const [selectedService, setSelectedService] = useState(initialService);
   const [selectedTimeline, setSelectedTimeline] = useState(TIMELINE_OPTIONS[1]);
@@ -59,7 +59,7 @@ export default function ContactPage() {
   const [clientName, setClientName] = useState("");
 
   const whatsAppHref = getWhatsAppHref(
-    "Hi VIP StudioS, I'd like to discuss a video editing or creative project.",
+    "Hi VIP StudioS, I'd like to discuss a video production, editing, or digital growth project."
   );
 
   async function handleSubmit(event) {
@@ -90,7 +90,7 @@ export default function ContactPage() {
     const emailField = form.elements.namedItem("email");
     const phoneField = form.elements.namedItem("phone");
     if (!email && !phone) {
-      setStatus("Please provide at least one contact method (email or phone number) so we can reach you.");
+      setStatus("Please provide at least one contact method (email or WhatsApp number) so we can reach you.");
       emailField?.setCustomValidity("Provide email or phone number.");
       phoneField?.setCustomValidity("Provide email or phone number.");
       emailField?.reportValidity();
@@ -135,7 +135,7 @@ export default function ContactPage() {
         trackEvent("project_brief_submitted", { service_name: data.service });
         setIsSuccess(true);
         setStatus("Your project brief has been logged! We will review and reply within 2-4 hours.");
-      } catch (err) {
+      } catch {
         openEmailFallback(data);
       } finally {
         setIsSubmitting(false);
@@ -147,10 +147,7 @@ export default function ContactPage() {
   }
 
   function openEmailFallback(data) {
-    if (!contactConfig.email) {
-      setStatus("Email dispatch not configured. Please chat with us on WhatsApp directly.");
-      return;
-    }
+    const targetEmail = contactConfig.email || "mr.rohit8530@gmail.com";
     const subject = `[Project Brief] ${data.name} — ${data.service || "Video Editing"}`;
     const params = new URLSearchParams({
       subject,
@@ -158,7 +155,7 @@ export default function ContactPage() {
     });
     setStatus("Opening your email client with your pre-formatted project brief…");
     trackEvent("project_brief_draft_opened", { service_name: data.service });
-    window.location.href = `mailto:${contactConfig.email}?${params.toString()}`;
+    window.location.href = `mailto:${targetEmail}?${params.toString()}`;
   }
 
   function clearContactValidation(event) {
@@ -168,318 +165,338 @@ export default function ContactPage() {
   }
 
   return (
-    <section className="studio-page studio-contact-page">
-      <div className="studio-contact-layout grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-        {/* Left Column: Direct Studio Channels & Info */}
-        <div className="lg:col-span-5 studio-contact-copy">
-          <div className="flex items-center gap-2 mb-3">
-            <RecIndicator />
-            <p className="studio-location m-0 font-mono text-xs uppercase tracking-widest text-[#FF4D2D] font-bold">
-              PROJECT INBOX // DIRECT BRIEF
-            </p>
-          </div>
-
-          <h1 className="text-4xl sm:text-6xl font-black text-[#12101E] tracking-tight leading-none mb-4">
-            Let&apos;s make
-            <br />
-            something
-            <br />
-            <span className="text-[#FF4D2D]">worth watching.</span>
-          </h1>
-
-          <p className="text-base text-[#5C586B] leading-relaxed mb-8">
-            Tell us about your project, footage volume, narrative style, and timeline goals.
-            Whether you need a standalone commercial edit, high-retention vertical reels, or an ongoing
-            channel partnership, our cutting room is ready.
-          </p>
-
-          <div className="studio-contact-methods flex flex-col gap-3">
-            <div>
-              <Mail aria-hidden="true" size={18} />
-              <span>Direct Email</span>
-              {contactConfig.email ? (
-                <a className="font-semibold text-[#12101E] hover:text-[#FF4D2D]" href={`mailto:${contactConfig.email}`}>
-                  {contactConfig.email}
-                </a>
-              ) : (
-                <span className="studio-contact-unavailable">rahulraut9204@gmail.com</span>
-              )}
+    <div className="min-h-screen bg-[#0A0A0A] text-white">
+      <section className="studio-page studio-contact-page max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-24">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+          {/* Left Column: Direct Studio Channels & Info */}
+          <div className="lg:col-span-5 studio-contact-copy">
+            <div className="flex items-center gap-2 mb-3">
+              <RecIndicator />
+              <p className="m-0 font-mono text-xs uppercase tracking-widest text-[#FFD21C] font-bold">
+                PROJECT INBOX // DIRECT BRIEF
+              </p>
             </div>
 
-            {contactConfig.phoneNumber && (
-              <div>
-                <Phone aria-hidden="true" size={18} />
-                <span>Studio Line</span>
-                <a className="font-semibold text-[#12101E]" href={`tel:+${contactConfig.phoneNumber}`}>
-                  {contactConfig.phoneDisplay}
-                </a>
-              </div>
-            )}
+            <h1 className="text-4xl sm:text-6xl font-black text-white tracking-tight leading-none mb-4 font-display">
+              Let&apos;s build
+              <br />
+              something
+              <br />
+              <span className="text-[#FFD21C]">exceptional.</span>
+            </h1>
 
-            <div>
-              <MessageCircle aria-hidden="true" className="text-[#25D366]" size={18} />
-              <span>WhatsApp Direct</span>
-              {whatsAppHref ? (
+            <p className="text-base text-[#A1A1AA] leading-relaxed mb-8 font-sans">
+              Tell us about your project, raw footage scope, narrative style, or growth goals.
+              Whether you need a standalone 4K commercial cut, high-retention vertical reels, or an ongoing
+              growth partner, our studio desk is ready.
+            </p>
+
+            <div className="flex flex-col gap-3 font-mono text-xs">
+              <a
+                className="p-4 rounded-xl bg-[#141414] border border-[#222222] hover:border-[#FFD21C] transition-colors flex items-center justify-between text-white"
+                href={`mailto:${contactConfig.email || "mr.rohit8530@gmail.com"}`}
+              >
+                <div className="flex items-center gap-3">
+                  <Mail className="text-[#FFD21C]" size={18} />
+                  <div>
+                    <span className="block text-[10px] text-[#71717A] uppercase">Direct Email</span>
+                    <span className="font-bold text-white">{contactConfig.email || "mr.rohit8530@gmail.com"}</span>
+                  </div>
+                </div>
+                <ArrowUpRight size={15} />
+              </a>
+
+              {contactConfig.phoneNumber && (
                 <a
-                  className="font-bold text-[#12101E] hover:text-[#25D366] inline-flex items-center gap-1"
+                  className="p-4 rounded-xl bg-[#141414] border border-[#222222] hover:border-[#FFD21C] transition-colors flex items-center justify-between text-white"
+                  href={`tel:+${contactConfig.phoneNumber}`}
+                >
+                  <div className="flex items-center gap-3">
+                    <Phone className="text-[#FFD21C]" size={18} />
+                    <div>
+                      <span className="block text-[10px] text-[#71717A] uppercase">Studio Line</span>
+                      <span className="font-bold text-white">{contactConfig.phoneDisplay}</span>
+                    </div>
+                  </div>
+                  <ArrowUpRight size={15} />
+                </a>
+              )}
+
+              {whatsAppHref && (
+                <a
+                  className="p-4 rounded-xl bg-[#141414] border border-[#222222] hover:border-[#25D366] transition-colors flex items-center justify-between text-white"
                   href={whatsAppHref}
                   rel="noreferrer"
                   target="_blank"
                 >
-                  Start Instant Chat <ArrowUpRight size={13} />
-                </a>
-              ) : (
-                <span className="studio-contact-unavailable">Available during studio hours</span>
-              )}
-            </div>
-          </div>
-
-          {/* SLA Card */}
-          <div className="mt-8 p-5 rounded-2xl bg-[#F5F3FF] border border-[#635BFF]/20 flex items-start gap-3">
-            <Clock className="text-[#635BFF] shrink-0 mt-0.5" size={18} />
-            <div>
-              <strong className="block text-xs font-mono font-bold uppercase tracking-wider text-[#635BFF] mb-0.5">
-                FAST STUDIO RESPONSE
-              </strong>
-              <span className="text-xs text-[#5C586B]">
-                Every brief is reviewed directly by our lead editor within 2 to 4 hours.
-              </span>
-            </div>
-          </div>
-
-          {/* Quick WhatsApp Card */}
-          {whatsAppHref && (
-            <div className="mt-4 p-5 rounded-2xl bg-[#0E0C18] text-white border border-white/10 shadow-lg">
-              <span className="font-mono text-[10px] uppercase font-bold tracking-wider text-[#00E599] block mb-1">
-                PREFER A FAST CHAT?
-              </span>
-              <h3 className="text-base font-bold text-white m-0 mb-2">Need an estimate right now?</h3>
-              <p className="text-xs text-white/70 m-0 mb-4">
-                Message us directly on WhatsApp with your links or project requirements for immediate advice.
-              </p>
-              <a
-                className="button button-small button-gold inline-flex items-center gap-2 text-xs font-mono font-bold w-full justify-center"
-                href={whatsAppHref}
-                rel="noreferrer"
-                target="_blank"
-              >
-                <MessageCircle size={15} /> Message on WhatsApp
-              </a>
-            </div>
-          )}
-        </div>
-
-        {/* Right Column: Project Brief Form or Success Screen */}
-        <div className="lg:col-span-7">
-          {isSuccess ? (
-            <div className="p-8 sm:p-12 rounded-3xl bg-white border border-[#E8E4DC] shadow-xl text-center animate-fade-in">
-              <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-5 shadow-sm">
-                <CheckCircle2 size={36} />
-              </div>
-              <h2 className="text-2xl sm:text-3xl font-black text-[#12101E] tracking-tight mb-2">
-                Brief Received, {clientName || "Friend"}!
-              </h2>
-              <p className="text-base text-[#5C586B] max-w-md mx-auto mb-6 leading-relaxed">
-                Your project brief has been logged directly in our studio desk. Our lead editor will review your requirements
-                and reply within 2 to 4 hours.
-              </p>
-
-              <div className="p-4 rounded-xl bg-[#F5F3FF] border border-[#635BFF]/20 max-w-sm mx-auto mb-8 text-xs font-mono text-[#635BFF]">
-                ✓ Confirmed delivery to studio queue
-              </div>
-
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-                {whatsAppHref && (
-                  <a
-                    className="button button-gold inline-flex items-center gap-2 w-full sm:w-auto"
-                    href={whatsAppHref}
-                    rel="noreferrer"
-                    target="_blank"
-                  >
-                    <MessageCircle size={16} /> Fast Chat on WhatsApp
-                  </a>
-                )}
-                <button
-                  className="button button-outline w-full sm:w-auto"
-                  onClick={() => {
-                    setIsSuccess(false);
-                    setStatus("");
-                  }}
-                  type="button"
-                >
-                  Submit Another Brief
-                </button>
-              </div>
-            </div>
-          ) : (
-            <form
-              className="studio-brief-form p-6 sm:p-10 rounded-3xl bg-white border border-[#E8E4DC] shadow-xl"
-              noValidate
-              onSubmit={handleSubmit}
-            >
-              <div className="studio-form-heading mb-6">
-                <span className="font-mono text-xs font-bold text-[#FF4D2D] uppercase tracking-wider block mb-1">
-                  // PROJECT SPECIFICATION
-                </span>
-                <h2 className="text-2xl sm:text-3xl font-black text-[#12101E] m-0">Submit Project Brief</h2>
-                <p className="text-xs text-[#5C586B] mt-1 m-0">Tell us what you have in mind. We will guide the rest.</p>
-              </div>
-
-              {requestedProject && (
-                <div className="mb-6 p-3.5 rounded-xl bg-[#F5F3FF] border border-[#635BFF]/30 flex items-center justify-between text-xs font-mono text-[#635BFF]">
-                  <span>Referenced visual style: <strong>&ldquo;{requestedProject}&rdquo;</strong></span>
-                  <span className="text-[10px] uppercase font-bold bg-[#635BFF] text-white px-2.5 py-0.5 rounded-full shadow-sm">
-                    Referenced Cut
+                  <div className="flex items-center gap-3">
+                    <MessageCircle className="text-[#25D366]" size={18} />
+                    <div>
+                      <span className="block text-[10px] text-[#71717A] uppercase">WhatsApp Direct</span>
+                      <span className="font-bold text-white">+91 8530541815</span>
+                    </div>
+                  </div>
+                  <span className="px-2 py-0.5 rounded bg-[#25D366]/20 text-[#25D366] text-[10px] font-bold">
+                    FAST CHAT
                   </span>
-                </div>
+                </a>
               )}
+            </div>
 
-              {/* Service Selection Pills */}
-              <div className="mb-6">
-                <label className="block font-mono text-xs font-bold text-[#12101E] uppercase tracking-wider mb-2">
-                  1. Select Primary Service Suite <span className="text-[#FF4D2D]">*</span>
-                </label>
-                <div className="flex flex-wrap gap-2">
-                  {SERVICE_PILLS.map((pill) => {
-                    const isSelected = selectedService === pill.value;
-                    return (
-                      <button
-                        className={`px-3.5 py-2 rounded-xl text-xs font-mono font-bold transition-all border ${
-                          isSelected
-                            ? "bg-[#12101E] text-white border-[#12101E] shadow-sm scale-105"
-                            : "bg-[#FCFBF8] text-[#5C586B] border-[#E8E4DC] hover:border-[#12101E] hover:text-[#12101E]"
-                        }`}
-                        key={pill.value}
-                        onClick={() => setSelectedService(pill.value)}
-                        type="button"
-                      >
-                        {pill.label}
-                      </button>
-                    );
-                  })}
+            {/* SLA Card */}
+            <div className="mt-6 p-4 rounded-xl bg-[#141414] border border-[#222222] flex items-start gap-3">
+              <Clock className="text-[#FFD21C] shrink-0 mt-0.5" size={18} />
+              <div>
+                <strong className="block text-xs font-mono font-bold uppercase tracking-wider text-white mb-0.5">
+                  RAPID STUDIO RESPONSE
+                </strong>
+                <span className="text-xs text-[#A1A1AA] font-sans">
+                  Every brief is reviewed directly by our lead team within 2 to 4 business hours.
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column: Project Brief Form or Success Screen */}
+          <div className="lg:col-span-7">
+            {isSuccess ? (
+              <div className="p-8 sm:p-12 rounded-2xl bg-[#141414] border border-[#222222] shadow-2xl text-center">
+                <div className="w-16 h-16 rounded-full bg-[#FFD21C]/20 text-[#FFD21C] flex items-center justify-center mx-auto mb-5 shadow-sm">
+                  <CheckCircle2 size={36} />
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight mb-2 font-display">
+                  Brief Logged, {clientName || "Partner"}!
+                </h2>
+                <p className="text-base text-[#A1A1AA] max-w-md mx-auto mb-6 leading-relaxed font-sans">
+                  Your project brief has been logged directly in our studio desk. Our lead director will review your requirements and reach out promptly.
+                </p>
+
+                <div className="p-4 rounded-xl bg-[#1C1C1C] border border-[#FFD21C]/30 max-w-sm mx-auto mb-8 text-xs font-mono text-[#FFD21C]">
+                  ✓ Confirmed delivery to studio queue
+                </div>
+
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                  {whatsAppHref && (
+                    <a
+                      className="button button-gold inline-flex items-center gap-2 w-full sm:w-auto font-mono text-xs uppercase font-bold"
+                      href={whatsAppHref}
+                      rel="noreferrer"
+                      target="_blank"
+                    >
+                      <MessageCircle size={16} /> Instant WhatsApp Follow-up
+                    </a>
+                  )}
+                  <button
+                    className="button button-outline w-full sm:w-auto font-mono text-xs uppercase font-bold"
+                    onClick={() => {
+                      setIsSuccess(false);
+                      setStatus("");
+                    }}
+                    type="button"
+                  >
+                    Submit Another Brief
+                  </button>
                 </div>
               </div>
-
-              {/* Contact Information Fields */}
-              <div className="studio-form-pair">
-                <label>
-                  Your Name <span aria-hidden="true" className="text-[#FF4D2D]">*</span>
-                  <input autoComplete="name" maxLength={100} name="name" placeholder="Alex Rivers" required />
-                </label>
-                <label>
-                  Brand or Company
-                  <input autoComplete="organization" maxLength={120} name="company" placeholder="e.g. Apex Media or Creator Handle" />
-                </label>
-              </div>
-
-              <div className="studio-form-pair">
-                <label>
-                  Email Address
-                  <input
-                    autoComplete="email"
-                    maxLength={254}
-                    name="email"
-                    onChange={clearContactValidation}
-                    placeholder="alex@example.com"
-                    type="email"
-                  />
-                </label>
-                <label>
-                  WhatsApp / Phone Number
-                  <input
-                    autoComplete="tel"
-                    maxLength={30}
-                    name="phone"
-                    onChange={clearContactValidation}
-                    placeholder="+91 98765 43210"
-                    type="tel"
-                  />
-                </label>
-              </div>
-              <p className="studio-field-hint mb-5 text-[11px] text-[#5C586B]">
-                Provide at least one method (email or phone) so we can respond.
-              </p>
-
-              {/* Timeline Selection Pills */}
-              <div className="mb-6">
-                <label className="block font-mono text-xs font-bold text-[#12101E] uppercase tracking-wider mb-2">
-                  2. Target Delivery Timeline
-                </label>
-                <div className="flex flex-wrap gap-2">
-                  {TIMELINE_OPTIONS.map((time) => {
-                    const isSelected = selectedTimeline === time;
-                    return (
-                      <button
-                        className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-all border ${
-                          isSelected
-                            ? "bg-[#635BFF] text-white border-[#635BFF] font-bold"
-                            : "bg-[#FCFBF8] text-[#5C586B] border-[#E8E4DC] hover:border-[#635BFF]"
-                        }`}
-                        key={time}
-                        onClick={() => setSelectedTimeline(time)}
-                        type="button"
-                      >
-                        {time}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <label>
-                Reference Links or Footage Cloud URL (Optional)
-                <input
-                  maxLength={300}
-                  name="referenceUrl"
-                  placeholder="Google Drive, Dropbox, Frame.io, or YouTube style reference link"
-                  type="url"
-                />
-              </label>
-
-              <label>
-                Project Brief &amp; Footage Details <span aria-hidden="true" className="text-[#FF4D2D]">*</span>
-                <textarea
-                  defaultValue={
-                    requestedProject
-                      ? `I'm interested in an editing style similar to "${requestedProject}". Here are our footage details and goals:`
-                      : ""
-                  }
-                  maxLength={3000}
-                  name="requirements"
-                  placeholder="Describe your project, footage volume, narrative goals, music/sound preferences, and deliverables needed."
-                  required
-                  rows={4}
-                />
-              </label>
-
-              {/* Anti-spam Honeypot */}
-              <label aria-hidden="true" className="studio-trap-field" tabIndex="-1">
-                Website
-                <input autoComplete="off" name="websiteTrap" tabIndex="-1" />
-              </label>
-
-              <button
-                className="button button-gold studio-submit w-full py-4 text-base font-bold shadow-lg mt-2 cursor-pointer"
-                disabled={isSubmitting}
-                type="submit"
+            ) : (
+              <form
+                className="p-6 sm:p-10 rounded-2xl bg-[#141414] border border-[#222222] shadow-2xl flex flex-col gap-6"
+                noValidate
+                onSubmit={handleSubmit}
               >
-                {isSubmitting ? (
-                  "Submitting Brief to Studio…"
-                ) : (
-                  <>
-                    <span>Send Project Brief to Studio</span>
-                    <Send size={16} />
-                  </>
-                )}
-              </button>
+                <div>
+                  <span className="font-mono text-xs font-bold text-[#FFD21C] uppercase tracking-wider block mb-1">
+                    // PROJECT SPECIFICATION
+                  </span>
+                  <h2 className="text-2xl sm:text-3xl font-black text-white m-0 font-display">Submit Project Brief</h2>
+                  <p className="text-xs text-[#A1A1AA] mt-1 m-0 font-sans">Share your parameters. Our team will engineer the timeline and deliverables.</p>
+                </div>
 
-              <p aria-live="polite" className="studio-form-status mt-3 text-xs text-center text-[#5C586B]" role="status">
-                {status || "Your brief is transmitted securely to our studio editing desk."}
-              </p>
-            </form>
-          )}
+                {requestedProject && (
+                  <div className="p-3.5 rounded-xl bg-[#1C1C1C] border border-[#FFD21C]/40 flex items-center justify-between text-xs font-mono text-[#FFD21C]">
+                    <span>Referenced visual cut: <strong>&ldquo;{requestedProject}&rdquo;</strong></span>
+                    <span className="text-[10px] uppercase font-bold bg-[#FFD21C] text-[#0A0A0A] px-2.5 py-0.5 rounded shadow-sm">
+                      Linked Project
+                    </span>
+                  </div>
+                )}
+
+                {/* Service Selection Pills */}
+                <div>
+                  <label className="block font-mono text-xs font-bold text-white uppercase tracking-wider mb-2.5">
+                    1. Select Service Suite <span className="text-[#FFD21C]">*</span>
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {SERVICE_PILLS.map((pill) => {
+                      const isSelected = selectedService === pill.value;
+                      return (
+                        <button
+                          className={`px-3.5 py-2 rounded-lg text-xs font-mono font-bold transition-all border cursor-pointer ${
+                            isSelected
+                              ? "bg-[#FFD21C] text-[#0A0A0A] border-[#FFD21C] shadow-sm scale-105"
+                              : "bg-[#181818] text-[#A1A1AA] border-[#2A2A2A] hover:border-[#444] hover:text-white"
+                          }`}
+                          key={pill.value}
+                          onClick={() => setSelectedService(pill.value)}
+                          type="button"
+                        >
+                          {pill.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Name & Company */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-mono font-bold uppercase tracking-wider text-white/80 mb-1.5">
+                      Your Name <span className="text-[#FFD21C]">*</span>
+                    </label>
+                    <input
+                      autoComplete="name"
+                      className="w-full bg-[#181818] border border-[#2A2A2A] focus:border-[#FFD21C] rounded-lg px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none transition-colors font-sans"
+                      maxLength={100}
+                      name="name"
+                      placeholder="e.g. Alex Vance"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-mono font-bold uppercase tracking-wider text-white/80 mb-1.5">
+                      Brand or Company
+                    </label>
+                    <input
+                      autoComplete="organization"
+                      className="w-full bg-[#181818] border border-[#2A2A2A] focus:border-[#FFD21C] rounded-lg px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none transition-colors font-sans"
+                      maxLength={120}
+                      name="company"
+                      placeholder="e.g. Apex Media or Creator Handle"
+                    />
+                  </div>
+                </div>
+
+                {/* Email & Phone */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-mono font-bold uppercase tracking-wider text-white/80 mb-1.5">
+                      Email Address
+                    </label>
+                    <input
+                      autoComplete="email"
+                      className="w-full bg-[#181818] border border-[#2A2A2A] focus:border-[#FFD21C] rounded-lg px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none transition-colors font-mono"
+                      maxLength={254}
+                      name="email"
+                      onChange={clearContactValidation}
+                      placeholder="alex@company.com"
+                      type="email"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-mono font-bold uppercase tracking-wider text-white/80 mb-1.5">
+                      WhatsApp / Phone
+                    </label>
+                    <input
+                      autoComplete="tel"
+                      className="w-full bg-[#181818] border border-[#2A2A2A] focus:border-[#FFD21C] rounded-lg px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none transition-colors font-mono"
+                      maxLength={30}
+                      name="phone"
+                      onChange={clearContactValidation}
+                      placeholder="+91 85305 41815"
+                      type="tel"
+                    />
+                  </div>
+                </div>
+
+                {/* Timeline Selection Pills */}
+                <div>
+                  <label className="block font-mono text-xs font-bold text-white uppercase tracking-wider mb-2.5">
+                    2. Target Delivery Timeline
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {TIMELINE_OPTIONS.map((time) => {
+                      const isSelected = selectedTimeline === time;
+                      return (
+                        <button
+                          className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-all border cursor-pointer ${
+                            isSelected
+                              ? "bg-[#FFD21C] text-[#0A0A0A] border-[#FFD21C] font-bold"
+                              : "bg-[#181818] text-[#A1A1AA] border-[#2A2A2A] hover:border-[#444] hover:text-white"
+                          }`}
+                          key={time}
+                          onClick={() => setSelectedTimeline(time)}
+                          type="button"
+                        >
+                          {time}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-mono font-bold uppercase tracking-wider text-white/80 mb-1.5">
+                    Footage Link or Style Reference (Optional)
+                  </label>
+                  <input
+                    className="w-full bg-[#181818] border border-[#2A2A2A] focus:border-[#FFD21C] rounded-lg px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none transition-colors font-mono text-xs"
+                    maxLength={300}
+                    name="referenceUrl"
+                    placeholder="Google Drive, Dropbox, YouTube reference, or Instagram link"
+                    type="url"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-mono font-bold uppercase tracking-wider text-white/80 mb-1.5">
+                    Project Brief &amp; Target Deliverables <span className="text-[#FFD21C]">*</span>
+                  </label>
+                  <textarea
+                    className="w-full bg-[#181818] border border-[#2A2A2A] focus:border-[#FFD21C] rounded-lg px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none transition-colors font-sans"
+                    defaultValue={
+                      requestedProject
+                        ? `I'm interested in an editing style similar to "${requestedProject}". Here are our footage details and goals:`
+                        : ""
+                    }
+                    maxLength={3000}
+                    name="requirements"
+                    placeholder="Describe your brand goals, footage volume, music style, and key deliverables..."
+                    required
+                    rows={4}
+                  />
+                </div>
+
+                {/* Anti-spam Honeypot */}
+                <label aria-hidden="true" className="hidden" tabIndex="-1">
+                  Website
+                  <input autoComplete="off" name="websiteTrap" tabIndex="-1" />
+                </label>
+
+                <button
+                  className="button button-gold w-full py-4 text-xs font-mono font-bold uppercase tracking-wider cursor-pointer shadow-lg disabled:opacity-50"
+                  disabled={isSubmitting}
+                  type="submit"
+                >
+                  {isSubmitting ? (
+                    "Connecting to Studio Queue…"
+                  ) : (
+                    <span className="flex items-center justify-center gap-2">
+                      <span>Send Project Brief to Studio</span>
+                      <Send size={15} />
+                    </span>
+                  )}
+                </button>
+
+                <p aria-live="polite" className="text-xs text-center text-[#71717A] m-0 font-mono" role="status">
+                  {status || "Transmitted securely to the VIP StudioS editing desk."}
+                </p>
+              </form>
+            )}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   );
 }

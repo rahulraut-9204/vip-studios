@@ -1,26 +1,38 @@
-const publicEmail = import.meta.env.VITE_PUBLIC_EMAIL || "";
-const whatsapp = import.meta.env.VITE_WHATSAPP_NUMBER || "";
+const publicEmail = import.meta.env.VITE_PUBLIC_EMAIL || "mr.rohit8530@gmail.com";
+const whatsapp = import.meta.env.VITE_WHATSAPP_NUMBER || "+91 8530541815";
 
 export const CATEGORIES = [
-  "Video Editing",
-  "Reels & Short-form",
-  "YouTube",
   "Social Media",
-  "Corporate",
-  "Other",
+  "Video",
+  "Reels",
+  "Podcast",
+  "YouTube",
+  "Branding",
+];
+
+export const BRAND_JOURNEY = [
+  "Strategy",
+  "Content",
+  "Shoot",
+  "Edit",
+  "Publish",
+  "Manage",
+  "Analyse",
+  "Grow",
 ];
 
 const site = {
   studioName: "VIP StudioS",
-  tagline: "Your vision. Beautifully in motion.",
+  tagline: "WE BUILD BRANDS. GROW BUSINESSES...",
+  footerTagline: "VISION → IDENTITY → PERFORMANCE",
   domain: import.meta.env.VITE_SITE_URL || "https://vip-studios.pages.dev",
   email: publicEmail,
   phone: whatsapp,
   whatsapp,
   instagram: import.meta.env.VITE_INSTAGRAM_URL || "",
   youtube: import.meta.env.VITE_YOUTUBE_URL || "",
-  location: "",
-  timezone: "",
+  location: "Global & On-Set Production",
+  timezone: "IST / Global",
   social: {
     instagram: import.meta.env.VITE_INSTAGRAM_URL || "",
     youtube: import.meta.env.VITE_YOUTUBE_URL || "",

@@ -1,6 +1,5 @@
-import { ArrowUpRight, CheckCircle2 } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { contentJourney } from "../data/services.js";
 
 const clientExpectations = [
   {
@@ -31,104 +30,95 @@ const clientExpectations = [
     step: "05 · Final Handover",
     title: "Master Export & Delivery",
     whatYouProvide: "Final sign-off on delivered masters.",
-    whatWeDeliver: "Full-resolution master files optimized for YouTube, Instagram Reels, and direct broadcast.",
+    whatWeDeliver: "Full-resolution master files optimized for YouTube 4K, 9:16 Instagram Reels, and direct broadcast.",
   },
 ];
 
 export default function ProcessPage() {
   return (
-    <section className="studio-page vip-process-page">
-      <header className="studio-page-intro">
-        <p className="studio-location">A CLEAR BRIEF-TO-DELIVERY WORKFLOW</p>
-        <h1>
-          From first idea
-          <br />
-          <span>to final delivery.</span>
-        </h1>
-        <p>
-          Whether you need a single edit or ongoing multi-channel content support, every
-          project begins with a clear creative brief. Deliverables, revision rounds, and
-          milestones are locked before production begins.
-        </p>
-      </header>
-
-      {/* Process Flow Cards */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem", marginBlock: "3rem" }}>
-        {clientExpectations.map((stage) => (
-          <article
-            key={stage.step}
-            style={{
-              background: "var(--bg-surface)",
-              border: "1px solid var(--border-subtle)",
-              borderRadius: "var(--radius-md)",
-              padding: "2.25rem",
-              boxShadow: "var(--shadow-card)",
-              display: "grid",
-              gridTemplateColumns: "1.2fr 1fr 1fr",
-              gap: "2rem",
-              alignItems: "flex-start",
-            }}
-          >
-            <div>
-              <span style={{ fontFamily: "var(--font-display)", fontSize: "0.8rem", fontWeight: 700, color: "var(--color-coral)", textTransform: "uppercase", letterSpacing: "0.08em" }}>
-                {stage.step}
-              </span>
-              <h2 style={{ fontSize: "1.6rem", margin: "0.4rem 0 0.8rem" }}>{stage.title}</h2>
-              <p style={{ color: "var(--text-secondary)", margin: 0, fontSize: "0.95rem" }}>
-                A structured checkpoint designed to ensure your goals are achieved without ambiguity.
-              </p>
-            </div>
-            <div style={{ background: "var(--bg-secondary)", padding: "1.25rem", borderRadius: "var(--radius-sm)" }}>
-              <strong style={{ display: "block", fontFamily: "var(--font-display)", fontSize: "0.78rem", textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--color-periwinkle)", marginBottom: "0.4rem" }}>
-                What you supply
-              </strong>
-              <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--text-primary)" }}>{stage.whatYouProvide}</p>
-            </div>
-            <div style={{ background: "var(--bg-surface-raised)", padding: "1.25rem", borderRadius: "var(--radius-sm)", border: "1px solid var(--border-subtle)" }}>
-              <strong style={{ display: "block", fontFamily: "var(--font-display)", fontSize: "0.78rem", textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--text-primary)", marginBottom: "0.4rem" }}>
-                What the studio delivers
-              </strong>
-              <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--text-secondary)" }}>{stage.whatWeDeliver}</p>
-            </div>
-          </article>
-        ))}
-      </div>
-
-      <div style={{ background: "var(--bg-secondary)", borderRadius: "var(--radius-md)", padding: "2.5rem", marginBlock: "3rem", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "2rem" }}>
-        <div>
-          <h3 style={{ fontSize: "1.25rem", marginBottom: "0.5rem" }}>Clear Revisions</h3>
-          <p style={{ margin: 0, color: "var(--text-secondary)", fontSize: "0.92rem" }}>
-            We work with structured review rounds using frame-by-frame timestamps to make giving and executing feedback effortless.
+    <div className="min-h-screen bg-[#0A0A0A] text-white">
+      <section className="studio-page vip-process-page max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-24">
+        <header className="studio-page-intro mb-12">
+          <p className="studio-location font-mono text-xs uppercase tracking-widest text-[#FFD21C] font-bold">
+            A CLEAR BRIEF-TO-DELIVERY WORKFLOW
           </p>
-        </div>
-        <div>
-          <h3 style={{ fontSize: "1.25rem", marginBottom: "0.5rem" }}>Broadcast Polish</h3>
-          <p style={{ margin: 0, color: "var(--text-secondary)", fontSize: "0.92rem" }}>
-            Every deliverable includes calibrated audio leveling, dialogue cleanup, and color grading tailored to the target platform.
+          <h1 className="text-4xl sm:text-6xl font-black text-white tracking-tight leading-none mb-4 font-display">
+            From first idea
+            <br />
+            <span className="text-[#FFD21C]">to final delivery.</span>
+          </h1>
+          <p className="text-base sm:text-lg text-[#A1A1AA] max-w-2xl leading-relaxed font-sans">
+            Whether you need a single edit or ongoing multi-channel content support, every
+            project begins with a clear creative brief. Deliverables, revision rounds, and
+            milestones are locked before production begins.
           </p>
-        </div>
-        <div>
-          <h3 style={{ fontSize: "1.25rem", marginBottom: "0.5rem" }}>Direct Studio Comms</h3>
-          <p style={{ margin: 0, color: "var(--text-secondary)", fontSize: "0.92rem" }}>
-            You work directly with our lead editors and creative team—no bureaucratic agency account managers in between.
-          </p>
-        </div>
-      </div>
+        </header>
 
-      <p className="studio-quote-note">
-        Publishing, ongoing channel management, and analytics reviews are included only
-        when they are part of the agreed contract scope.
-      </p>
-
-      <div className="studio-end-card">
-        <div>
-          <h2>Have a project in mind?</h2>
-          <p>Share your target timeline, footage format, and creative vision. We can begin with a clear first cut.</p>
+        {/* Process Flow Cards */}
+        <div className="flex flex-col gap-6 my-12">
+          {clientExpectations.map((stage) => (
+            <article
+              key={stage.step}
+              className="p-6 sm:p-8 rounded-2xl bg-[#141414] border border-[#222222] shadow-xl grid grid-cols-1 md:grid-cols-12 gap-6 items-start"
+            >
+              <div className="md:col-span-5">
+                <span className="font-mono text-xs font-bold text-[#FFD21C] uppercase tracking-wider block mb-1">
+                  {stage.step}
+                </span>
+                <h2 className="text-2xl font-black text-white mb-2 font-display">{stage.title}</h2>
+                <p className="text-sm text-[#A1A1AA] m-0 font-sans leading-relaxed">
+                  A structured checkpoint designed to ensure your goals are achieved without ambiguity.
+                </p>
+              </div>
+              <div className="md:col-span-3 p-4 rounded-xl bg-[#181818] border border-[#262626]">
+                <strong className="block font-mono text-xs text-[#FFD21C] uppercase tracking-wider mb-1">
+                  What you supply
+                </strong>
+                <p className="text-xs sm:text-sm text-white/90 m-0 font-sans">{stage.whatYouProvide}</p>
+              </div>
+              <div className="md:col-span-4 p-4 rounded-xl bg-[#1C1C1C] border border-[#2E2E2E]">
+                <strong className="block font-mono text-xs text-white uppercase tracking-wider mb-1">
+                  What the studio delivers
+                </strong>
+                <p className="text-xs sm:text-sm text-[#A1A1AA] m-0 font-sans">{stage.whatWeDeliver}</p>
+              </div>
+            </article>
+          ))}
         </div>
-        <Link className="button button-gold" to="/contact">
-          Start a project <ArrowUpRight aria-hidden="true" size={17} />
-        </Link>
-      </div>
-    </section>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6 sm:p-8 rounded-2xl bg-[#141414] border border-[#222222] my-12">
+          <div>
+            <h3 className="text-lg font-bold text-white mb-1.5 font-display">Clear Revisions</h3>
+            <p className="text-xs sm:text-sm text-[#A1A1AA] m-0 font-sans leading-relaxed">
+              Consolidated feedback loops using timestamped review links prevent drift and keep delivery dates fixed.
+            </p>
+          </div>
+          <div>
+            <h3 className="text-lg font-bold text-white mb-1.5 font-display">Master Delivery Formats</h3>
+            <p className="text-xs sm:text-sm text-[#A1A1AA] m-0 font-sans leading-relaxed">
+              Exported in ProRes 422 HQ, H.265/H.264 masters, with clean split audio tracks for future repurposing.
+            </p>
+          </div>
+          <div>
+            <h3 className="text-lg font-bold text-white mb-1.5 font-display">Archived &amp; Scalable</h3>
+            <p className="text-xs sm:text-sm text-[#A1A1AA] m-0 font-sans leading-relaxed">
+              Your raw project libraries and grading LUTs are kept safely in cold storage for instant recall.
+            </p>
+          </div>
+        </div>
+
+        <div className="p-8 sm:p-12 rounded-2xl bg-[#141414] border border-[#222222] text-white flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-xl mt-12">
+          <div>
+            <h2 className="text-2xl sm:text-3xl font-black text-white mb-2 font-display">Ready to begin your project sprint?</h2>
+            <p className="text-sm text-[#A1A1AA] max-w-xl m-0 font-sans">
+              Share your brief, timeline, and footage scope with our team.
+            </p>
+          </div>
+          <Link className="button button-gold shrink-0 py-3.5 px-8 font-mono text-xs font-bold uppercase tracking-wider" to="/contact">
+            Start a project <ArrowUpRight aria-hidden="true" size={17} />
+          </Link>
+        </div>
+      </section>
+    </div>
   );
 }

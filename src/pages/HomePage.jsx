@@ -1,172 +1,373 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
+  ArrowRight,
   ArrowUpRight,
-  Camera,
-  Clapperboard,
+  CheckCircle2,
+  Clock,
   Film,
   Instagram,
+  Layers,
+  Mail,
+  MessageCircle,
   Mic2,
+  Play,
+  Repeat,
   Scissors,
+  Share2,
+  Sparkles,
   TrendingUp,
+  Tv,
+  Users,
+  Video,
   Volume2,
   Youtube,
+  Zap,
 } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import { Link } from "react-router-dom";
 import HeroReel from "../components/HeroReel.jsx";
 import ProjectCard from "../components/ProjectCard.jsx";
 import CinemaModal from "../components/CinemaModal.jsx";
-import { getWhatsAppHref } from "../data/contact.js";
+import { getWhatsAppHref, contactConfig } from "../data/contact.js";
 import { serviceOfferings } from "../data/services.js";
 import usePublishedProjects from "../hooks/usePublishedProjects.js";
-import { EditRazorIcon } from "../components/StudioGraphics.jsx";
+import { CATEGORIES, BRAND_JOURNEY } from "../config/site.js";
+import { isSupabaseConfigured, supabase } from "../lib/supabase.js";
 
-const serviceIcons = [Instagram, Camera, Scissors, Mic2, Youtube, Clapperboard, TrendingUp, Film];
+const serviceIconsMap = {
+  "social-media-management": Share2,
+  "video-shoots": Video,
+  "professional-video-editing": Scissors,
+  "podcast-production": Mic2,
+  "youtube-channel-management": Youtube,
+  "content-creation": Sparkles,
+  "digital-growth": TrendingUp,
+  "brand-content": Layers,
+};
 
 function revealProps(reduceMotion, delay = 0) {
   return {
     initial: reduceMotion ? false : { opacity: 0, y: 18 },
     whileInView: { opacity: 1, y: 0 },
-    viewport: { once: true, amount: 0.12 },
+    viewport: { once: true, amount: 0.1 },
     transition: {
       delay: reduceMotion ? 0 : delay,
-      duration: reduceMotion ? 0 : 0.55,
+      duration: reduceMotion ? 0 : 0.45,
       ease: [0.22, 1, 0.36, 1],
     },
   };
 }
 
-const faqs = [
-  {
-    question: "What creative editing services does VIP STUDIOS provide?",
-    answer:
-      "We provide professional video editing, high-retention vertical Reels and TikToks, long-form YouTube channel production, multi-camera podcast editing, corporate films, color grading in DaVinci Resolve, and complete audio mastering.",
-  },
-  {
-    question: "Can I book a single project or video edit?",
-    answer:
-      "Yes. You can book a standalone video edit, a batch campaign of short-form reels, or an ongoing monthly editing partnership. Deliverables, formats, and turnarounds are agreed upon before cutting begins.",
-  },
-  {
-    question: "What is your turnaround time for rough cuts and revisions?",
-    answer:
-      "Standard turnarounds are 48 to 72 hours for first rough cuts depending on footage volume. We provide frame-accurate review links with timestamped feedback to make revisions fast and frictionless.",
-  },
-  {
-    question: "How do we send our footage and get started?",
-    answer:
-      "You can send footage via Google Drive, Dropbox, Frame.io, or WeTransfer. Submit your project details through our contact form or message our studio directly on WhatsApp to get started immediately.",
-  },
-];
-
-function FaqSchema() {
-  const schema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: faqs.map(({ question, answer }) => ({
-      "@type": "Question",
-      name: question,
-      acceptedAnswer: { "@type": "Answer", text: answer },
-    })),
-  };
-
-  return (
-    <script
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-      type="application/ld+json"
-    />
-  );
-}
-
 export default function HomePage() {
   const reduceMotion = useReducedMotion();
   const [previewProject, setPreviewProject] = useState(null);
+  const [portfolioCategory, setPortfolioCategory] = useState("All");
+
+  // Ingest form state
+  const [formName, setFormName] = useState("");
+  const [formEmail, setFormEmail] = useState("");
+  const [formPhone, setFormPhone] = useState("");
+  const [formService, setFormService] = useState("Video Production & Editing");
+  const [formMessage, setFormMessage] = useState("");
+  const [formSubmitting, setFormSubmitting] = useState(false);
+  const [formSuccess, setFormSuccess] = useState(false);
+  const [formFeedback, setFormFeedback] = useState("");
+
   const { projects: publishedProjects, isLoading, error } = usePublishedProjects();
-  const featuredProjects = publishedProjects.filter((project) => project.featured);
-  const homeProjects = (featuredProjects.length > 0 ? featuredProjects : publishedProjects).slice(0, 4);
+
+  // Filterable Our Work
+  const filteredProjects = useMemo(() => {
+    if (portfolioCategory === "All") return publishedProjects;
+    return publishedProjects.filter((p) => p.category === portfolioCategory);
+  }, [publishedProjects, portfolioCategory]);
+
   const whatsAppHref = getWhatsAppHref(
-    "Hi VIP StudioS, I'd like to discuss a video editing or creative content project.",
+    "Hi VIP StudioS, I'm interested in exploring a complete content and digital growth partnership."
   );
 
-  return (
-    <div className="vip-home">
-      <FaqSchema />
-      <HeroReel projects={homeProjects} />
+  async function handleContactSubmit(e) {
+    e.preventDefault();
+    if (formSubmitting) return;
 
-      {/* Cinematic Trust Band */}
-      <section aria-label="Studio verified track record" className="studio-stats-band bg-[#F4F1FF] border-y border-[#EAE6E0]">
-        <div className="vip-section-shell">
-          <div className="studio-stats-grid">
-            <div className="studio-stat-item">
-              <span className="studio-stat-number">6<span>+</span></span>
-              <span className="studio-stat-label">Years of Studio Craft</span>
+    if (!formEmail && !formPhone) {
+      setFormFeedback("Please provide at least an email or WhatsApp phone number.");
+      return;
+    }
+
+    setFormSubmitting(true);
+    setFormFeedback("");
+
+    try {
+      if (isSupabaseConfigured && supabase) {
+        const { error: insertError } = await supabase.from("enquiries").insert({
+          name: formName || "Prospective Partner",
+          email: formEmail,
+          phone: formPhone,
+          service: formService,
+          requirements: formMessage,
+          status: "new",
+        });
+        if (insertError) throw insertError;
+      }
+      setFormSuccess(true);
+    } catch (err) {
+      setFormFeedback(err?.message || "Could not submit brief. Please connect via direct WhatsApp.");
+    } finally {
+      setFormSubmitting(false);
+    }
+  }
+
+  return (
+    <div className="vip-home bg-[#0A0A0A] text-white">
+      {/* 1. Hero with Brand Message & CTAs */}
+      <HeroReel projects={publishedProjects} />
+
+      {/* 2. Credibility Statistics Band */}
+      <section aria-label="Studio credibility statistics" className="py-14 bg-[#121212] border-y border-[#1E1E1E]" id="stats">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+            <div className="p-6 rounded-xl bg-[#161616] border border-[#222222]">
+              <span className="block font-display text-4xl sm:text-5xl font-black text-[#FFD21C] tracking-tight leading-none mb-2">
+                6+
+              </span>
+              <strong className="block text-white text-base font-display font-bold mb-1">
+                Years of Experience
+              </strong>
+              <span className="text-xs text-[#A1A1AA] font-sans">
+                Hands-on video editing, post-production &amp; brand positioning.
+              </span>
             </div>
-            <div className="studio-stat-item">
-              <span className="studio-stat-number">1,000<span>+</span></span>
-              <span className="studio-stat-label">Projects Mastered</span>
+
+            <div className="p-6 rounded-xl bg-[#161616] border border-[#222222]">
+              <span className="block font-display text-4xl sm:text-5xl font-black text-[#FFD21C] tracking-tight leading-none mb-2">
+                10+
+              </span>
+              <strong className="block text-white text-base font-display font-bold mb-1">
+                Team Members
+              </strong>
+              <span className="text-xs text-[#A1A1AA] font-sans">
+                Specialized editors, colorists, sound designers &amp; strategists.
+              </span>
             </div>
-            <div className="studio-stat-item">
-              <span className="studio-stat-number">10<span>+</span></span>
-              <span className="studio-stat-label">Editing Specialists</span>
+
+            <div className="p-6 rounded-xl bg-[#161616] border border-[#222222]">
+              <span className="block font-display text-4xl sm:text-5xl font-black text-[#FFD21C] tracking-tight leading-none mb-2">
+                12+
+              </span>
+              <strong className="block text-white text-base font-display font-bold mb-1">
+                Active Clients
+              </strong>
+              <span className="text-xs text-[#A1A1AA] font-sans">
+                Long-term retained creators, corporate leaders &amp; growth partners.
+              </span>
             </div>
-            <div className="studio-stat-item">
-              <span className="studio-stat-number">12<span>+</span></span>
-              <span className="studio-stat-label">Active Studio Partners</span>
+
+            <div className="p-6 rounded-xl bg-[#161616] border border-[#222222]">
+              <span className="block font-display text-4xl sm:text-5xl font-black text-[#FFD21C] tracking-tight leading-none mb-2">
+                1,000+
+              </span>
+              <strong className="block text-white text-base font-display font-bold mb-1">
+                Projects Delivered
+              </strong>
+              <span className="text-xs text-[#A1A1AA] font-sans">
+                4K commercial cuts, high-retention reels &amp; documentary masters.
+              </span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* FEATURED WORK — Editorial Project Board */}
+      {/* 3. Services Overview Covering Full Range & Growth Journey */}
       <motion.section
         {...revealProps(reduceMotion)}
-        aria-labelledby="studio-work-title"
-        className="vip-work"
-        id="featured-cuts"
+        aria-labelledby="services-title"
+        className="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+        id="services"
       >
-        <div className="vip-section-shell">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+          <div>
+            <div className="flex items-center gap-2 mb-3">
+              <span className="w-2 h-2 rounded-full bg-[#FFD21C]" />
+              <span className="font-mono text-xs font-bold uppercase tracking-widest text-[#FFD21C]">
+                FULL-SERVICE CREATIVE &amp; GROWTH PARTNER
+              </span>
+            </div>
+            <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-white m-0 font-display" id="services-title">
+              Complete Content, Social Media &amp; <span className="text-[#FFD21C]">Digital Growth.</span>
+            </h2>
+          </div>
+          <p className="text-sm sm:text-base text-[#A1A1AA] max-w-md m-0 font-sans leading-relaxed">
+            Not just a posting agency. We engineer end-to-end production pipelines built to capture audience attention and scale revenue.
+          </p>
+        </div>
+
+        {/* Brand Journey Bar */}
+        <div className="mb-12 p-4 sm:p-5 rounded-xl bg-[#141414] border border-[#222222]">
+          <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-[#FFD21C] block mb-2">
+            THE COMPLETE JOURNEY WE GUIDE YOU THROUGH
+          </span>
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs sm:text-sm font-display font-bold">
+            {BRAND_JOURNEY.map((step, idx) => (
+              <span className="inline-flex items-center gap-2" key={step}>
+                <span className="px-3 py-1 rounded bg-[#1C1C1C] border border-[#2E2E2E] text-white hover:border-[#FFD21C] transition-colors">
+                  {step}
+                </span>
+                {idx < BRAND_JOURNEY.length - 1 && (
+                  <span className="text-[#FFD21C] font-mono text-xs">→</span>
+                )}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* 8 Core Services Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          {serviceOfferings.map((service, index) => {
+            const IconComponent = serviceIconsMap[service.slug] || Scissors;
+            return (
+              <div
+                className="group p-6 rounded-xl bg-[#141414] border border-[#222222] hover:border-[#FFD21C]/60 transition-all flex flex-col justify-between"
+                key={service.slug}
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="w-10 h-10 rounded-lg bg-[#1C1C1C] text-[#FFD21C] flex items-center justify-center border border-white/5 group-hover:bg-[#FFD21C] group-hover:text-[#0A0A0A] transition-colors">
+                      <IconComponent size={20} />
+                    </div>
+                    <span className="font-mono text-[10px] font-bold text-[#71717A] tracking-wider uppercase">
+                      0{index + 1} // SUITE
+                    </span>
+                  </div>
+
+                  <h3 className="text-lg font-bold text-white mb-2 font-display group-hover:text-[#FFD21C] transition-colors">
+                    {service.title}
+                  </h3>
+                  <p className="text-xs sm:text-sm text-[#A1A1AA] leading-relaxed mb-4 font-sans">
+                    {service.shortDescription}
+                  </p>
+                </div>
+
+                <div>
+                  <div className="flex flex-wrap gap-1.5 pt-3 border-t border-[#222222] mb-4">
+                    {service.scope.slice(0, 3).map((item) => (
+                      <span
+                        className="font-mono text-[10px] text-[#A1A1AA] bg-[#1A1A1A] px-2 py-0.5 rounded border border-white/5"
+                        key={item}
+                      >
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+
+                  <Link
+                    className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-[#FFD21C] hover:underline"
+                    to={`/services/${service.slug}`}
+                  >
+                    View Details <ArrowUpRight size={13} />
+                  </Link>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="flex items-center justify-between flex-wrap gap-4 pt-6 border-t border-[#1E1E1E]">
+          <span className="font-mono text-xs text-[#71717A]">
+            FULL PRODUCTION &amp; POST-PRODUCTION SUITE WITH UNLIMITED REVISIONS
+          </span>
+          <Link className="button button-outline text-xs font-mono font-bold uppercase inline-flex items-center gap-2" to="/services">
+            Explore All 8 Services <ArrowUpRight size={14} />
+          </Link>
+        </div>
+      </motion.section>
+
+      {/* 4. Filterable Our Work Portfolio */}
+      <motion.section
+        {...revealProps(reduceMotion)}
+        aria-labelledby="portfolio-title"
+        className="py-24 bg-[#121212] border-y border-[#1E1E1E]"
+        id="portfolio"
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
             <div>
-              <div className="flex items-center gap-2 mb-2">
-                <span className="w-2 h-2 rounded-full bg-[#FF4D2D]" />
-                <span className="font-mono text-xs font-bold uppercase tracking-widest text-[#FF4D2D]">
-                  PORTFOLIO SHOWCASE // RECENT CUTS
+              <div className="flex items-center gap-2 mb-3">
+                <span className="w-2 h-2 rounded-full bg-[#FFD21C]" />
+                <span className="font-mono text-xs font-bold uppercase tracking-widest text-[#FFD21C]">
+                  SHOWCASE // CURATED WORK
                 </span>
               </div>
-              <h2 className="text-3xl sm:text-5xl font-black tracking-tight m-0" id="studio-work-title">
-                Make the work the <span className="text-[#FF4D2D]">first conversation.</span>
+              <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-white m-0 font-display" id="portfolio-title">
+                Our Work. <span className="text-[#FFD21C]">Crafted to Convert.</span>
               </h2>
             </div>
-            <p className="vip-section-summary">
-              Selected video edits engineered for high retention, narrative rhythm, and visual distinction.
+            <p className="text-sm sm:text-base text-[#A1A1AA] max-w-md m-0 font-sans leading-relaxed">
+              Explore recent projects across social media campaigns, high-retention vertical reels, podcasts, YouTube series, and brand films.
             </p>
           </div>
 
-          {error && (
-            <p className="studio-content-error" role="alert">
-              Project work could not be loaded: {error}
-            </p>
-          )}
+          {/* Filter Categories */}
+          <div className="flex flex-wrap items-center gap-2 mb-10 pb-4 border-b border-[#1E1E1E]">
+            {["All", ...CATEGORIES].map((cat) => {
+              const isActive = portfolioCategory === cat;
+              return (
+                <button
+                  className={`font-mono text-xs uppercase px-4 py-2 rounded-lg border transition-all cursor-pointer font-bold ${
+                    isActive
+                      ? "bg-[#FFD21C] text-[#0A0A0A] border-[#FFD21C] shadow-sm"
+                      : "bg-[#161616] text-[#A1A1AA] border-[#222222] hover:text-white hover:border-[#333333]"
+                  }`}
+                  key={cat}
+                  onClick={() => setPortfolioCategory(cat)}
+                  type="button"
+                >
+                  {cat === "All" ? "ALL WORK" : cat}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Highlight Callout: Direct Link to Brand Film Production */}
+          <div className="mb-8 p-4 rounded-xl bg-[#161616] border border-[#FFD21C]/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#FFD21C] animate-pulse" />
+              <div>
+                <strong className="block text-white text-sm font-display font-bold">
+                  Featured Master Cut: Brand Film Production
+                </strong>
+                <span className="text-xs text-[#A1A1AA] font-sans">
+                  Direct commercial link hosted on YouTube 4K.
+                </span>
+              </div>
+            </div>
+            <a
+              className="button button-gold button-small inline-flex items-center gap-1.5"
+              href="https://youtu.be/5ey7tP006cg?si=2XUdvaCgFEbLc06C"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Watch Brand Film <ArrowUpRight size={14} />
+            </a>
+          </div>
 
           {isLoading && (
-            <p aria-live="polite" className="studio-content-loading">
-              Loading featured projects…
-            </p>
+            <div className="py-20 text-center font-mono text-sm text-[#A1A1AA]">
+              <span className="inline-block animate-spin mr-2">●</span> Loading curated cuts…
+            </div>
           )}
 
-          {!isLoading && !error && homeProjects.length === 0 && (
-            <p className="studio-content-empty">
-              No published projects yet.{" "}
-              <Link to="/contact">Contact us to start your project.</Link>
-            </p>
+          {error && (
+            <div className="py-12 text-center text-red-400 font-mono text-xs">
+              Notice: Could not load dynamic cuts: {error}. Presenting curated offline archive.
+            </div>
           )}
 
-          {/* Balanced 2-Column Responsive Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-            {homeProjects.map((project, index) => (
+          {/* Portfolio Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-12">
+            {filteredProjects.map((project, index) => (
               <ProjectCard
                 index={index}
-                key={project.slug}
+                key={project.slug || index}
                 onPreviewCut={setPreviewProject}
                 project={project}
               />
@@ -174,329 +375,489 @@ export default function HomePage() {
           </div>
 
           <div className="flex justify-center">
-            <Link className="button button-dark" to="/work">
-              View All Projects <ArrowUpRight aria-hidden="true" size={16} />
+            <Link className="button button-outline font-mono text-xs font-bold uppercase tracking-wider inline-flex items-center gap-2" to="/work">
+              View Complete Work Archive <ArrowUpRight size={15} />
             </Link>
           </div>
         </div>
       </motion.section>
 
-      {/* STUDIO EDITING PHILOSOPHY */}
+      {/* 5. Reasons to Work with VIP StudioS */}
       <motion.section
         {...revealProps(reduceMotion)}
-        aria-labelledby="studio-craft-title"
-        className="py-20 bg-[#12101E] text-[#FFFDF8] relative overflow-hidden"
+        aria-labelledby="reasons-title"
+        className="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+        id="reasons"
       >
-        <div className="vip-section-shell">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            <div className="lg:col-span-5">
-              <span className="font-mono text-xs font-bold uppercase tracking-widest text-[#FF4D2D] block mb-3">
-                // STUDIO EDITING PHILOSOPHY
-              </span>
-              <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-white mb-6 leading-tight" id="studio-craft-title">
-                Editing is rhythm,
-                <br />
-                <span className="text-[#FF4D2D]">pacing and psychology.</span>
-              </h2>
-              <p className="text-[#B8B5C6] text-base leading-relaxed mb-6">
-                Most video falls flat not because the camera was wrong, but because the edit lacked
-                tension and purpose. At VIP STUDIOS, we treat every timeline as an emotional curve—shaping
-                sound, speed ramps, and cutaways to hold viewer retention.
-              </p>
-              <div className="flex items-center gap-4 text-xs font-mono text-[#00E599]">
-                <span className="flex items-center gap-1.5 bg-[#1C182E] px-3 py-1.5 rounded border border-white/10">
-                  <EditRazorIcon className="text-[#FF4D2D]" size={14} />
-                  PRECISION PACING
-                </span>
-                <span className="flex items-center gap-1.5 bg-[#1C182E] px-3 py-1.5 rounded border border-white/10">
-                  <Volume2 className="text-[#635BFF]" size={14} />
-                  CUSTOM SOUND DESIGN
-                </span>
-              </div>
-            </div>
-
-            <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="p-6 rounded-xl bg-[#1C182E]/80 border border-white/10 backdrop-blur-sm">
-                <span className="font-mono text-xl font-bold text-[#FF4D2D]">01</span>
-                <h3 className="text-lg font-bold text-white mt-2 mb-2">The 3-Second Retention Hook</h3>
-                <p className="text-sm text-[#B8B5C6] m-0 leading-normal">
-                  Opening frames engineered with immediate visual payoff, sound punch, and motion to arrest the infinite scroll.
-                </p>
-              </div>
-
-              <div className="p-6 rounded-xl bg-[#1C182E]/80 border border-white/10 backdrop-blur-sm">
-                <span className="font-mono text-xl font-bold text-[#635BFF]">02</span>
-                <h3 className="text-lg font-bold text-white mt-2 mb-2">DaVinci Color Calibration</h3>
-                <p className="text-sm text-[#B8B5C6] m-0 leading-normal">
-                  Cinema-grade color grading that sets an ownable visual tone, matching skin tones and mood across varied lighting.
-                </p>
-              </div>
-
-              <div className="p-6 rounded-xl bg-[#1C182E]/80 border border-white/10 backdrop-blur-sm">
-                <span className="font-mono text-xl font-bold text-[#00E599]">03</span>
-                <h3 className="text-lg font-bold text-white mt-2 mb-2">Multi-Track Sound Design</h3>
-                <p className="text-sm text-[#B8B5C6] m-0 leading-normal">
-                  Audio accounts for 50% of the cinematic experience. We build custom whooshes, risers, and dialogue EQ that feel visceral.
-                </p>
-              </div>
-
-              <div className="p-6 rounded-xl bg-[#1C182E]/80 border border-white/10 backdrop-blur-sm">
-                <span className="font-mono text-xl font-bold text-[#FFB800]">04</span>
-                <h3 className="text-lg font-bold text-white mt-2 mb-2">Multi-Format Delivery</h3>
-                <p className="text-sm text-[#B8B5C6] m-0 leading-normal">
-                  Exported specifically for YouTube 4K, 9:16 Instagram Reels, TikTok, and direct broadcast with calibrated bitrates.
-                </p>
-              </div>
-            </div>
+        <div className="max-w-2xl mb-12">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="w-2 h-2 rounded-full bg-[#FFD21C]" />
+            <span className="font-mono text-xs font-bold uppercase tracking-widest text-[#FFD21C]">
+              THE VIP DIFFERENCE
+            </span>
           </div>
+          <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-white m-0 font-display" id="reasons-title">
+            Why Partner with <span className="text-[#FFD21C]">VIP StudioS.</span>
+          </h2>
+          <p className="text-base text-[#A1A1AA] mt-3 font-sans leading-relaxed">
+            Content creation is broken when treated as isolated tasks. Here is how our coordinated model sets your brand apart:
+          </p>
         </div>
-      </motion.section>
 
-      {/* STUDIO CAPABILITIES — 8 Specialized Services */}
-      <motion.section
-        {...revealProps(reduceMotion)}
-        aria-labelledby="studio-services-title"
-        className="vip-services"
-        id="services"
-      >
-        <div className="vip-section-shell">
-          <div className="vip-section-heading">
-            <div>
-              <p className="vip-eyebrow">Production &amp; Editing Suites</p>
-              <h2 id="studio-services-title">
-                Full-spectrum video craft,
-                <br />
-                <span>from capture to master.</span>
-              </h2>
-            </div>
-            <p>
-              Whether you need high-tempo short-form reels or full channel management,
-              we bring editing rigor and creative vision to every deliverable.
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="p-6 rounded-xl bg-[#141414] border border-[#222222]">
+            <span className="font-mono text-2xl font-black text-[#FFD21C] block mb-3">01</span>
+            <h3 className="text-lg font-bold text-white mb-2 font-display">End-to-End Ownership</h3>
+            <p className="text-sm text-[#A1A1AA] m-0 font-sans leading-relaxed">
+              No disconnected freelancers. One synchronized team handles strategy, filming, editing, publishing, analytics, and growth.
             </p>
           </div>
 
-          <div className="vip-service-grid">
-            {serviceOfferings.map((service, index) => {
-              const Icon = serviceIcons[index] || Scissors;
-              const specs = [
-                "9:16 + 16:9",
-                "4K Master",
-                "Color + Audio",
-                "Multi-Cam",
-                "Full Management",
-                "Fast Turnaround",
-                "High Retention",
-                "Brand Consistency",
-              ][index % 8];
-
-              return (
-                <motion.div
-                  {...revealProps(reduceMotion, index * 0.045)}
-                  key={service.slug}
-                >
-                  <Link
-                    className="vip-service-card group"
-                    to={`/services/${service.slug}`}
-                  >
-                    <div className="vip-service-card-top">
-                      <span className="font-mono text-xs font-bold text-[#635BFF]">
-                        SUITE {String(index + 1).padStart(2, "0")}
-                      </span>
-                      <span className="font-mono text-[10px] uppercase tracking-wider px-2 py-0.5 rounded bg-[#F5F3FF] text-[#12101E] border border-[#635BFF]/20">
-                        {specs}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="w-10 h-10 rounded-lg bg-[#F5F3FF] text-[#FF4D2D] flex items-center justify-center transition-colors group-hover:bg-[#FF4D2D] group-hover:text-white">
-                        <Icon size={20} />
-                      </div>
-                      <h3 className="m-0 text-xl font-bold tracking-tight">{service.title}</h3>
-                    </div>
-
-                    <p>{service.shortDescription}</p>
-
-                    <div className="flex flex-wrap gap-1.5 mt-auto pt-3 border-t border-[#E8E4DC]">
-                      {service.scope.slice(0, 3).map((item) => (
-                        <span
-                          className="font-mono text-[10px] text-[#5C586B] bg-[#FCFBF8] px-2 py-0.5 rounded border border-[#E8E4DC]"
-                          key={item}
-                        >
-                          {item}
-                        </span>
-                      ))}
-                    </div>
-
-                    <span className="vip-service-link mt-4">
-                      Inspect Suite Details <ArrowUpRight aria-hidden="true" size={15} />
-                    </span>
-                  </Link>
-                </motion.div>
-              );
-            })}
+          <div className="p-6 rounded-xl bg-[#141414] border border-[#222222]">
+            <span className="font-mono text-2xl font-black text-[#FFD21C] block mb-3">02</span>
+            <h3 className="text-lg font-bold text-white mb-2 font-display">Retention Psychology</h3>
+            <p className="text-sm text-[#A1A1AA] m-0 font-sans leading-relaxed">
+              Every cut, speed ramp, and sound cue is calculated to stop the scroll, elevate watch time, and satisfy algorithm curves.
+            </p>
           </div>
 
-          <div className="flex justify-between items-center flex-wrap gap-4 pt-4 border-t border-[#E8E4DC]">
-            <span className="font-mono text-xs text-[#5C586B]">
-              ALL SUITES INCLUDE AUDIO MASTERING &amp; UNLIMITED FRAME-ACCURATE REVIEWS
-            </span>
-            <Link className="vip-inline-link font-mono text-sm font-bold uppercase" to="/services">
-              Explore All Suites <ArrowUpRight aria-hidden="true" size={16} />
-            </Link>
+          <div className="p-6 rounded-xl bg-[#141414] border border-[#222222]">
+            <span className="font-mono text-2xl font-black text-[#FFD21C] block mb-3">03</span>
+            <h3 className="text-lg font-bold text-white mb-2 font-display">Cinema-Grade Color &amp; Mix</h3>
+            <p className="text-sm text-[#A1A1AA] m-0 font-sans leading-relaxed">
+              Graded on calibrated monitors in DaVinci Resolve Studio with broadcast-level multi-track audio mastering.
+            </p>
+          </div>
+
+          <div className="p-6 rounded-xl bg-[#141414] border border-[#222222]">
+            <span className="font-mono text-2xl font-black text-[#FFD21C] block mb-3">04</span>
+            <h3 className="text-lg font-bold text-white mb-2 font-display">Built to Scale</h3>
+            <p className="text-sm text-[#A1A1AA] m-0 font-sans leading-relaxed">
+              Structured asset pipelines that allow your output to double or triple without sacrificing brand rigor or delivery speed.
+            </p>
           </div>
         </div>
       </motion.section>
 
-      {/* THE EDITING WORKFLOW — Timeline Pipeline */}
+      {/* 6. Clear Six-Step Process */}
       <motion.section
         {...revealProps(reduceMotion)}
-        aria-labelledby="studio-pipeline-title"
-        className="vip-process"
+        aria-labelledby="process-title"
+        className="py-24 bg-[#121212] border-y border-[#1E1E1E]"
         id="process"
       >
-        <div className="vip-section-shell">
-          <div className="vip-section-heading">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
             <div>
-              <p className="vip-eyebrow">The Cutting Pipeline</p>
-              <h2 id="studio-pipeline-title">
-                From raw ingest
-                <br />
-                <span>to locked master.</span>
+              <div className="flex items-center gap-2 mb-3">
+                <span className="w-2 h-2 rounded-full bg-[#FFD21C]" />
+                <span className="font-mono text-xs font-bold uppercase tracking-widest text-[#FFD21C]">
+                  METHODICAL EXECUTION
+                </span>
+              </div>
+              <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-white m-0 font-display" id="process-title">
+                Our 6-Step <span className="text-[#FFD21C]">Growth Process.</span>
               </h2>
             </div>
-            <p>
-              A dependable production workflow designed for speed, frame-level precision,
-              and seamless client collaboration.
+            <p className="text-sm sm:text-base text-[#A1A1AA] max-w-md m-0 font-sans leading-relaxed">
+              Discover, Strategy, Create, Edit, Publish, Optimize. A proven system that turns raw ideas into compounding brand performance.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 my-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
               {
                 step: "01",
-                label: "INGEST & DISCOVERY",
-                timing: "DAY 01",
-                title: "Footage Ingest & Story Sync",
-                desc: "We analyze your raw clips, organize bins, sync audio, and align on visual references and rhythm.",
+                name: "Discover",
+                tagline: "AUDIT & ALIGNMENT",
+                desc: "We analyze your audience demographics, brand identity, competitors, and growth goals to identify immediate high-payoff opportunities.",
               },
               {
                 step: "02",
-                label: "THE ASSEMBLY",
-                timing: "DAY 02",
-                title: "Narrative Assembly & Rough Cut",
-                desc: "We build the core pacing curve, trimming dead air and locking the story before styling.",
+                name: "Strategy",
+                tagline: "CONTENT BLUEPRINT",
+                desc: "We build your weekly editorial calendar, content pillars, viral retention hooks, and production formats tailored to target platforms.",
               },
               {
                 step: "03",
-                label: "COLOR & SOUND",
-                timing: "DAY 03",
-                title: "DaVinci Color & Audio Mix",
-                desc: "Dialogue cleanup, music ducking, SFX foley, and cinema-grade color balance applied to every shot.",
+                name: "Create",
+                tagline: "SHOOT & INGEST",
+                desc: "From creative scripting and lighting direction to camera shooting and raw media ingest, we capture pristine, high-fidelity footage.",
               },
               {
                 step: "04",
-                label: "FINAL MASTER",
-                timing: "DAY 04",
-                title: "4K Master Delivery & Formats",
-                desc: "Platform-optimized exports delivered with frame accuracy, subtitles, and clean thumbnail grabs.",
+                name: "Edit",
+                tagline: "RHYTHM & FINISHING",
+                desc: "Our editors assemble the narrative curve, craft bespoke sound foley, layer motion typography, and calibrate DaVinci color grading.",
               },
-            ].map((stage) => (
-              <div
-                className="p-6 rounded-2xl bg-white border border-[#E8E4DC] shadow-sm relative flex flex-col justify-between"
-                key={stage.step}
-              >
+              {
+                step: "05",
+                name: "Publish",
+                tagline: "PACKAGING & ROLLOUT",
+                desc: "High-CTR custom thumbnails, SEO-optimized titles, hashtags, and multi-format exports (16:9 & 9:16) scheduled for maximum reach.",
+              },
+              {
+                step: "06",
+                name: "Optimize",
+                tagline: "ANALYSIS & COMPOUNDING",
+                desc: "We review retention graphs, click-through rates, and follower conversions, feeding data insights directly back into the next sprint.",
+              },
+            ].map((st) => (
+              <div className="p-6 rounded-xl bg-[#161616] border border-[#222222] flex flex-col justify-between" key={st.step}>
                 <div>
-                  <div className="flex items-center justify-between font-mono text-xs mb-4">
-                    <span className="font-bold text-[#FF4D2D]">{stage.step} // STAGE</span>
-                    <span className="px-2 py-0.5 rounded bg-[#F5F3FF] text-[#635BFF] font-bold">
-                      {stage.timing}
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="font-mono text-xs font-bold text-[#FFD21C]">STEP {st.step}</span>
+                    <span className="font-mono text-[10px] text-[#A1A1AA] px-2 py-0.5 rounded bg-white/5 border border-white/10 uppercase">
+                      {st.tagline}
                     </span>
                   </div>
-                  <h3 className="text-lg font-bold tracking-tight mb-2">{stage.title}</h3>
-                  <p className="text-sm text-[#5C586B] leading-relaxed mb-6">{stage.desc}</p>
+                  <h3 className="text-xl font-bold text-white mb-2 font-display">{st.name}</h3>
+                  <p className="text-sm text-[#A1A1AA] leading-relaxed m-0 font-sans">{st.desc}</p>
                 </div>
-                <div className="pt-4 border-t border-[#E8E4DC] font-mono text-[11px] text-[#12101E] font-bold flex items-center justify-between">
-                  <span>{stage.label}</span>
-                  <span className="text-[#FF4D2D]">✓</span>
+                <div className="mt-6 pt-4 border-t border-[#222222] flex items-center justify-between text-xs font-mono text-[#71717A]">
+                  <span>SYSTEM PHASE</span>
+                  <span className="text-[#FFD21C]">✓</span>
                 </div>
               </div>
             ))}
           </div>
-
-          <div className="flex justify-center">
-            <Link className="vip-inline-link font-mono text-sm font-bold uppercase" to="/process">
-              Read Detailed Workflow &amp; Delivery SLA <ArrowUpRight aria-hidden="true" size={16} />
-            </Link>
-          </div>
         </div>
       </motion.section>
 
-      {/* FREQUENTLY ASKED QUESTIONS */}
+      {/* 7. Visual Content & Platform Ecosystem */}
       <motion.section
         {...revealProps(reduceMotion)}
-        aria-labelledby="studio-faq-title"
-        className="vip-faq bg-[#FCFBF8]"
+        aria-labelledby="ecosystem-title"
+        className="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+        id="ecosystem"
       >
-        <div className="vip-section-shell vip-faq-layout">
-          <div>
-            <p className="vip-eyebrow">Studio Transparency</p>
-            <h2 id="studio-faq-title">
-              Clear answers,
-              <br />
-              <span>zero friction.</span>
-            </h2>
-            <p>Everything you need to know about working with VIP STUDIOS before starting your project.</p>
+        <div className="max-w-2xl mb-12">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="w-2 h-2 rounded-full bg-[#FFD21C]" />
+            <span className="font-mono text-xs font-bold uppercase tracking-widest text-[#FFD21C]">
+              MULTIPLIER ARCHITECTURE
+            </span>
           </div>
-          <div className="vip-faq-list">
-            {faqs.map(({ question, answer }) => (
-              <details key={question}>
-                <summary>{question}<span aria-hidden="true">+</span></summary>
-                <p>{answer}</p>
-              </details>
-            ))}
-          </div>
+          <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-white m-0 font-display" id="ecosystem-title">
+            The Content &amp; <span className="text-[#FFD21C]">Platform Ecosystem.</span>
+          </h2>
+          <p className="text-base text-[#A1A1AA] mt-3 font-sans leading-relaxed">
+            How a single core master production is repurposed into an omnipresent digital engine across all major platforms:
+          </p>
         </div>
-      </motion.section>
 
-      {/* CLOSING CINEMATIC CTA */}
-      <motion.section
-        {...revealProps(reduceMotion)}
-        aria-labelledby="studio-cta-title"
-        className="vip-cta"
-      >
-        <div className="vip-section-shell vip-cta-inner bg-[#12101E] text-white">
-          <div>
-            <div className="flex items-center gap-2 mb-3">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#FF4D2D] animate-ping" />
-              <p className="vip-eyebrow text-[#FF4D2D] m-0">START YOUR PROJECT</p>
+        <div className="p-6 sm:p-8 rounded-2xl bg-[#141414] border border-[#222222]">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            {/* Left Core Hub */}
+            <div className="lg:col-span-4 p-6 rounded-xl bg-[#1C1C1C] border border-[#FFD21C]/40 text-center">
+              <span className="font-mono text-xs font-bold uppercase text-[#FFD21C] tracking-widest block mb-2">
+                CORE MASTER ASSET
+              </span>
+              <h3 className="text-2xl font-black text-white mb-2 font-display">
+                Brand Film / Studio Podcast
+              </h3>
+              <p className="text-xs text-[#A1A1AA] m-0 font-sans mb-4">
+                High-fidelity 4K recording with calibrated multi-track audio and multi-camera angles.
+              </p>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-[#FFD21C]/10 text-[#FFD21C] font-mono text-xs font-bold">
+                <Zap size={14} /> 1 PRODUCTION → 20+ ASSETS
+              </div>
             </div>
-            <h2 className="text-4xl sm:text-6xl font-black text-white leading-tight" id="studio-cta-title">
-              Let&apos;s make something
-              <br />
-              <span className="text-[#FF4D2D]">worth watching.</span>
-            </h2>
-            <p className="text-lg text-white/70 max-w-xl">
-              Have footage ready to edit, or planning your next campaign?
-              Share your brief and let&apos;s engineer a visual cut that drives engagement.
-            </p>
+
+            {/* Middle Divider */}
+            <div className="hidden lg:flex lg:col-span-1 justify-center text-[#FFD21C] font-mono text-xl">
+              →
+            </div>
+
+            {/* Right Cascading Outputs */}
+            <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="p-4 rounded-lg bg-[#181818] border border-[#2A2A2A]">
+                <div className="flex items-center gap-2 mb-1.5 text-xs font-mono font-bold text-[#FFD21C]">
+                  <Youtube size={15} /> YOUTUBE 4K MASTER
+                </div>
+                <p className="text-xs text-[#A1A1AA] m-0 font-sans">
+                  Long-form episodic asset, chapter timestamps, custom high-CTR thumbnails &amp; SEO description.
+                </p>
+              </div>
+
+              <div className="p-4 rounded-lg bg-[#181818] border border-[#2A2A2A]">
+                <div className="flex items-center gap-2 mb-1.5 text-xs font-mono font-bold text-[#FFD21C]">
+                  <Instagram size={15} /> 10+ 9:16 VERTICAL REELS
+                </div>
+                <p className="text-xs text-[#A1A1AA] m-0 font-sans">
+                  Fast-hook cutdowns engineered for Instagram Reels, TikTok, and YouTube Shorts algorithms.
+                </p>
+              </div>
+
+              <div className="p-4 rounded-lg bg-[#181818] border border-[#2A2A2A]">
+                <div className="flex items-center gap-2 mb-1.5 text-xs font-mono font-bold text-[#FFD21C]">
+                  <Share2 size={15} /> LINKEDIN &amp; SOCIAL CAROUSELS
+                </div>
+                <p className="text-xs text-[#A1A1AA] m-0 font-sans">
+                  High-value quotes, data charts, and leadership snippets for executive authority building.
+                </p>
+              </div>
+
+              <div className="p-4 rounded-lg bg-[#181818] border border-[#2A2A2A]">
+                <div className="flex items-center gap-2 mb-1.5 text-xs font-mono font-bold text-[#FFD21C]">
+                  <TrendingUp size={15} /> CONVERSION PAID ADS
+                </div>
+                <p className="text-xs text-[#A1A1AA] m-0 font-sans">
+                  Targeted short-form video ads optimized for customer acquisition and retargeting campaigns.
+                </p>
+              </div>
+            </div>
           </div>
-          <div className="vip-cta-actions">
-            <Link className="button button-gold text-base py-4 px-8" to="/contact">
-              Start Your Project <ArrowUpRight aria-hidden="true" size={18} />
-            </Link>
-            {whatsAppHref && (
+        </div>
+      </motion.section>
+
+      {/* 8. Workflow Strip & Team / About Section */}
+      <section aria-label="Studio tools and team" className="py-20 bg-[#121212] border-t border-[#1E1E1E]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Production Toolchain Strip */}
+          <div className="mb-16 pb-12 border-b border-[#1E1E1E]">
+            <p className="text-center font-mono text-xs uppercase tracking-widest text-[#71717A] mb-6">
+              ENGINEERED ON INDUSTRY-STANDARD PRODUCTION TOOLCHAINS
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-10 font-mono text-xs font-bold text-[#A1A1AA]">
+              <span className="hover:text-white transition-colors">DAVINCI RESOLVE STUDIO</span>
+              <span className="text-white/20">/</span>
+              <span className="hover:text-white transition-colors">ADOBE PREMIERE PRO</span>
+              <span className="text-white/20">/</span>
+              <span className="hover:text-white transition-colors">AFTER EFFECTS</span>
+              <span className="text-white/20">/</span>
+              <span className="hover:text-white transition-colors">SONY &amp; RED CINEMA DCI</span>
+              <span className="text-white/20">/</span>
+              <span className="hover:text-white transition-colors">4K DCI COLOR SCOPES</span>
+            </div>
+          </div>
+
+          {/* Team / About Section */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+            <div className="lg:col-span-6">
+              <div className="flex items-center gap-2 mb-3">
+                <span className="w-2 h-2 rounded-full bg-[#FFD21C]" />
+                <span className="font-mono text-xs font-bold uppercase tracking-widest text-[#FFD21C]">
+                  ABOUT VIP STUDIOS
+                </span>
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight mb-4 font-display">
+                Editors, Directors &amp; <span className="text-[#FFD21C]">Growth Partners.</span>
+              </h2>
+              <p className="text-sm sm:text-base text-[#A1A1AA] leading-relaxed mb-4 font-sans">
+                Founded by passionate creative editors, VIP StudioS was created to bridge the gap between cinema-quality video production and data-driven business growth. We do not believe in superficial vanity posting—we believe in crafting visual stories that command attention, foster trust, and drive measurable revenue.
+              </p>
+              <p className="text-sm sm:text-base text-[#A1A1AA] leading-relaxed mb-6 font-sans">
+                Whether you need a dedicated editing room for daily short-form reels or an ongoing multi-channel digital growth partner, our team is equipped to scale with your ambitions.
+              </p>
+              <div className="flex items-center gap-4">
+                <Link className="button button-gold text-xs font-mono uppercase font-bold" to="/about">
+                  Learn More About Us <ArrowRight size={14} />
+                </Link>
+                <Link className="button button-outline text-xs font-mono uppercase font-bold" to="/process">
+                  Our Workflows
+                </Link>
+              </div>
+            </div>
+
+            <div className="lg:col-span-6 grid grid-cols-2 gap-4">
+              <div className="p-5 rounded-xl bg-[#161616] border border-[#222222]">
+                <strong className="block text-white text-base font-bold font-display mb-1">
+                  Editorial Craftsmanship
+                </strong>
+                <p className="text-xs text-[#A1A1AA] m-0 font-sans leading-relaxed">
+                  Frame-accurate timing, bespoke audio ducking, and tailored visual hooks.
+                </p>
+              </div>
+
+              <div className="p-5 rounded-xl bg-[#161616] border border-[#222222]">
+                <strong className="block text-white text-base font-bold font-display mb-1">
+                  Strategic Distribution
+                </strong>
+                <p className="text-xs text-[#A1A1AA] m-0 font-sans leading-relaxed">
+                  Tailored packaging for YouTube, Meta, TikTok, and professional networks.
+                </p>
+              </div>
+
+              <div className="p-5 rounded-xl bg-[#161616] border border-[#222222]">
+                <strong className="block text-white text-base font-bold font-display mb-1">
+                  Transparent Timelines
+                </strong>
+                <p className="text-xs text-[#A1A1AA] m-0 font-sans leading-relaxed">
+                  Clear delivery SLAs, collaborative review stages, and zero hidden friction.
+                </p>
+              </div>
+
+              <div className="p-5 rounded-xl bg-[#161616] border border-[#222222]">
+                <strong className="block text-white text-base font-bold font-display mb-1">
+                  Ready to Scale
+                </strong>
+                <p className="text-xs text-[#A1A1AA] m-0 font-sans leading-relaxed">
+                  Sprint models designed to scale output seamlessly as your business expands.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 9. Direct Contact Section */}
+      <section aria-labelledby="contact-title" className="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" id="contact">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+          <div className="lg:col-span-5">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#FFD21C] animate-pulse" />
+              <span className="font-mono text-xs font-bold uppercase tracking-widest text-[#FFD21C]">
+                START A PROJECT // CONNECT DIRECTLY
+              </span>
+            </div>
+            <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-white m-0 mb-4 font-display" id="contact-title">
+              Let&apos;s Build Something <span className="text-[#FFD21C]">Exceptional.</span>
+            </h2>
+            <p className="text-base text-[#A1A1AA] font-sans leading-relaxed mb-8">
+              Share your project brief, footage scope, or growth goals. Our lead team will review your requirements and respond within 2 to 4 business hours.
+            </p>
+
+            <div className="flex flex-col gap-3 font-mono text-xs">
               <a
-                className="vip-dark-link font-mono text-sm uppercase tracking-wider text-center"
-                href={whatsAppHref}
-                rel="noreferrer"
-                target="_blank"
+                className="p-4 rounded-xl bg-[#141414] border border-[#222222] hover:border-[#FFD21C] transition-colors flex items-center justify-between text-white"
+                href="mailto:mr.rohit8530@gmail.com"
               >
-                Instant WhatsApp Brief <ArrowUpRight aria-hidden="true" size={14} />
+                <span className="flex items-center gap-2.5">
+                  <Mail className="text-[#FFD21C]" size={16} /> mr.rohit8530@gmail.com
+                </span>
+                <ArrowUpRight size={14} />
               </a>
+
+              {whatsAppHref && (
+                <a
+                  className="p-4 rounded-xl bg-[#141414] border border-[#222222] hover:border-[#25D366] transition-colors flex items-center justify-between text-white"
+                  href={whatsAppHref}
+                  rel="noreferrer"
+                  target="_blank"
+                >
+                  <span className="flex items-center gap-2.5">
+                    <MessageCircle className="text-[#25D366]" size={16} /> WhatsApp: +91 8530541815
+                  </span>
+                  <span className="px-2 py-0.5 rounded bg-[#25D366]/20 text-[#25D366] font-bold text-[10px]">
+                    FAST CHAT
+                  </span>
+                </a>
+              )}
+            </div>
+          </div>
+
+          <div className="lg:col-span-7 p-6 sm:p-8 rounded-2xl bg-[#141414] border border-[#222222]">
+            {formSuccess ? (
+              <div className="py-12 text-center">
+                <div className="w-16 h-16 rounded-full bg-[#FFD21C]/20 text-[#FFD21C] flex items-center justify-center mx-auto mb-4">
+                  <CheckCircle2 size={32} />
+                </div>
+                <h3 className="text-2xl font-black text-white mb-2 font-display">Brief Logged in Studio Desk!</h3>
+                <p className="text-sm text-[#A1A1AA] max-w-md mx-auto mb-6">
+                  Thank you, {formName || "Partner"}. Our lead director will review your project parameters and reach out promptly.
+                </p>
+                {whatsAppHref && (
+                  <a className="button button-gold" href={whatsAppHref} rel="noreferrer" target="_blank">
+                    <MessageCircle size={15} /> Instant WhatsApp Follow-up
+                  </a>
+                )}
+              </div>
+            ) : (
+              <form className="flex flex-col gap-4" onSubmit={handleContactSubmit}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-mono font-bold uppercase tracking-wider text-white/80 mb-1.5">
+                      Your Name / Brand
+                    </label>
+                    <input
+                      className="w-full bg-[#181818] border border-[#2A2A2A] focus:border-[#FFD21C] rounded-lg px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none transition-colors font-sans"
+                      onChange={(e) => setFormName(e.target.value)}
+                      placeholder="e.g. Alex Vance or Apex Brand"
+                      required
+                      type="text"
+                      value={formName}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-mono font-bold uppercase tracking-wider text-white/80 mb-1.5">
+                      Service Category
+                    </label>
+                    <select
+                      className="w-full bg-[#181818] border border-[#2A2A2A] focus:border-[#FFD21C] rounded-lg px-4 py-3 text-sm text-white focus:outline-none transition-colors font-sans"
+                      onChange={(e) => setFormService(e.target.value)}
+                      value={formService}
+                    >
+                      <option value="Social Media Management & Strategy">Social Media Management &amp; Strategy</option>
+                      <option value="Video Production & Editing">Video Production &amp; Editing</option>
+                      <option value="Reels & Short-Form Content">Reels &amp; Short-Form Content</option>
+                      <option value="Podcast Production">Podcast Production</option>
+                      <option value="YouTube Channel Management">YouTube Channel Management</option>
+                      <option value="Content Creation">Content Creation</option>
+                      <option value="Creative Branding">Creative Branding</option>
+                      <option value="Digital Growth">Digital Growth</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-mono font-bold uppercase tracking-wider text-white/80 mb-1.5">
+                      Email Address
+                    </label>
+                    <input
+                      className="w-full bg-[#181818] border border-[#2A2A2A] focus:border-[#FFD21C] rounded-lg px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none transition-colors font-mono"
+                      onChange={(e) => setFormEmail(e.target.value)}
+                      placeholder="alex@company.com"
+                      type="email"
+                      value={formEmail}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-mono font-bold uppercase tracking-wider text-white/80 mb-1.5">
+                      WhatsApp / Phone
+                    </label>
+                    <input
+                      className="w-full bg-[#181818] border border-[#2A2A2A] focus:border-[#FFD21C] rounded-lg px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none transition-colors font-mono"
+                      onChange={(e) => setFormPhone(e.target.value)}
+                      placeholder="+91 00000 00000"
+                      type="tel"
+                      value={formPhone}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-mono font-bold uppercase tracking-wider text-white/80 mb-1.5">
+                    Project Goals / Raw Footage Details
+                  </label>
+                  <textarea
+                    className="w-full bg-[#181818] border border-[#2A2A2A] focus:border-[#FFD21C] rounded-lg px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none transition-colors font-sans"
+                    onChange={(e) => setFormMessage(e.target.value)}
+                    placeholder="Tell us about your brand targets, footage volume, or timeline requirements..."
+                    rows={3}
+                    value={formMessage}
+                  />
+                </div>
+
+                {formFeedback && (
+                  <p className="text-xs font-mono text-[#FFD21C] m-0">{formFeedback}</p>
+                )}
+
+                <button
+                  className="button button-gold w-full py-4 text-xs font-mono font-bold uppercase tracking-wider cursor-pointer disabled:opacity-50"
+                  disabled={formSubmitting}
+                  type="submit"
+                >
+                  {formSubmitting ? "Connecting to Studio Queue…" : "Send Project Brief →"}
+                </button>
+              </form>
             )}
           </div>
         </div>
-      </motion.section>
+      </section>
 
       {/* Lightbox Cinema Preview Modal */}
       <CinemaModal

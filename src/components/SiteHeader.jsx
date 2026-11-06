@@ -6,10 +6,10 @@ import { getWhatsAppHref } from "../data/contact.js";
 
 const links = [
   { label: "Home", to: "/" },
-  { label: "Work", to: "/work" },
   { label: "Services", to: "/services" },
-  { label: "Process", to: "/process" },
+  { label: "Our Work", to: "/work" },
   { label: "About", to: "/about" },
+  { label: "Process", to: "/process" },
   { label: "Contact", to: "/contact" },
 ];
 
@@ -30,7 +30,7 @@ export default function SiteHeader() {
     function updateScrollState() {
       if (frame) return;
       frame = window.requestAnimationFrame(() => {
-        setIsCondensed(window.scrollY > 50);
+        setIsCondensed(window.scrollY > 40);
         frame = 0;
       });
     }
@@ -85,6 +85,7 @@ export default function SiteHeader() {
       <div className="header-inner">
         <Brand onNavigate={closeNavigation} />
         <span aria-hidden="true" className="header-wordmark">VIP STUDIOS</span>
+
         <button
           aria-controls="primary-navigation"
           aria-expanded={menuOpen}
@@ -96,6 +97,7 @@ export default function SiteHeader() {
         >
           {menuOpen ? <X size={22} /> : <Menu size={22} />}
         </button>
+
         <nav
           aria-label="Main navigation"
           className={`primary-navigation${menuOpen ? " is-open" : ""}`}
@@ -115,9 +117,10 @@ export default function SiteHeader() {
               {link.label}
             </NavLink>
           ))}
+
           <div className="header-cta-group">
             <Link
-              className="button button-small button-gold header-cta"
+              className="button button-small button-gold header-cta font-bold"
               onClick={closeNavigation}
               to="/contact"
             >
