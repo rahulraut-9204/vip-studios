@@ -1,42 +1,18 @@
 import { useState } from "react";
-import { Send, MessageCircle, CheckCircle2, Shield, Clock, Phone, Mail } from "lucide-react";
+import { Send, MessageCircle, CheckCircle2, Phone, Mail, MapPin, ArrowUpRight } from "lucide-react";
 import { isSupabaseConfigured, supabase } from "../lib/supabase.js";
 import { trackEvent } from "../data/analytics.js";
-
-const INDUSTRIES_LIST = [
-  "Healthcare & Clinics",
-  "Finance & Financial Education",
-  "Education & Coaching",
-  "Personal Brand / Creator / Coach",
-  "Food, Dining & Lifestyle",
-  "Real Estate & Construction",
-  "Retail & E-commerce",
-  "Corporate & Enterprise",
-  "Astrology & Professional Services",
-  "Other Industry",
-];
+import { contactConfig, getWhatsAppHref } from "../data/contact.js";
 
 const SERVICE_OPTIONS = [
   "Complete Social Media Management",
-  "Instagram Management",
-  "Facebook Management",
-  "Reels & Video Editing",
-  "Content Creation",
-  "Video Shooting",
-  "Podcast Production",
-  "YouTube Management",
-  "Creative Design",
-  "Monthly Content Package",
-  "Other",
-];
-
-const BUDGET_OPTIONS = [
-  "₹25,000 – ₹45,000 / month",
-  "₹45,000 – ₹80,000 / month (Standard SMM Retainer)",
-  "₹80,000 – ₹1,50,000 / month (Complete Production + SMM)",
-  "₹1,50,000+ / month (Enterprise & Multi-Platform)",
-  "Single Video Project / Commercial Shoot",
-  "Custom / Discussion Needed",
+  "Instagram Reels & Short-Form Video Editing",
+  "Professional Video Shooting & Production",
+  "YouTube Channel Management",
+  "Podcast Production & Editing",
+  "Brand Strategy & Creative Design",
+  "Monthly Content Retainer",
+  "Other / Custom Scope",
 ];
 
 export default function LeadCaptureForm() {
@@ -44,32 +20,23 @@ export default function LeadCaptureForm() {
   const [brandName, setBrandName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
-  const [socialUrl, setSocialUrl] = useState("");
-  const [industry, setIndustry] = useState(INDUSTRIES_LIST[0]);
-  const [selectedServices, setSelectedServices] = useState([SERVICE_OPTIONS[0]]);
-  const [monthlyRequirements, setMonthlyRequirements] = useState("");
-  const [budget, setBudget] = useState(BUDGET_OPTIONS[1]);
-  const [details, setDetails] = useState("");
+  const [service, setService] = useState(SERVICE_OPTIONS[0]);
+  const [message, setMessage] = useState("");
 
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [feedback, setFeedback] = useState("");
 
-  function toggleService(service) {
-    if (selectedServices.includes(service)) {
-      if (selectedServices.length === 1) return; // Keep at least one
-      setSelectedServices(selectedServices.filter((s) => s !== service));
-    } else {
-      setSelectedServices([...selectedServices, service]);
-    }
-  }
+  const whatsAppDirectLink = getWhatsAppHref(
+    "Hi VIP StudioS, I want to discuss social media management and content creation for my brand."
+  );
 
   async function handleSubmit(e) {
     e.preventDefault();
     if (submitting) return;
 
     if (!phone && !email) {
-      setFeedback("Please provide at least a phone/WhatsApp number or email so we can reach you.");
+      setFeedback("Please provide at least a WhatsApp number or email address.");
       return;
     }
 
@@ -77,26 +44,21 @@ export default function LeadCaptureForm() {
     setFeedback("");
 
     const fullBrief = [
-      `[Brand: ${brandName || "Not specified"}]`,
-      `[Industry: ${industry}]`,
-      `[Instagram/Web: ${socialUrl || "None provided"}]`,
-      `[Services: ${selectedServices.join(", ")}]`,
-      `[Budget: ${budget}]`,
-      `[Monthly Volume: ${monthlyRequirements || "Flexible"}]`,
+      `Brand / Business: ${brandName || "Not specified"}`,
+      `Service Needed: ${service}`,
       "",
       "Project Details & Goals:",
-      details || "None provided",
+      message || "None provided",
     ].join("\n");
 
     try {
       if (isSupabaseConfigured && supabase) {
         const { error } = await supabase.from("enquiries").insert({
           name: fullName || "Prospective Client",
-          company: brandName,
-          phone,
+          company: brandName || null,
+          phone: phone || null,
           email: email || null,
-          service: selectedServices.join(", "),
-          deadline: budget,
+          service,
           requirements: fullBrief,
           status: "new",
           source: "homepage_enquiry",
@@ -106,14 +68,14 @@ export default function LeadCaptureForm() {
       }
 
       trackEvent("project_enquiry_submitted", {
-        industry,
-        services_count: selectedServices.length,
+        service,
+        source: "homepage_enquiry",
       });
       setSuccess(true);
     } catch {
-      // Fallback: Dispatch to WhatsApp directly
+      // Fallback: Open WhatsApp directly
       const msg = encodeURIComponent(
-        `Hi VIP StudioS,\n\nName: ${fullName}\nBrand: ${brandName}\nPhone: ${phone}\nEmail: ${email}\nIndustry: ${industry}\nServices: ${selectedServices.join(", ")}\nBudget: ${budget}\nSocial Link: ${socialUrl}\n\nGoals: ${details}`
+        `Hi VIP StudioS,\n\nName: ${fullName}\nBrand: ${brandName}\nPhone: ${phone}\nEmail: ${email}\nService: ${service}\n\nGoals: ${message}`
       );
       window.open(`https://wa.me/918530541815?text=${msg}`, "_blank");
       setSuccess(true);
@@ -121,10 +83,6 @@ export default function LeadCaptureForm() {
       setSubmitting(false);
     }
   }
-
-  const whatsAppDirectLink = `https://wa.me/918530541815?text=${encodeURIComponent(
-    "Hi VIP StudioS, I want to discuss social media management and content creation for my business."
-  )}`;
 
   return (
     <section
@@ -134,12 +92,12 @@ export default function LeadCaptureForm() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-          {/* Left Column: Context, Trust & Direct Contacts */}
+          {/* Left Column: Direct Studio Information */}
           <div className="lg:col-span-5">
-            <div className="flex items-center gap-2 mb-3">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#FFD21C] shadow-[0_0_8px_#FFD21C]" />
-              <span className="font-mono text-xs uppercase tracking-widest text-[#FFD21C] font-bold">
-                START A CONVERSATION
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#141414] border border-[#262626] text-xs font-mono mb-4">
+              <span className="w-2 h-2 rounded-full bg-[#FFD21C] shadow-[0_0_8px_#FFD21C]" />
+              <span className="text-[#FFD21C] font-bold tracking-widest uppercase">
+                START A PROJECT
               </span>
             </div>
 
@@ -151,89 +109,157 @@ export default function LeadCaptureForm() {
               <span className="text-[#FFD21C]">Digital Presence.</span>
             </h2>
 
-            <p className="text-base text-[#A1A1AA] font-sans leading-relaxed mb-8">
-              Tell us about your business and what you want to achieve. Our team will help you identify the right content and social media approach.
+            <p className="text-sm sm:text-base text-[#A1A1AA] font-sans leading-relaxed mb-8 max-w-md">
+              Have an upcoming project or looking for a long-term content partner? Reach out directly via WhatsApp, email, or send your project brief below.
             </p>
 
-            <div className="space-y-4 mb-8">
-              <div className="flex items-center gap-3 text-sm text-[#CCCCCC]">
-                <Clock className="text-[#FFD21C] shrink-0" size={18} />
-                <span>Reviewed directly by our strategy desk within 24 business hours.</span>
-              </div>
-              <div className="flex items-center gap-3 text-sm text-[#CCCCCC]">
-                <Shield className="text-[#FFD21C] shrink-0" size={18} />
-                <span>NDA &amp; confidentiality protected. We never spam.</span>
-              </div>
-            </div>
-
-            <div className="p-6 rounded-2xl bg-[#141414] border border-[#222222] space-y-3 font-mono text-xs">
-              <div className="flex items-center justify-between text-white">
-                <span className="flex items-center gap-2">
-                  <Phone size={15} className="text-[#FFD21C]" /> Studio WhatsApp / Line:
-                </span>
-                <span className="font-bold">+91 85305 41815</span>
-              </div>
-              <div className="flex items-center justify-between text-white">
-                <span className="flex items-center gap-2">
-                  <Mail size={15} className="text-[#FFD21C]" /> Direct Email:
-                </span>
-                <span className="font-bold text-[#A1A1AA]">mr.rohit8530@gmail.com</span>
-              </div>
-              <div className="pt-3 border-t border-[#222222]">
+            {/* Direct Studio Contacts */}
+            <div className="space-y-3 font-mono text-xs">
+              {whatsAppDirectLink && (
                 <a
                   href={whatsAppDirectLink}
                   target="_blank"
                   rel="noreferrer"
-                  className="button button-outline w-full py-2.5 text-xs font-mono font-bold uppercase tracking-wider inline-flex items-center justify-center gap-2 text-[#25D366] hover:border-[#25D366]"
+                  className="p-4 rounded-xl bg-[#121212] border border-[#222222] hover:border-[#FFD21C] transition-colors flex items-center justify-between text-white group"
                 >
-                  <MessageCircle size={15} /> Chat on WhatsApp Directly
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-lg bg-[#FFD21C]/10 text-[#FFD21C] flex items-center justify-center">
+                      <MessageCircle size={18} />
+                    </div>
+                    <div>
+                      <span className="block text-[10px] text-[#71717A] uppercase font-bold">
+                        WhatsApp Direct
+                      </span>
+                      <span className="font-bold text-white group-hover:text-[#FFD21C] transition-colors">
+                        +91 85305 41815
+                      </span>
+                    </div>
+                  </div>
+                  <span className="px-2 py-0.5 rounded bg-[#FFD21C]/10 text-[#FFD21C] border border-[#FFD21C]/20 text-[10px] font-bold">
+                    FAST CHAT
+                  </span>
                 </a>
+              )}
+
+              <a
+                href={`mailto:${contactConfig.email || "mr.rohit8530@gmail.com"}`}
+                className="p-4 rounded-xl bg-[#121212] border border-[#222222] hover:border-[#FFD21C] transition-colors flex items-center justify-between text-white group"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-lg bg-[#FFD21C]/10 text-[#FFD21C] flex items-center justify-center">
+                    <Mail size={18} />
+                  </div>
+                  <div>
+                    <span className="block text-[10px] text-[#71717A] uppercase font-bold">
+                      Studio Email
+                    </span>
+                    <span className="font-bold text-white group-hover:text-[#FFD21C] transition-colors">
+                      {contactConfig.email || "mr.rohit8530@gmail.com"}
+                    </span>
+                  </div>
+                </div>
+                <ArrowUpRight size={15} className="text-[#71717A] group-hover:text-white" />
+              </a>
+
+              <a
+                href="tel:+918530541815"
+                className="p-4 rounded-xl bg-[#121212] border border-[#222222] hover:border-[#FFD21C] transition-colors flex items-center justify-between text-white group"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-lg bg-white/5 text-white flex items-center justify-center">
+                    <Phone size={18} />
+                  </div>
+                  <div>
+                    <span className="block text-[10px] text-[#71717A] uppercase font-bold">
+                      Studio Desk
+                    </span>
+                    <span className="font-bold text-white group-hover:text-[#FFD21C] transition-colors">
+                      +91 85305 41815
+                    </span>
+                  </div>
+                </div>
+                <ArrowUpRight size={15} className="text-[#71717A] group-hover:text-white" />
+              </a>
+
+              <div className="p-4 rounded-xl bg-[#121212] border border-[#222222] flex items-center gap-3 text-white">
+                <div className="w-9 h-9 rounded-lg bg-white/5 text-[#FFD21C] flex items-center justify-center shrink-0">
+                  <MapPin size={18} />
+                </div>
+                <div>
+                  <span className="block text-[10px] text-[#71717A] uppercase font-bold">
+                    Studio Location
+                  </span>
+                  <span className="font-bold text-[#A1A1AA]">Pune, Maharashtra, India</span>
+                </div>
               </div>
             </div>
+
+            <p className="text-xs text-[#71717A] mt-6 font-mono">
+              ⚡ Every project brief is reviewed directly by our lead strategy desk within 24 hours.
+            </p>
           </div>
 
-          {/* Right Column: Complete Project Enquiry Form */}
+          {/* Right Column: Clean, Streamlined Lead Form */}
           <div className="lg:col-span-7">
             {success ? (
-              <div className="p-8 sm:p-12 rounded-3xl bg-[#141414] border-2 border-[#FFD21C]/50 shadow-2xl text-center animate-fade-in">
-                <div className="w-16 h-16 rounded-full bg-[#FFD21C]/20 text-[#FFD21C] flex items-center justify-center mx-auto mb-5 shadow-sm">
+              <div className="p-8 sm:p-12 rounded-2xl bg-[#121212] border border-[#FFD21C]/40 shadow-2xl text-center">
+                <div className="w-16 h-16 rounded-full bg-[#FFD21C]/15 border border-[#FFD21C]/30 text-[#FFD21C] flex items-center justify-center mx-auto mb-5 shadow-[0_0_20px_rgba(255,210,28,0.2)]">
                   <CheckCircle2 size={36} />
                 </div>
-                <h3 className="text-2xl sm:text-3xl font-black text-white font-display mb-2">
-                  Enquiry Received, {fullName || "Partner"}!
+                <h3 className="text-2xl sm:text-3xl font-black text-white tracking-tight mb-2 font-display">
+                  Project Brief Received!
                 </h3>
-                <p className="text-sm text-[#A1A1AA] max-w-md mx-auto mb-6 leading-relaxed font-sans">
-                  Thank you for sharing your project parameters. Our team is reviewing your requirements and will reach out promptly via WhatsApp or email.
+                <p className="text-sm text-[#A1A1AA] max-w-md mx-auto mb-8 leading-relaxed font-sans">
+                  Thank you, <strong className="text-white">{fullName || "Partner"}</strong>. Our strategy desk is reviewing your requirements and will reach out promptly via WhatsApp or email.
                 </p>
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-                  <a
-                    href={whatsAppDirectLink}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="button button-gold inline-flex items-center gap-2 font-mono text-xs uppercase font-bold"
-                  >
-                    <MessageCircle size={15} /> Open Instant WhatsApp
-                  </a>
+                  {whatsAppDirectLink && (
+                    <a
+                      href={whatsAppDirectLink}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="button button-gold inline-flex items-center gap-2 font-mono text-xs uppercase font-bold"
+                    >
+                      <MessageCircle size={15} /> Instant WhatsApp Follow-up
+                    </a>
+                  )}
                   <button
                     type="button"
-                    onClick={() => setSuccess(false)}
+                    onClick={() => {
+                      setSuccess(false);
+                      setFullName("");
+                      setBrandName("");
+                      setPhone("");
+                      setEmail("");
+                      setMessage("");
+                      setFeedback("");
+                    }}
                     className="button button-outline font-mono text-xs uppercase font-bold"
                   >
-                    Submit Another Enquiry
+                    Submit Another Brief
                   </button>
                 </div>
               </div>
             ) : (
               <form
                 onSubmit={handleSubmit}
-                className="p-8 sm:p-10 rounded-3xl bg-[#141414]/95 backdrop-blur-md border border-[#2A2A2A] shadow-2xl space-y-6"
+                className="p-7 sm:p-10 rounded-2xl bg-[#121212] border border-[#222222] shadow-[0_12px_40px_rgba(0,0,0,0.6)] space-y-5"
               >
+                <div className="mb-4 pb-4 border-b border-[#1E1E1E]">
+                  <h3 className="text-2xl font-black text-white tracking-tight font-display m-0">
+                    Project Brief
+                  </h3>
+                  <p className="text-xs text-[#A1A1AA] mt-1 m-0 font-sans">
+                    Share your requirements and we will prepare a tailored content proposal.
+                  </p>
+                </div>
+
                 {/* Name & Brand */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-mono font-bold uppercase tracking-wider text-white/80 mb-1.5">
-                      Full Name <span className="text-[#FFD21C]">*</span>
+                    <label className="block text-xs font-mono font-bold uppercase tracking-wider text-[#D4D4D8] mb-1.5">
+                      Your Name <span className="text-[#FFD21C]">*</span>
                     </label>
                     <input
                       type="text"
@@ -241,30 +267,29 @@ export default function LeadCaptureForm() {
                       placeholder="e.g. Rahul Sharma"
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
-                      className="w-full bg-[#181818] border border-[#2E2E2E] focus:border-[#FFD21C] rounded-xl px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none transition-colors font-sans"
+                      className="w-full bg-[#181818] border border-[#282828] focus:border-[#FFD21C] focus:ring-1 focus:ring-[#FFD21C]/25 rounded-lg px-4 py-3 text-sm text-white placeholder-[#71717A] focus:outline-none transition-all font-sans"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-mono font-bold uppercase tracking-wider text-white/80 mb-1.5">
-                      Business / Brand Name <span className="text-[#FFD21C]">*</span>
+                    <label className="block text-xs font-mono font-bold uppercase tracking-wider text-[#D4D4D8] mb-1.5">
+                      Brand / Company
                     </label>
                     <input
                       type="text"
-                      required
-                      placeholder="e.g. Apex Health Clinic"
+                      placeholder="e.g. Apex Media or Creator Handle"
                       value={brandName}
                       onChange={(e) => setBrandName(e.target.value)}
-                      className="w-full bg-[#181818] border border-[#2E2E2E] focus:border-[#FFD21C] rounded-xl px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none transition-colors font-sans"
+                      className="w-full bg-[#181818] border border-[#282828] focus:border-[#FFD21C] focus:ring-1 focus:ring-[#FFD21C]/25 rounded-lg px-4 py-3 text-sm text-white placeholder-[#71717A] focus:outline-none transition-all font-sans"
                     />
                   </div>
                 </div>
 
-                {/* Phone & Email */}
+                {/* WhatsApp & Email */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-mono font-bold uppercase tracking-wider text-white/80 mb-1.5">
-                      Phone Number (WhatsApp) <span className="text-[#FFD21C]">*</span>
+                    <label className="block text-xs font-mono font-bold uppercase tracking-wider text-[#D4D4D8] mb-1.5">
+                      WhatsApp / Phone <span className="text-[#FFD21C]">*</span>
                     </label>
                     <input
                       type="tel"
@@ -272,12 +297,12 @@ export default function LeadCaptureForm() {
                       placeholder="+91 85305 41815"
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
-                      className="w-full bg-[#181818] border border-[#2E2E2E] focus:border-[#FFD21C] rounded-xl px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none transition-colors font-mono"
+                      className="w-full bg-[#181818] border border-[#282828] focus:border-[#FFD21C] focus:ring-1 focus:ring-[#FFD21C]/25 rounded-lg px-4 py-3 text-sm text-white placeholder-[#71717A] focus:outline-none transition-all font-mono"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-mono font-bold uppercase tracking-wider text-white/80 mb-1.5">
+                    <label className="block text-xs font-mono font-bold uppercase tracking-wider text-[#D4D4D8] mb-1.5">
                       Email Address
                     </label>
                     <input
@@ -285,144 +310,63 @@ export default function LeadCaptureForm() {
                       placeholder="rahul@company.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="w-full bg-[#181818] border border-[#2E2E2E] focus:border-[#FFD21C] rounded-xl px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none transition-colors font-mono"
+                      className="w-full bg-[#181818] border border-[#282828] focus:border-[#FFD21C] focus:ring-1 focus:ring-[#FFD21C]/25 rounded-lg px-4 py-3 text-sm text-white placeholder-[#71717A] focus:outline-none transition-all font-mono"
                     />
                   </div>
                 </div>
 
-                {/* Social URL & Industry */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-mono font-bold uppercase tracking-wider text-white/80 mb-1.5">
-                      Instagram / Website URL
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="instagram.com/yourhandle or website"
-                      value={socialUrl}
-                      onChange={(e) => setSocialUrl(e.target.value)}
-                      className="w-full bg-[#181818] border border-[#2E2E2E] focus:border-[#FFD21C] rounded-xl px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none transition-colors font-sans"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-mono font-bold uppercase tracking-wider text-white/80 mb-1.5">
-                      Business Industry
-                    </label>
-                    <select
-                      value={industry}
-                      onChange={(e) => setIndustry(e.target.value)}
-                      className="w-full bg-[#181818] border border-[#2E2E2E] focus:border-[#FFD21C] rounded-xl px-4 py-3 text-sm text-white focus:outline-none transition-colors font-sans"
-                    >
-                      {INDUSTRIES_LIST.map((ind) => (
-                        <option key={ind} value={ind} className="bg-[#181818] text-white">
-                          {ind}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                {/* Services Required Checkboxes */}
+                {/* Service Dropdown */}
                 <div>
-                  <label className="block text-xs font-mono font-bold uppercase tracking-wider text-white/80 mb-2">
-                    Services Required (Select all that apply) <span className="text-[#FFD21C]">*</span>
+                  <label className="block text-xs font-mono font-bold uppercase tracking-wider text-[#D4D4D8] mb-1.5">
+                    Service Required
                   </label>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    {SERVICE_OPTIONS.map((srv) => {
-                      const isChecked = selectedServices.includes(srv);
-                      return (
-                        <button
-                          key={srv}
-                          type="button"
-                          onClick={() => toggleService(srv)}
-                          className={`p-2.5 rounded-xl border text-left text-xs font-mono flex items-center gap-2 transition-all cursor-pointer ${
-                            isChecked
-                              ? "bg-[#FFD21C]/15 border-[#FFD21C] text-[#FFD21C] font-bold"
-                              : "bg-[#181818] border-[#2A2A2A] text-[#A1A1AA] hover:text-white hover:border-[#444]"
-                          }`}
-                        >
-                          <span
-                            className={`w-3.5 h-3.5 rounded border flex items-center justify-center shrink-0 ${
-                              isChecked
-                                ? "bg-[#FFD21C] border-[#FFD21C] text-[#0A0A0A]"
-                                : "border-white/20"
-                            }`}
-                          >
-                            {isChecked && "✓"}
-                          </span>
-                          <span className="truncate">{srv}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
+                  <select
+                    value={service}
+                    onChange={(e) => setService(e.target.value)}
+                    className="w-full bg-[#181818] border border-[#282828] focus:border-[#FFD21C] focus:ring-1 focus:ring-[#FFD21C]/25 rounded-lg px-4 py-3 text-sm text-white focus:outline-none transition-all font-sans cursor-pointer"
+                  >
+                    {SERVICE_OPTIONS.map((srv) => (
+                      <option key={srv} value={srv} className="bg-[#181818] text-white">
+                        {srv}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
-                {/* Monthly Volume & Budget */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-mono font-bold uppercase tracking-wider text-white/80 mb-1.5">
-                      Monthly Content Requirements
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="e.g. 15 Reels + 4 Carousels / mo"
-                      value={monthlyRequirements}
-                      onChange={(e) => setMonthlyRequirements(e.target.value)}
-                      className="w-full bg-[#181818] border border-[#2E2E2E] focus:border-[#FFD21C] rounded-xl px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none transition-colors font-sans"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-mono font-bold uppercase tracking-wider text-white/80 mb-1.5">
-                      Estimated Monthly Budget
-                    </label>
-                    <select
-                      value={budget}
-                      onChange={(e) => setBudget(e.target.value)}
-                      className="w-full bg-[#181818] border border-[#2E2E2E] focus:border-[#FFD21C] rounded-xl px-4 py-3 text-sm text-white focus:outline-none transition-colors font-sans"
-                    >
-                      {BUDGET_OPTIONS.map((bg) => (
-                        <option key={bg} value={bg} className="bg-[#181818] text-white">
-                          {bg}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                {/* Project Details */}
+                {/* Project Brief */}
                 <div>
-                  <label className="block text-xs font-mono font-bold uppercase tracking-wider text-white/80 mb-1.5">
-                    Project Details &amp; Business Goals
+                  <label className="block text-xs font-mono font-bold uppercase tracking-wider text-[#D4D4D8] mb-1.5">
+                    Project Brief &amp; Goals
                   </label>
                   <textarea
-                    rows={3}
-                    placeholder="Describe your current social media status, specific goals, target audience, or raw footage availability..."
-                    value={details}
-                    onChange={(e) => setDetails(e.target.value)}
-                    className="w-full bg-[#181818] border border-[#2E2E2E] focus:border-[#FFD21C] rounded-xl px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none transition-colors font-sans"
+                    rows={4}
+                    placeholder="Tell us about your brand goals, target timeline, or content requirements..."
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    className="w-full bg-[#181818] border border-[#282828] focus:border-[#FFD21C] focus:ring-1 focus:ring-[#FFD21C]/25 rounded-lg px-4 py-3 text-sm text-white placeholder-[#71717A] focus:outline-none transition-all font-sans"
                   />
                 </div>
-
-                {feedback && (
-                  <p className="text-xs font-mono text-[#FFD21C] m-0">{feedback}</p>
-                )}
 
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="button button-gold w-full py-4 text-xs font-mono font-bold uppercase tracking-wider cursor-pointer shadow-[0_0_25px_rgba(255,210,28,0.35)] disabled:opacity-50"
+                  className="button button-gold w-full py-4 text-xs font-mono font-bold uppercase tracking-wider cursor-pointer shadow-[0_4px_20px_rgba(255,210,28,0.25)] hover:shadow-[0_6px_28px_rgba(255,210,28,0.4)] disabled:opacity-50 transition-all"
                 >
                   {submitting ? (
-                    "Connecting to Studio..."
+                    "Sending Project Brief..."
                   ) : (
                     <span className="flex items-center justify-center gap-2">
-                      <span>Discuss My Project</span>
+                      <span>Send Project Brief</span>
                       <Send size={15} />
                     </span>
                   )}
                 </button>
+
+                {feedback && (
+                  <p className="text-xs text-center text-[#FFD21C] m-0 font-mono mt-2" role="status">
+                    {feedback}
+                  </p>
+                )}
               </form>
             )}
           </div>

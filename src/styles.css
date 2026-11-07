@@ -175,7 +175,7 @@ button {
 
 ::selection {
   background-color: var(--color-coral);
-  color: #FFFFFF;
+  color: #0A0A0A;
 }
 
 :focus-visible {
@@ -655,7 +655,7 @@ p {
   bottom: 0.65rem;
   left: 0.65rem;
   right: 0.65rem;
-  background: rgba(25, 22, 43, 0.85);
+  background: rgba(10, 10, 10, 0.85);
   backdrop-filter: blur(8px);
   color: #FFFFFF;
   padding: 0.35rem 0.65rem;
@@ -773,8 +773,8 @@ p {
 
 .project-card:hover {
   transform: translateY(-5px);
-  border-color: rgba(99, 91, 255, 0.35);
-  box-shadow: 0 20px 45px -10px rgba(18, 16, 30, 0.12), 0 0 0 1px rgba(99, 91, 255, 0.15);
+  border-color: rgba(255, 210, 28, 0.45);
+  box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 210, 28, 0.2);
 }
 
 .project-link {
@@ -846,7 +846,7 @@ p {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: rgba(25, 22, 43, 0.85);
+  background: rgba(10, 10, 10, 0.85);
   color: #FFFFFF;
   display: flex;
   align-items: center;
@@ -950,8 +950,8 @@ p {
 
 .vip-service-card:hover {
   transform: translateY(-5px);
-  border-color: var(--color-periwinkle);
-  box-shadow: 0 20px 45px -10px rgba(99, 91, 255, 0.16), 0 0 0 1px rgba(99, 91, 255, 0.2);
+  border-color: var(--color-yellow);
+  box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 210, 28, 0.2);
 }
 
 .vip-service-card-top {
@@ -1580,7 +1580,8 @@ p {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: rgba(25, 22, 43, 0.9);
+  background: rgba(10, 10, 10, 0.9);
+  border: 1px solid rgba(255, 210, 28, 0.3);
   backdrop-filter: blur(8px);
   color: #FFFFFF;
   padding: 0.85rem 1.6rem;
@@ -1836,8 +1837,9 @@ p {
 .studio-brief-form select:focus,
 .studio-brief-form textarea:focus {
   outline: none;
-  border-color: var(--color-coral);
-  background: #FFFFFF;
+  border-color: var(--color-yellow);
+  background: var(--bg-surface);
+  box-shadow: 0 0 0 2px rgba(255, 210, 28, 0.2);
 }
 
 .studio-trap-field {
@@ -2036,10 +2038,10 @@ p {
 }
 
 .studio-admin-project.is-active {
-  border-color: var(--color-coral);
+  border-color: var(--color-yellow);
   border-left-width: 4px;
-  background: #FFF8F6;
-  box-shadow: 0 4px 14px rgba(255, 77, 45, 0.1);
+  background: rgba(255, 210, 28, 0.08);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
 }
 
 .studio-admin-project span {
@@ -2110,8 +2112,8 @@ p {
 .studio-admin-form select:focus,
 .studio-admin-form textarea:focus {
   outline: none;
-  border-color: var(--color-periwinkle);
-  box-shadow: 0 0 0 3px rgba(99, 91, 255, 0.12);
+  border-color: var(--color-yellow);
+  box-shadow: 0 0 0 3px rgba(255, 210, 28, 0.15);
 }
 
 .studio-admin-checks {
@@ -2142,8 +2144,8 @@ p {
 }
 
 .studio-admin-upload:hover {
-  border-color: var(--color-coral);
-  background: #FFF8F6;
+  border-color: var(--color-yellow);
+  background: rgba(255, 210, 28, 0.05);
 }
 
 .studio-admin-upload span {
@@ -2172,9 +2174,9 @@ p {
 .studio-admin-feedback {
   padding: 0.85rem 1.25rem;
   border-radius: var(--radius-sm);
-  background: #EEF2FF;
-  border: 1px solid #C7D2FE;
-  color: #3730A3;
+  background: rgba(255, 210, 28, 0.1);
+  border: 1px solid rgba(255, 210, 28, 0.3);
+  color: #FFD21C;
   font-size: 0.9rem;
   font-family: var(--font-display);
   margin-block: 1.25rem;
@@ -2206,9 +2208,9 @@ p {
   align-items: center;
   padding: 0.75rem 1.4rem;
   border-radius: var(--radius-pill);
-  border: 1px solid #FFCCC7;
-  background: #FFF1F0;
-  color: #CF1322;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.1);
+  color: #F87171;
   font-family: var(--font-display);
   font-size: 0.85rem;
   font-weight: 600;
@@ -2218,7 +2220,8 @@ p {
 }
 
 .studio-admin-delete:hover {
-  background: #FF4D4F;
+  background: #DC2626;
+  border-color: #DC2626;
   color: #FFFFFF;
 }
 
@@ -2395,10 +2398,10 @@ p {
 
 .studio-content-error {
   padding: 2rem;
-  background: #FFF1F0;
-  border: 1px solid #FFCCC7;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
   border-radius: var(--radius-md);
-  color: #CF1322;
+  color: #F87171;
   font-size: 0.95rem;
   margin-block: 2rem;
 }
