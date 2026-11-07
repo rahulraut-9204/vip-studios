@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { trackEvent } from "../data/analytics.js";
 import { getProjectBySlug } from "../data/projects.js";
@@ -10,36 +10,39 @@ import WhatsAppButton from "./WhatsAppButton.jsx";
 import MobilePersistentCTA from "./MobilePersistentCTA.jsx";
 import ScrollProgressBar from "./ScrollProgressBar.jsx";
 import CustomCursor from "./CustomCursor.jsx";
-import ExitIntentModal from "./ExitIntentModal.jsx";
-import CalendlyModal from "./CalendlyModal.jsx";
 
 const siteOrigin = "https://vip-studios.pages.dev";
 
 const pageMetadata = {
   "/": {
-    title: "VIP StudioS | Complete Content, Social Media & Digital Growth Partner",
+    title: "VIP StudioS | Social Media Management & Creative Content Agency in Pune",
     description:
-      "We turn content into customers. Commercial video production, high-retention video editing, viral reels, podcasts, and full-funnel digital growth.",
+      "VIP StudioS helps businesses, brands, professionals, and creators build their digital presence through social media management, strategic content creation, and professional video production.",
   },
   "/services": {
-    title: "Services & Solutions | VIP StudioS",
+    title: "Social Media & Video Services | VIP StudioS Pune",
     description:
-      "High-retention editing, commercial brand films, viral reels, visual podcasts, and complete omnichannel growth suites.",
+      "Complete social media management, Reels creation, video shooting & editing, YouTube management, and creative design in Pune, India.",
   },
   "/work": {
-    title: "Selected Work & Portfolio | VIP StudioS",
+    title: "Our Work & Portfolio | VIP StudioS",
     description:
-      "Explore commercial brand films, high-retention vertical reels, podcasts, and digital campaigns crafted by VIP StudioS.",
+      "Browse actual client work across social media management, Instagram Reels, YouTube videos, and brand campaigns.",
   },
   "/about": {
-    title: "About the Studio | VIP StudioS",
+    title: "About VIP StudioS | Social Media & Creative Agency",
     description:
-      "Meet VIP StudioS: a creative video editing and digital growth partner turning content into revenue.",
+      "Learn about VIP StudioS: our team, creative philosophy, and 6+ years of social media and video production experience in Pune.",
+  },
+  "/process": {
+    title: "Our Content Process | VIP StudioS",
+    description:
+      "From strategy to publishing: explore our 6-step content pipeline for social media management and brand growth.",
   },
   "/contact": {
-    title: "Start a Project | VIP StudioS",
+    title: "Start Your Project | VIP StudioS",
     description:
-      "Book a free strategy call or submit your project brief directly to the VIP StudioS team.",
+      "Discuss your social media management, content creation, or video production requirements with the VIP StudioS team in Pune.",
   },
 };
 
@@ -48,7 +51,7 @@ function applyRouteMetadata(pathname, project, service, pendingProject = false) 
   const metadata = pendingProject
     ? {
         title: "Selected Project — VIP StudioS",
-        description: "Explore selected video and content work from VIP StudioS.",
+        description: "Explore selected social media and content work from VIP StudioS.",
       }
     : project
     ? {
@@ -174,16 +177,6 @@ function ConversionEvents() {
 }
 
 export default function SiteShell() {
-  const [calendlyOpen, setCalendlyOpen] = useState(false);
-
-  useEffect(() => {
-    function onOpenCalendly() {
-      setCalendlyOpen(true);
-    }
-    window.addEventListener("open-calendly", onOpenCalendly);
-    return () => window.removeEventListener("open-calendly", onOpenCalendly);
-  }, []);
-
   return (
     <>
       <ScrollProgressBar />
@@ -191,17 +184,15 @@ export default function SiteShell() {
       <a className="skip-link" href="#main-content">
         Skip to content
       </a>
-      <SiteHeader onOpenCalendly={() => setCalendlyOpen(true)} />
+      <SiteHeader />
       <RouteMetadata />
       <ConversionEvents />
       <main id="main-content" tabIndex="-1">
-        <Outlet context={{ openCalendly: () => setCalendlyOpen(true) }} />
+        <Outlet />
       </main>
       <WhatsAppButton />
       <MobilePersistentCTA />
       <SiteFooter />
-      <ExitIntentModal />
-      <CalendlyModal isOpen={calendlyOpen} onClose={() => setCalendlyOpen(false)} />
     </>
   );
 }

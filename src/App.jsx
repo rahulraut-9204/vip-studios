@@ -7,6 +7,7 @@ const AdminPage = lazy(() => import("./pages/AdminPage.jsx"));
 const ContactPage = lazy(() => import("./pages/ContactPage.jsx"));
 const HomePage = lazy(() => import("./pages/HomePage.jsx"));
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage.jsx"));
+const ProcessPage = lazy(() => import("./pages/ProcessPage.jsx"));
 const ProjectPage = lazy(() => import("./pages/ProjectPage.jsx"));
 const ServicesPage = lazy(() => import("./pages/ServicesPage.jsx"));
 const ServiceDetailPage = lazy(() => import("./pages/ServiceDetailPage.jsx"));
@@ -39,11 +40,11 @@ class RouteErrorBoundary extends React.Component {
 
     return (
       <main className="route-error page-gutter" style={{ padding: "6rem var(--page-pad)", textAlign: "center", maxWidth: "600px", marginInline: "auto" }}>
-        <p className="studio-location">VIP STUDIOS · CONNECTION NOTICE</p>
+        <p className="studio-location font-mono text-xs text-[#FFD21C] font-bold">VIP STUDIOS · CONNECTION NOTICE</p>
         <h1 style={{ fontSize: "2.5rem", marginBottom: "1rem" }}>
-          That frame<br /><span style={{ color: "var(--color-coral)" }}>didn&apos;t load.</span>
+          That frame<br /><span style={{ color: "#FFD21C" }}>didn&apos;t load.</span>
         </h1>
-        <p style={{ color: "var(--text-secondary)", marginBottom: "2rem" }}>
+        <p style={{ color: "#A1A1AA", marginBottom: "2rem" }}>
           The page could not be loaded. Please refresh your browser or return to the project library.
         </p>
         <div style={{ display: "flex", gap: "1rem", justifyContent: "center" }}>
@@ -73,6 +74,7 @@ export default function App() {
             <Route path="work" element={<WorkPage />} />
             <Route path="work/:slug" element={<ProjectPage />} />
             <Route path="about" element={<AboutPage />} />
+            <Route path="process" element={<ProcessPage />} />
             <Route path="contact" element={<ContactPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>

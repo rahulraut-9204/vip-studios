@@ -1,133 +1,135 @@
-import { ArrowUpRight, CheckCircle2, Mail, MessageCircle, Phone, Send } from "lucide-react";
+import { ArrowUpRight, CheckCircle2, Mail, MessageCircle, Phone, Send, Clock, Shield } from "lucide-react";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { trackEvent } from "../data/analytics.js";
 import { contactConfig, getWhatsAppHref } from "../data/contact.js";
 import { isSupabaseConfigured, supabase } from "../lib/supabase.js";
 
-function createEmailBody(data) {
-  return [
-    `Name: ${data.name}`,
-    `Brand / Company: ${data.company || "Not provided"}`,
-    `Email: ${data.email || "Not provided"}`,
-    `WhatsApp / Phone: ${data.phone || "Not provided"}`,
-    "",
-    "Project Brief & Requirements:",
-    data.requirements || "Not provided",
-  ].join("\n");
-}
+const INDUSTRIES_LIST = [
+  "Healthcare & Clinics",
+  "Finance & Financial Education",
+  "Education & Coaching",
+  "Personal Brand / Creator / Coach",
+  "Food, Dining & Lifestyle",
+  "Real Estate & Construction",
+  "Retail & E-commerce",
+  "Corporate & Enterprise",
+  "Astrology & Professional Services",
+  "Other Industry",
+];
+
+const SERVICE_OPTIONS = [
+  "Complete Social Media Management",
+  "Instagram Management",
+  "Facebook Management",
+  "Reels & Video Editing",
+  "Content Creation",
+  "Video Shooting",
+  "Podcast Production",
+  "YouTube Management",
+  "Creative Design",
+  "Monthly Content Package",
+  "Other",
+];
+
+const BUDGET_OPTIONS = [
+  "₹25,000 – ₹45,000 / month",
+  "₹45,000 – ₹80,000 / month (Standard SMM Retainer)",
+  "₹80,000 – ₹1,50,000 / month (Complete Production + SMM)",
+  "₹1,50,000+ / month (Enterprise & Multi-Platform)",
+  "Single Video Project / Commercial Shoot",
+  "Custom / Discussion Needed",
+];
 
 export default function ContactPage() {
   const [searchParams] = useSearchParams();
-  const requestedProject = searchParams.get("project") || "";
   const requestedService = searchParams.get("service") || "";
+
+  const [fullName, setFullName] = useState("");
+  const [brandName, setBrandName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [socialUrl, setSocialUrl] = useState("");
+  const [industry, setIndustry] = useState(INDUSTRIES_LIST[0]);
+  const [selectedServices, setSelectedServices] = useState([
+    requestedService || SERVICE_OPTIONS[0],
+  ]);
+  const [monthlyRequirements, setMonthlyRequirements] = useState("");
+  const [budget, setBudget] = useState(BUDGET_OPTIONS[1]);
+  const [details, setDetails] = useState("");
 
   const [status, setStatus] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [clientName, setClientName] = useState("");
 
   const whatsAppHref = getWhatsAppHref(
-    "Hi VIP StudioS, I want to discuss a new video production or digital growth project."
+    "Hi VIP StudioS, I'm interested in social media management and content creation for my business."
   );
+
+  function toggleService(service) {
+    if (selectedServices.includes(service)) {
+      if (selectedServices.length === 1) return;
+      setSelectedServices(selectedServices.filter((s) => s !== service));
+    } else {
+      setSelectedServices([...selectedServices, service]);
+    }
+  }
 
   async function handleSubmit(event) {
     event.preventDefault();
     if (isSubmitting) return;
     setStatus("");
 
-    const form = event.currentTarget;
-    const fields = new FormData(form);
-    if (String(fields.get("websiteTrap") || "").trim()) return;
-
-    if (!form.reportValidity()) {
-      setStatus("Please fill in the required fields highlighted above.");
+    if (!phone && !email) {
+      setStatus("Please provide at least a phone/WhatsApp number or email.");
       return;
     }
 
-    const name = String(fields.get("name") || "").trim();
-    const company = String(fields.get("company") || "").trim();
-    const email = String(fields.get("email") || "").trim();
-    const phone = String(fields.get("phone") || "").trim();
-    const requirements = String(fields.get("requirements") || "").trim();
+    setIsSubmitting(true);
 
-    setClientName(name);
+    const fullBrief = [
+      `[Brand: ${brandName || "Not specified"}]`,
+      `[Industry: ${industry}]`,
+      `[Instagram/Web: ${socialUrl || "None provided"}]`,
+      `[Services: ${selectedServices.join(", ")}]`,
+      `[Budget: ${budget}]`,
+      `[Monthly Volume: ${monthlyRequirements || "Flexible"}]`,
+      "",
+      "Project Details & Goals:",
+      details || "None provided",
+    ].join("\n");
 
-    const emailField = form.elements.namedItem("email");
-    const phoneField = form.elements.namedItem("phone");
-    if (!email && !phone) {
-      setStatus("Please provide at least one contact method (email or WhatsApp number).");
-      emailField?.setCustomValidity("Provide email or phone number.");
-      phoneField?.setCustomValidity("Provide email or phone number.");
-      emailField?.reportValidity();
-      return;
-    }
-    emailField?.setCustomValidity("");
-    phoneField?.setCustomValidity("");
-
-    const data = {
-      name,
-      company,
-      email,
-      phone,
-      requirements,
-    };
-
-    if (isSupabaseConfigured && supabase) {
-      setIsSubmitting(true);
-      setStatus("Sending to studio desk…");
-      try {
+    try {
+      if (isSupabaseConfigured && supabase) {
         const { error } = await supabase.from("enquiries").insert({
-          name: data.name,
-          company: data.company,
-          email: data.email,
-          phone: data.phone,
-          requirements: data.requirements,
-          source: "website",
+          name: fullName || "Prospective Client",
+          company: brandName,
+          phone,
+          email: email || null,
+          service: selectedServices.join(", "),
+          deadline: budget,
+          requirements: fullBrief,
+          status: "new",
+          source: "contact_page",
         });
 
-        if (error) {
-          openEmailFallback(data);
-          return;
-        }
-
-        trackEvent("project_brief_submitted", { client: data.name });
-        setIsSuccess(true);
-        setStatus("Your message has been sent successfully!");
-      } catch {
-        openEmailFallback(data);
-      } finally {
-        setIsSubmitting(false);
+        if (error) throw error;
       }
-      return;
+
+      trackEvent("project_enquiry_submitted", { industry, source: "contact_page" });
+      setIsSuccess(true);
+      setStatus("Your project enquiry has been submitted!");
+    } catch {
+      // Fallback to WhatsApp direct link
+      const msg = encodeURIComponent(
+        `Hi VIP StudioS,\n\nName: ${fullName}\nBrand: ${brandName}\nPhone: ${phone}\nEmail: ${email}\nIndustry: ${industry}\nServices: ${selectedServices.join(", ")}\nBudget: ${budget}\nSocial Link: ${socialUrl}\n\nGoals: ${details}`
+      );
+      window.open(`https://wa.me/918530541815?text=${msg}`, "_blank");
+      setIsSuccess(true);
+    } finally {
+      setIsSubmitting(false);
     }
-
-    openEmailFallback(data);
   }
-
-  function openEmailFallback(data) {
-    const targetEmail = contactConfig.email || "mr.rohit8530@gmail.com";
-    const subject = `[Project Inquiry] ${data.name}${data.company ? ` (${data.company})` : ""}`;
-    const params = new URLSearchParams({
-      subject,
-      body: createEmailBody(data),
-    });
-    setStatus("Opening your email client with your message…");
-    trackEvent("project_brief_draft_opened", { client: data.name });
-    window.location.href = `mailto:${targetEmail}?${params.toString()}`;
-  }
-
-  function clearContactValidation(event) {
-    const form = event.currentTarget.form;
-    form.elements.namedItem("email")?.setCustomValidity("");
-    form.elements.namedItem("phone")?.setCustomValidity("");
-  }
-
-  const initialBrief = requestedProject
-    ? `Interested in style similar to: ${requestedProject}.`
-    : requestedService
-    ? `Interested in service: ${requestedService}.`
-    : "";
 
   return (
     <div className="min-h-screen bg-[#0A0A0A] text-white">
@@ -135,18 +137,32 @@ export default function ContactPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
           {/* Left Column: Direct Studio Channels & Info */}
           <div className="lg:col-span-5 studio-contact-copy">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#FFD21C] shadow-[0_0_8px_#FFD21C]" />
+              <span className="font-mono text-xs uppercase tracking-widest text-[#FFD21C] font-bold">
+                LET&apos;S WORK TOGETHER
+              </span>
+            </div>
+
             <h1 className="text-4xl sm:text-6xl font-black text-white tracking-tight leading-none mb-4 font-display">
-              Let&apos;s build
-              <br />
-              something
-              <br />
-              <span className="text-[#FFD21C]">exceptional.</span>
+              Let&apos;s Build Your Brand&apos;s <br />
+              <span className="text-[#FFD21C]">Digital Presence.</span>
             </h1>
 
             <p className="text-base text-[#A1A1AA] leading-relaxed mb-8 font-sans">
-              Have a new project, upcoming video shoot, or monthly content requirements?
-              Send us your details and brief, or reach out directly via WhatsApp or email.
+              Tell us about your business, current social channels, and target goals. Our team in Pune will help you identify the right content and social media approach.
             </p>
+
+            <div className="space-y-4 mb-8">
+              <div className="flex items-center gap-3 text-sm text-[#CCCCCC]">
+                <Clock className="text-[#FFD21C] shrink-0" size={18} />
+                <span>Reviewed directly by our strategy desk within 24 business hours.</span>
+              </div>
+              <div className="flex items-center gap-3 text-sm text-[#CCCCCC]">
+                <Shield className="text-[#FFD21C] shrink-0" size={18} />
+                <span>NDA &amp; confidentiality protected. We never spam.</span>
+              </div>
+            </div>
 
             <div className="flex flex-col gap-3 font-mono text-xs">
               <a
@@ -163,21 +179,19 @@ export default function ContactPage() {
                 <ArrowUpRight size={15} />
               </a>
 
-              {contactConfig.phoneNumber && (
-                <a
-                  className="p-4 rounded-xl bg-[#141414] border border-[#222222] hover:border-[#FFD21C] transition-colors flex items-center justify-between text-white"
-                  href={`tel:+${contactConfig.phoneNumber}`}
-                >
-                  <div className="flex items-center gap-3">
-                    <Phone className="text-[#FFD21C]" size={18} />
-                    <div>
-                      <span className="block text-[10px] text-[#71717A] uppercase">Phone</span>
-                      <span className="font-bold text-white">{contactConfig.phoneDisplay}</span>
-                    </div>
+              <a
+                className="p-4 rounded-xl bg-[#141414] border border-[#222222] hover:border-[#FFD21C] transition-colors flex items-center justify-between text-white"
+                href="tel:+918530541815"
+              >
+                <div className="flex items-center gap-3">
+                  <Phone className="text-[#FFD21C]" size={18} />
+                  <div>
+                    <span className="block text-[10px] text-[#71717A] uppercase">Phone Line</span>
+                    <span className="font-bold text-white">+91 85305 41815</span>
                   </div>
-                  <ArrowUpRight size={15} />
-                </a>
-              )}
+                </div>
+                <ArrowUpRight size={15} />
+              </a>
 
               {whatsAppHref && (
                 <a
@@ -190,7 +204,7 @@ export default function ContactPage() {
                     <MessageCircle className="text-[#25D366]" size={18} />
                     <div>
                       <span className="block text-[10px] text-[#71717A] uppercase">WhatsApp</span>
-                      <span className="font-bold text-white">+91 8530541815</span>
+                      <span className="font-bold text-white">+91 85305 41815</span>
                     </div>
                   </div>
                   <span className="px-2.5 py-1 rounded bg-[#25D366]/20 text-[#25D366] text-[10px] font-bold">
@@ -198,21 +212,25 @@ export default function ContactPage() {
                   </span>
                 </a>
               )}
+
+              <div className="p-4 rounded-xl bg-[#141414] border border-[#222222] text-xs font-mono text-[#71717A]">
+                Studio Location: Pune, Maharashtra, India.
+              </div>
             </div>
           </div>
 
-          {/* Right Column: Clean Project Form or Success Screen */}
+          {/* Right Column: Project Enquiry Form */}
           <div className="lg:col-span-7">
             {isSuccess ? (
-              <div className="p-8 sm:p-12 rounded-2xl bg-[#141414] border border-[#222222] shadow-2xl text-center">
+              <div className="p-8 sm:p-12 rounded-3xl bg-[#141414] border border-[#FFD21C]/50 shadow-2xl text-center">
                 <div className="w-16 h-16 rounded-full bg-[#FFD21C]/20 text-[#FFD21C] flex items-center justify-center mx-auto mb-5 shadow-sm">
                   <CheckCircle2 size={36} />
                 </div>
                 <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight mb-2 font-display">
-                  Message Sent, {clientName || "Partner"}!
+                  Enquiry Logged, {fullName || "Partner"}!
                 </h2>
                 <p className="text-base text-[#A1A1AA] max-w-md mx-auto mb-6 leading-relaxed font-sans">
-                  We have received your project details. Our team will review them and reach out to you shortly.
+                  We have received your project details. Our strategy team will review them and reach out to you within 24 hours.
                 </p>
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -223,7 +241,7 @@ export default function ContactPage() {
                       rel="noreferrer"
                       target="_blank"
                     >
-                      <MessageCircle size={16} /> Instant WhatsApp
+                      <MessageCircle size={16} /> Instant WhatsApp Follow-up
                     </a>
                   )}
                   <button
@@ -234,107 +252,197 @@ export default function ContactPage() {
                     }}
                     type="button"
                   >
-                    Send Another Message
+                    Submit Another Enquiry
                   </button>
                 </div>
               </div>
             ) : (
               <form
-                className="p-6 sm:p-10 rounded-2xl bg-[#141414] border border-[#222222] shadow-2xl flex flex-col gap-5"
-                noValidate
+                className="p-8 sm:p-10 rounded-3xl bg-[#141414] border border-[#2A2A2A] shadow-2xl space-y-6"
                 onSubmit={handleSubmit}
               >
                 <div>
-                  <h2 className="text-2xl sm:text-3xl font-black text-white m-0 font-display">Start a Project</h2>
+                  <h2 className="text-2xl sm:text-3xl font-black text-white m-0 font-display">Project Enquiry</h2>
                   <p className="text-xs text-[#A1A1AA] mt-1 m-0 font-sans">
-                    Fill in your details below and we will get back to you promptly.
+                    Share your requirements below and our team will prepare a tailored proposal.
                   </p>
                 </div>
 
-                {/* Name & Brand Name */}
+                {/* Name & Brand */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-mono font-bold uppercase tracking-wider text-white/80 mb-1.5">
-                      Name <span className="text-[#FFD21C]">*</span>
+                      Full Name <span className="text-[#FFD21C]">*</span>
                     </label>
                     <input
-                      autoComplete="name"
-                      className="w-full bg-[#181818] border border-[#2A2A2A] focus:border-[#FFD21C] rounded-lg px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none transition-colors font-sans"
-                      maxLength={100}
-                      name="name"
-                      placeholder="Your name"
+                      type="text"
                       required
+                      placeholder="e.g. Rahul Sharma"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      className="w-full bg-[#181818] border border-[#2E2E2E] focus:border-[#FFD21C] rounded-xl px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none transition-colors font-sans"
                     />
                   </div>
 
                   <div>
                     <label className="block text-xs font-mono font-bold uppercase tracking-wider text-white/80 mb-1.5">
-                      Brand Name
+                      Business / Brand Name <span className="text-[#FFD21C]">*</span>
                     </label>
                     <input
-                      autoComplete="organization"
-                      className="w-full bg-[#181818] border border-[#2A2A2A] focus:border-[#FFD21C] rounded-lg px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none transition-colors font-sans"
-                      maxLength={120}
-                      name="company"
-                      placeholder="Company or creator handle"
+                      type="text"
+                      required
+                      placeholder="e.g. Apex Health Clinic"
+                      value={brandName}
+                      onChange={(e) => setBrandName(e.target.value)}
+                      className="w-full bg-[#181818] border border-[#2E2E2E] focus:border-[#FFD21C] rounded-xl px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none transition-colors font-sans"
                     />
                   </div>
                 </div>
 
-                {/* Email & WhatsApp */}
+                {/* Phone & Email */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-mono font-bold uppercase tracking-wider text-white/80 mb-1.5">
-                      Email
+                      Phone Number (WhatsApp) <span className="text-[#FFD21C]">*</span>
                     </label>
                     <input
-                      autoComplete="email"
-                      className="w-full bg-[#181818] border border-[#2A2A2A] focus:border-[#FFD21C] rounded-lg px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none transition-colors font-mono"
-                      maxLength={254}
-                      name="email"
-                      onChange={clearContactValidation}
-                      placeholder="you@email.com"
-                      type="email"
+                      type="tel"
+                      required
+                      placeholder="+91 85305 41815"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      className="w-full bg-[#181818] border border-[#2E2E2E] focus:border-[#FFD21C] rounded-xl px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none transition-colors font-mono"
                     />
                   </div>
 
                   <div>
                     <label className="block text-xs font-mono font-bold uppercase tracking-wider text-white/80 mb-1.5">
-                      WhatsApp / Phone
+                      Email Address
                     </label>
                     <input
-                      autoComplete="tel"
-                      className="w-full bg-[#181818] border border-[#2A2A2A] focus:border-[#FFD21C] rounded-lg px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none transition-colors font-mono"
-                      maxLength={30}
-                      name="phone"
-                      onChange={clearContactValidation}
-                      placeholder="+91 85305 41815"
-                      type="tel"
+                      type="email"
+                      placeholder="rahul@company.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="w-full bg-[#181818] border border-[#2E2E2E] focus:border-[#FFD21C] rounded-xl px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none transition-colors font-mono"
                     />
                   </div>
                 </div>
 
-                {/* Project Brief */}
+                {/* Social URL & Industry */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-mono font-bold uppercase tracking-wider text-white/80 mb-1.5">
+                      Instagram / Website URL
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="instagram.com/yourhandle or website"
+                      value={socialUrl}
+                      onChange={(e) => setSocialUrl(e.target.value)}
+                      className="w-full bg-[#181818] border border-[#2E2E2E] focus:border-[#FFD21C] rounded-xl px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none transition-colors font-sans"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-mono font-bold uppercase tracking-wider text-white/80 mb-1.5">
+                      Business Industry
+                    </label>
+                    <select
+                      value={industry}
+                      onChange={(e) => setIndustry(e.target.value)}
+                      className="w-full bg-[#181818] border border-[#2E2E2E] focus:border-[#FFD21C] rounded-xl px-4 py-3 text-sm text-white focus:outline-none transition-colors font-sans"
+                    >
+                      {INDUSTRIES_LIST.map((ind) => (
+                        <option key={ind} value={ind} className="bg-[#181818] text-white">
+                          {ind}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                {/* Services Required Checkboxes */}
+                <div>
+                  <label className="block text-xs font-mono font-bold uppercase tracking-wider text-white/80 mb-2">
+                    Services Required (Select all that apply) <span className="text-[#FFD21C]">*</span>
+                  </label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {SERVICE_OPTIONS.map((srv) => {
+                      const isChecked = selectedServices.includes(srv);
+                      return (
+                        <button
+                          key={srv}
+                          type="button"
+                          onClick={() => toggleService(srv)}
+                          className={`p-2.5 rounded-xl border text-left text-xs font-mono flex items-center gap-2 transition-all cursor-pointer ${
+                            isChecked
+                              ? "bg-[#FFD21C]/15 border-[#FFD21C] text-[#FFD21C] font-bold"
+                              : "bg-[#181818] border-[#2A2A2A] text-[#A1A1AA] hover:text-white hover:border-[#444]"
+                          }`}
+                        >
+                          <span
+                            className={`w-3.5 h-3.5 rounded border flex items-center justify-center shrink-0 ${
+                              isChecked
+                                ? "bg-[#FFD21C] border-[#FFD21C] text-[#0A0A0A]"
+                                : "border-white/20"
+                            }`}
+                          >
+                            {isChecked && "✓"}
+                          </span>
+                          <span className="truncate">{srv}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Monthly Volume & Budget */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-mono font-bold uppercase tracking-wider text-white/80 mb-1.5">
+                      Monthly Content Requirements
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g. 15 Reels + 4 Carousels / mo"
+                      value={monthlyRequirements}
+                      onChange={(e) => setMonthlyRequirements(e.target.value)}
+                      className="w-full bg-[#181818] border border-[#2E2E2E] focus:border-[#FFD21C] rounded-xl px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none transition-colors font-sans"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-mono font-bold uppercase tracking-wider text-white/80 mb-1.5">
+                      Estimated Monthly Budget
+                    </label>
+                    <select
+                      value={budget}
+                      onChange={(e) => setBudget(e.target.value)}
+                      className="w-full bg-[#181818] border border-[#2E2E2E] focus:border-[#FFD21C] rounded-xl px-4 py-3 text-sm text-white focus:outline-none transition-colors font-sans"
+                    >
+                      {BUDGET_OPTIONS.map((bg) => (
+                        <option key={bg} value={bg} className="bg-[#181818] text-white">
+                          {bg}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                {/* Details */}
                 <div>
                   <label className="block text-xs font-mono font-bold uppercase tracking-wider text-white/80 mb-1.5">
-                    Project Brief &amp; Details <span className="text-[#FFD21C]">*</span>
+                    Project Details &amp; Business Goals
                   </label>
                   <textarea
-                    className="w-full bg-[#181818] border border-[#2A2A2A] focus:border-[#FFD21C] rounded-lg px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none transition-colors font-sans"
-                    defaultValue={initialBrief}
-                    maxLength={3000}
-                    name="requirements"
-                    placeholder="Tell us about your project, goals, footage details, or turnaround requirements..."
-                    required
                     rows={4}
+                    placeholder="Tell us about your current social presence, target goals, and timeline..."
+                    value={details}
+                    onChange={(e) => setDetails(e.target.value)}
+                    className="w-full bg-[#181818] border border-[#2E2E2E] focus:border-[#FFD21C] rounded-xl px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none transition-colors font-sans"
                   />
                 </div>
-
-                {/* Anti-spam Honeypot */}
-                <label aria-hidden="true" className="hidden" tabIndex="-1">
-                  Website
-                  <input autoComplete="off" name="websiteTrap" tabIndex="-1" />
-                </label>
 
                 <button
                   className="button button-gold w-full py-4 text-xs font-mono font-bold uppercase tracking-wider cursor-pointer shadow-lg disabled:opacity-50"
@@ -342,18 +450,20 @@ export default function ContactPage() {
                   type="submit"
                 >
                   {isSubmitting ? (
-                    "Sending Message…"
+                    "Connecting to Studio..."
                   ) : (
                     <span className="flex items-center justify-center gap-2">
-                      <span>Send Message</span>
+                      <span>Discuss My Project</span>
                       <Send size={15} />
                     </span>
                   )}
                 </button>
 
-                <p aria-live="polite" className="text-xs text-center text-[#71717A] m-0 font-mono" role="status">
-                  {status || "Direct communication with the VIP StudioS team."}
-                </p>
+                {status && (
+                  <p aria-live="polite" className="text-xs text-center text-[#71717A] m-0 font-mono" role="status">
+                    {status}
+                  </p>
+                )}
               </form>
             )}
           </div>

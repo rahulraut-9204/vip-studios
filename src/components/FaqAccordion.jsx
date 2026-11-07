@@ -6,28 +6,44 @@ export default function FaqAccordion() {
 
   const faqs = [
     {
-      q: "How much does it cost, and how are retainers structured?",
-      a: "Our dedicated monthly retainers start at $1,450/month for active short-form sprints and $2,850/month for our full Growth Engine (which includes daily reels, long-form YouTube masters, and channel management). All prices are flat monthly rates with zero hidden fees.",
+      q: "What social media services do you provide?",
+      a: "VIP StudioS provides end-to-end social media solutions: comprehensive account management, content strategy, monthly editorial planning, Reels and short-form creation, professional video shooting and editing, multi-camera podcast production, YouTube channel management, custom carousels and graphic design, content publishing, and monthly performance analysis.",
     },
     {
-      q: "What is your typical turnaround time?",
-      a: "Vertical reels and short-form cuts are delivered within 24 to 48 business hours. Long-form YouTube edits and podcast episodes are typically delivered in 3 to 4 business days. Need something faster? Rush same-day turnaround is available on priority packages.",
+      q: "Which platforms do you manage?",
+      a: "We actively manage Instagram accounts, Facebook pages, YouTube channels, and LinkedIn company profiles. Every platform has unique algorithms and audience expectations, so we tailor aspect ratios, copy, and posting times accordingly.",
     },
     {
-      q: "What is your revision policy if I need changes?",
-      a: "We offer unlimited revisions until you are 100% satisfied with the cut. We utilize collaborative timecoded review links (Frame.io style) so you can pause at any second, leave precise feedback, and our editors turn around revisions within 12-24 hours.",
+      q: "Do you create monthly content calendars?",
+      a: "Yes. Every month starts with a dedicated content calendar detailing post themes, hook concepts, format types (Reels, carousels, single graphics), and target publishing dates. Content is produced and scheduled in advance upon your review.",
     },
     {
-      q: "Which platforms do you optimize video content for?",
-      a: "We engineer content natively for YouTube (16:9 4K and Shorts), Instagram (Reels & Feed), TikTok (9:16), LinkedIn (square/vertical executive video), and paid social ads (Meta & TikTok Ads). Every cut is formatted with platform-specific safe zones and aspect ratios.",
+      q: "Do you provide video shooting?",
+      a: "Yes. We offer on-location video shooting in Pune and across Maharashtra. Our team arrives with professional cinema cameras, directional lighting, and wireless audio equipment to film batches of interviews, patient testimonials, property walkthroughs, or brand films.",
     },
     {
-      q: "Are there long-term contracts or lock-ins?",
-      a: "No. All our retainers operate on a flexible month-to-month basis. You can pause or cancel anytime with a simple 30-day notice. We earn your partnership every single month through measurable retention and view growth.",
+      q: "Do you create Instagram Reels?",
+      a: "Absolutely. Reels creation is one of our flagship capabilities. We handle conceptualization, viral hook writing, footage editing, kinetic typography, trending audio selection, and color grading in DaVinci Resolve.",
     },
     {
-      q: "How do we hand over raw footage and brand assets?",
-      a: "We provide an automated cloud workspace via Google Drive, Dropbox, or Frame.io. You simply upload your raw camera clips, voice recordings, or b-roll, and our studio ingest engine immediately queues them for cutting.",
+      q: "Can you manage our complete Instagram and Facebook pages?",
+      a: "Yes. Many of our clients delegate their complete page operations to us. We manage creative design, caption copywriting, hashtag strategy, daily/weekly publishing, story updates, and basic community inquiry routing.",
+    },
+    {
+      q: "Do you provide YouTube management?",
+      a: "Yes. We handle end-to-end YouTube channel management including long-form episodic video editing, clickable high-CTR custom thumbnails, SEO titles and descriptions, chaptering, playlist curation, and YouTube Shorts cutdowns.",
+    },
+    {
+      q: "Do you offer monthly packages?",
+      a: "Yes. We structure transparent monthly retainers tailored to your required volume of content (e.g., 12, 20, or 30+ posts/reels per month). Monthly packages ensure consistent execution, priority turnaround, and dependable brand growth.",
+    },
+    {
+      q: "How does the onboarding process work?",
+      a: "Onboarding is simple: (1) Discovery Call to understand your brand and targets; (2) Account Audit & Content Strategy Blueprint; (3) Asset handover via cloud storage; (4) Monthly content plan review; (5) Production and scheduled rollout.",
+    },
+    {
+      q: "Do you work with businesses outside Pune?",
+      a: "Yes. While our physical studio and production crew are based in Pune, we manage social media and video editing for clients across India and internationally. For remote clients, you can upload raw camera clips or smartphone footage to our cloud drive, and our post-production team handles the rest.",
     },
   ];
 
@@ -38,26 +54,26 @@ export default function FaqAccordion() {
   return (
     <section
       id="faq"
-      aria-labelledby="faq-title"
-      className="py-24 bg-[#0A0A0A] relative overflow-hidden"
+      aria-labelledby="faq-heading"
+      className="py-24 bg-[#0E0E0E] border-t border-[#1E1E1E] relative overflow-hidden"
     >
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FFD21C]/10 border border-[#FFD21C]/25 text-[#FFD21C] text-xs font-mono font-bold uppercase tracking-wider mb-3">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#FFD21C]/10 border border-[#FFD21C]/25 text-[#FFD21C] text-xs font-mono font-bold uppercase tracking-wider mb-4">
             <HelpCircle size={14} /> CLARITY &amp; ANSWERS
           </div>
           <h2
-            id="faq-title"
+            id="faq-heading"
             className="text-3xl sm:text-5xl font-black text-white tracking-tight font-display m-0 mb-4"
           >
             Frequently Asked <span className="text-[#FFD21C]">Questions.</span>
           </h2>
           <p className="text-base text-[#A1A1AA] m-0 font-sans leading-relaxed">
-            Everything you need to know about working with VIP StudioS before our kickoff call.
+            Everything you need to know about our social media management, video production, and retained partnerships.
           </p>
         </div>
 
-        {/* FAQ Accordion List */}
+        {/* 10 FAQs Accordion */}
         <div className="space-y-4">
           {faqs.map((faq, idx) => {
             const isOpen = openIndex === idx;
@@ -71,6 +87,7 @@ export default function FaqAccordion() {
                 }`}
               >
                 <button
+                  type="button"
                   onClick={() => toggleFaq(idx)}
                   className="w-full p-6 text-left flex items-center justify-between gap-4 cursor-pointer focus:outline-none"
                   aria-expanded={isOpen}

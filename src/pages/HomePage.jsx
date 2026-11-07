@@ -10,21 +10,26 @@ import {
   Mic2,
   Youtube,
   Layers,
+  Palette,
+  MessageCircle,
 } from "lucide-react";
-import { Link, useOutletContext } from "react-router-dom";
+import { Link } from "react-router-dom";
 import HeroReel from "../components/HeroReel.jsx";
 import StatsCounter from "../components/StatsCounter.jsx";
+import ClientSocialShowcase from "../components/ClientSocialShowcase.jsx";
+import IndustriesSection from "../components/IndustriesSection.jsx";
 import ProcessSection from "../components/ProcessSection.jsx";
-import ResultsSection from "../components/ResultsSection.jsx";
+import ContentEcosystemSection from "../components/ContentEcosystemSection.jsx";
+import WhyVipSection from "../components/WhyVipSection.jsx";
 import TestimonialsSection from "../components/TestimonialsSection.jsx";
-import PricingSection from "../components/PricingSection.jsx";
+import TeamSection from "../components/TeamSection.jsx";
 import FaqAccordion from "../components/FaqAccordion.jsx";
-import LeadMagnetSection from "../components/LeadMagnetSection.jsx";
 import LeadCaptureForm from "../components/LeadCaptureForm.jsx";
 import ProjectCard from "../components/ProjectCard.jsx";
 import CinemaModal from "../components/CinemaModal.jsx";
 import { serviceOfferings } from "../data/services.js";
 import usePublishedProjects from "../hooks/usePublishedProjects.js";
+import { getWhatsAppHref } from "../data/contact.js";
 
 const serviceIconsMap = {
   "social-media-management": Share2,
@@ -37,43 +42,217 @@ const serviceIconsMap = {
   "brand-content": Layers,
 };
 
-const PORTFOLIO_FILTERS = ["All", "Reels", "Long-form", "Podcasts", "Ads", "Branding"];
+const PORTFOLIO_FILTERS = [
+  "All Projects",
+  "Social Media Management",
+  "Instagram Reels",
+  "YouTube Videos",
+  "Podcast",
+  "Creative Designs",
+  "Carousels",
+  "Brand Campaigns",
+];
 
 export default function HomePage() {
-  const context = useOutletContext();
-  const openCalendly = context?.openCalendly;
-
   const [previewProject, setPreviewProject] = useState(null);
-  const [portfolioCategory, setPortfolioCategory] = useState("All");
+  const [portfolioCategory, setPortfolioCategory] = useState("All Projects");
 
   const { projects: publishedProjects, isLoading, error } = usePublishedProjects();
 
-  // Filterable Our Work
+  const whatsAppHref = getWhatsAppHref(
+    "Hi VIP StudioS, I'm ready to take our brand seriously on social media. Let's discuss."
+  );
+
+  // Interactive portfolio filter mapping
   const filteredProjects = useMemo(() => {
-    if (portfolioCategory === "All") return publishedProjects;
+    if (portfolioCategory === "All Projects") return publishedProjects;
     return publishedProjects.filter((p) => {
-      if (portfolioCategory === "Reels") return p.category === "Reels";
-      if (portfolioCategory === "Long-form") return p.category === "Long-form" || p.category === "Video" || p.category === "YouTube";
-      if (portfolioCategory === "Podcasts") return p.category === "Podcasts" || p.category === "Podcast";
-      if (portfolioCategory === "Ads") return p.category === "Ads" || p.category === "Social Media";
-      if (portfolioCategory === "Branding") return p.category === "Branding";
+      const cat = p.category?.toLowerCase() || "";
+      if (portfolioCategory === "Instagram Reels") return cat.includes("reel");
+      if (portfolioCategory === "YouTube Videos") return cat.includes("youtube") || cat.includes("video") || cat.includes("long-form");
+      if (portfolioCategory === "Podcast") return cat.includes("podcast");
+      if (portfolioCategory === "Social Media Management") return cat.includes("social") || cat.includes("management");
+      if (portfolioCategory === "Creative Designs" || portfolioCategory === "Carousels") return cat.includes("branding") || cat.includes("design") || cat.includes("carousel");
+      if (portfolioCategory === "Brand Campaigns") return cat.includes("branding") || cat.includes("campaign") || cat.includes("ads");
       return p.category === portfolioCategory;
     });
   }, [publishedProjects, portfolioCategory]);
 
   return (
     <div className="vip-home bg-[#0A0A0A] text-white">
-      {/* 2. Hero: Outcome Headline, One-Line Subheading, Dual CTAs, Showreel & Trust Strip */}
-      <HeroReel projects={publishedProjects} onOpenCalendly={openCalendly} />
+      {/* SECTION 01 — HERO */}
+      <HeroReel projects={publishedProjects} />
 
-      {/* 3. Animated Stats Counters */}
+      {/* SECTION 02 — TRUST & EXPERIENCE */}
       <StatsCounter />
 
-      {/* 4. Filterable Our Work Portfolio */}
+      {/* SECTION 03 — ABOUT OUR SERVICES */}
       <section
-        id="portfolio"
-        aria-labelledby="portfolio-title"
+        id="services"
+        aria-labelledby="services-heading"
         className="py-24 bg-[#0A0A0A] border-t border-[#1E1E1E] relative overflow-hidden"
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#FFD21C] shadow-[0_0_8px_#FFD21C]" />
+                <span className="font-mono text-xs uppercase tracking-widest text-[#FFD21C] font-bold">
+                  SERVICES &amp; CAPABILITIES
+                </span>
+              </div>
+              <h2
+                id="services-heading"
+                className="text-3xl sm:text-5xl font-black tracking-tight text-white m-0 font-display"
+              >
+                Complete Social Media Solutions <br />
+                <span className="text-[#FFD21C]">Under One Roof.</span>
+              </h2>
+            </div>
+            <p className="text-base text-[#A1A1AA] max-w-md m-0 font-sans leading-relaxed">
+              Your business needs more than occasional posts. It needs a consistent content strategy, engaging creatives, and a professional digital presence. VIP StudioS brings all these elements together.
+            </p>
+          </div>
+
+          {/* 8 Core Service Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            {[
+              {
+                slug: "social-media-management",
+                title: "Social Media Management",
+                desc: "Complete Instagram and Facebook account handling, publishing calendars, and community positioning.",
+                deliverables: ["Profile optimization", "Monthly content planning", "Scheduled publishing", "Engagement tracking"],
+                icon: Share2,
+              },
+              {
+                slug: "content-strategy",
+                title: "Content Strategy",
+                desc: "Audience research, competitive gap analysis, and tailored monthly content pillars aligned with business revenue.",
+                deliverables: ["Pillar development", "Viral retention hooks", "Script templates", "Competitor analysis"],
+                icon: TrendingUp,
+              },
+              {
+                slug: "professional-video-editing",
+                title: "Reels & Video Editing",
+                desc: "High-retention 9:16 vertical reels and shorts with kinetic text, micro-pacing, and audio sound sync.",
+                deliverables: ["Kinetic subtitles", "Sound design & foley", "DaVinci color grade", "Multi-platform cutdowns"],
+                icon: Scissors,
+              },
+              {
+                slug: "video-shoots",
+                title: "Video Production",
+                desc: "Professional on-location video shooting in Pune with cinema cameras, studio lighting, and directional audio.",
+                deliverables: ["On-location shoots", "Interview direction", "B-roll capture", "Pristine audio recording"],
+                icon: Video,
+              },
+              {
+                slug: "podcast-production",
+                title: "Podcast Production",
+                desc: "Multi-camera studio podcast shooting, audio mastering, and viral short-form clip distribution.",
+                deliverables: ["Multi-cam switching", "Dialogue noise reduction", "Short clips extraction", "YouTube packaging"],
+                icon: Mic2,
+              },
+              {
+                slug: "youtube-channel-management",
+                title: "YouTube Management",
+                desc: "Long-form episodic video editing, clickable custom thumbnails, SEO titles, chaptering, and Shorts rollout.",
+                deliverables: ["Long-form master cuts", "High-CTR thumbnails", "SEO description & tags", "Community updates"],
+                icon: Youtube,
+              },
+              {
+                slug: "content-creation",
+                title: "Creative Design",
+                desc: "Infographic carousels, custom branded graphics, feed aesthetics, and high-save visual assets.",
+                deliverables: ["Multi-slide carousels", "Brand asset templates", "Story creatives", "Offer flyers"],
+                icon: Palette,
+              },
+              {
+                slug: "brand-content",
+                title: "Brand Content Development",
+                desc: "Cohesive visual storytelling and long-term brand equity development across all digital touchpoints.",
+                deliverables: ["Brand visual guidelines", "Founder stories", "Commercial brand films", "Identity assets"],
+                icon: Layers,
+              },
+            ].map((srv, idx) => {
+              const Icon = srv.icon;
+              return (
+                <article
+                  key={idx}
+                  className="p-7 rounded-2xl bg-[#141414]/90 backdrop-blur-md border border-[#222222] hover:border-[#FFD21C]/50 transition-all duration-300 flex flex-col justify-between group shadow-xl"
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="w-12 h-12 rounded-xl bg-[#1C1C1C] text-[#FFD21C] flex items-center justify-center border border-white/5 group-hover:scale-110 group-hover:bg-[#FFD21C] group-hover:text-[#0A0A0A] transition-all">
+                        <Icon size={22} />
+                      </div>
+                      <span className="font-mono text-xs font-black text-[#71717A] tracking-wider uppercase">
+                        0{idx + 1}
+                      </span>
+                    </div>
+
+                    <h3 className="text-xl font-bold text-white mb-2 font-display group-hover:text-[#FFD21C] transition-colors leading-snug">
+                      {srv.title}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-[#A1A1AA] leading-relaxed mb-6 font-sans">
+                      {srv.desc}
+                    </p>
+
+                    <div className="pt-3 border-t border-[#222222] mb-6">
+                      <strong className="block text-[10px] font-mono uppercase text-[#71717A] tracking-wider mb-2">
+                        Deliverables:
+                      </strong>
+                      <div className="flex flex-wrap gap-1.5">
+                        {srv.deliverables.map((item, dIdx) => (
+                          <span
+                            key={dIdx}
+                            className="font-mono text-[10px] text-[#CCCCCC] bg-[#1A1A1A] px-2 py-0.5 rounded border border-white/5"
+                          >
+                            {item}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-4 border-t border-[#222222] flex items-center justify-between">
+                    <Link
+                      to={`/services/${srv.slug}`}
+                      className="text-xs font-mono font-bold text-white group-hover:text-[#FFD21C] inline-flex items-center gap-1 transition-colors"
+                    >
+                      <span>Explore Service</span>
+                      <ArrowRight size={13} />
+                    </Link>
+                    <a
+                      href={`#enquiry?service=${encodeURIComponent(srv.title)}`}
+                      className="text-xs font-mono font-bold text-[#FFD21C] hover:underline"
+                    >
+                      Enquire →
+                    </a>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+
+          <div className="flex items-center justify-between flex-wrap gap-4 pt-6 border-t border-[#1E1E1E]">
+            <span className="font-mono text-xs text-[#71717A]">
+              END-TO-END SOCIAL MEDIA MANAGEMENT &amp; CREATIVE CONTENT PRODUCTION
+            </span>
+            <Link
+              to="/services"
+              className="button button-outline text-xs font-mono font-bold uppercase inline-flex items-center gap-2"
+            >
+              View Full Services Directory <ArrowUpRight size={14} />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 04 — OUR WORK / PORTFOLIO */}
+      <section
+        id="work"
+        aria-labelledby="portfolio-heading"
+        className="py-24 bg-[#0E0E0E] border-t border-[#1E1E1E] relative overflow-hidden"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
@@ -81,18 +260,18 @@ export default function HomePage() {
               <div className="flex items-center gap-2 mb-3">
                 <span className="w-2.5 h-2.5 rounded-full bg-[#FFD21C] shadow-[0_0_8px_#FFD21C]" />
                 <span className="font-mono text-xs uppercase tracking-widest text-[#FFD21C] font-bold">
-                  HIGH-RETENTION PORTFOLIO
+                  SELECTED WORK ARCHIVE
                 </span>
               </div>
               <h2
-                id="portfolio-title"
+                id="portfolio-heading"
                 className="text-3xl sm:text-5xl font-black tracking-tight text-white m-0 font-display"
               >
-                Selected Work. <span className="text-[#FFD21C]">Engineered to Convert.</span>
+                Creative Work. <span className="text-[#FFD21C]">Real Brands. Real Content.</span>
               </h2>
             </div>
-            <p className="text-sm sm:text-base text-[#A1A1AA] max-w-md m-0 font-sans leading-relaxed">
-              Explore 9:16 viral reels, episodic YouTube series, commercial brand films, and visual podcasts built for compounding attention.
+            <p className="text-base text-[#A1A1AA] max-w-md m-0 font-sans leading-relaxed">
+              Browse actual creative cuts, high-retention Reels, YouTube episodes, and carousels engineered for our retained clients.
             </p>
           </div>
 
@@ -119,7 +298,7 @@ export default function HomePage() {
             </a>
           </div>
 
-          {/* Filter Categories Toolbar */}
+          {/* Interactive Filter Toolbar */}
           <div className="flex flex-wrap items-center justify-between gap-4 mb-10 pb-6 border-b border-[#1E1E1E]">
             <div className="flex flex-wrap items-center gap-2">
               {PORTFOLIO_FILTERS.map((cat) => {
@@ -135,20 +314,20 @@ export default function HomePage() {
                         : "bg-[#141414] text-[#A1A1AA] border-[#222222] hover:text-white hover:border-[#333333]"
                     }`}
                   >
-                    {cat === "All" ? "ALL PROJECTS" : cat}
+                    {cat}
                   </button>
                 );
               })}
             </div>
 
             <span className="font-mono text-xs text-[#71717A]">
-              AUTOPLAY ON HOVER · CLICK FOR LIGHTBOX
+              AUTOPLAY ON HOVER · CLICK FOR DETAIL LIGHTBOX
             </span>
           </div>
 
           {isLoading && (
             <div className="py-20 text-center font-mono text-sm text-[#A1A1AA]">
-              <span className="inline-block animate-spin mr-2 text-[#FFD21C]">●</span> Loading curated portfolio cuts…
+              <span className="inline-block animate-spin mr-2 text-[#FFD21C]">●</span> Loading curated cuts…
             </div>
           )}
 
@@ -158,7 +337,7 @@ export default function HomePage() {
             </div>
           )}
 
-          {/* Portfolio Grid */}
+          {/* Project Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-12">
             {filteredProjects.map((project, index) => (
               <ProjectCard
@@ -175,119 +354,76 @@ export default function HomePage() {
               to="/work"
               className="button button-outline font-mono text-xs font-bold uppercase tracking-wider inline-flex items-center gap-2"
             >
-              View Full Portfolio Archive <ArrowUpRight size={15} />
+              View Full Work Archive <ArrowUpRight size={15} />
             </Link>
           </div>
         </div>
       </section>
 
-      {/* 5. Services: Cards with Icons, One-Line Benefit Each & Scope */}
-      <section
-        id="services"
-        aria-labelledby="services-title"
-        className="py-24 bg-[#0E0E0E] border-t border-[#1E1E1E] relative overflow-hidden"
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
-            <div>
-              <div className="flex items-center gap-2 mb-3">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#FFD21C] shadow-[0_0_8px_#FFD21C]" />
-                <span className="font-mono text-xs uppercase tracking-widest text-[#FFD21C] font-bold">
-                  CORE AGENCY CAPABILITIES
-                </span>
-              </div>
-              <h2
-                id="services-title"
-                className="text-3xl sm:text-5xl font-black tracking-tight text-white m-0 font-display"
+      {/* SECTION 05 — CLIENT SOCIAL MEDIA SHOWCASE */}
+      <ClientSocialShowcase />
+
+      {/* SECTION 06 — INDUSTRIES WE WORK WITH */}
+      <IndustriesSection />
+
+      {/* SECTION 07 — OUR CONTENT PROCESS */}
+      <ProcessSection />
+
+      {/* SECTION 08 — ONE CONTENT IDEA, MULTIPLE FORMATS */}
+      <ContentEcosystemSection />
+
+      {/* SECTION 09 — WHY VIP STUDIOS? */}
+      <WhyVipSection />
+
+      {/* SECTION 10 — CLIENT TESTIMONIALS */}
+      <TestimonialsSection />
+
+      {/* SECTION 11 — OUR TEAM */}
+      <TeamSection />
+
+      {/* SECTION 12 — FAQ */}
+      <FaqAccordion />
+
+      {/* SECTION 13 — PROJECT ENQUIRY FORM */}
+      <LeadCaptureForm />
+
+      {/* SECTION 14 — FINAL CTA */}
+      <section className="py-20 bg-gradient-to-b from-[#0A0A0A] to-[#121212] border-t border-[#1E1E1E] text-center relative overflow-hidden">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <span className="font-mono text-xs font-bold uppercase tracking-widest text-[#FFD21C] block mb-3">
+            TAKE THE NEXT STEP
+          </span>
+          <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight font-display mb-4">
+            Ready to Take Your Brand <br />
+            <span className="text-[#FFD21C]">Seriously on Social Media?</span>
+          </h2>
+          <p className="text-base text-[#A1A1AA] max-w-xl mx-auto font-sans leading-relaxed mb-8">
+            Let&apos;s create content that represents your brand, builds credibility, and connects with the right audience.
+          </p>
+
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            <a
+              href="#enquiry"
+              className="button button-gold py-4 px-8 text-xs font-mono font-bold uppercase tracking-wider inline-flex items-center gap-2 shadow-[0_0_25px_rgba(255,210,28,0.35)]"
+            >
+              <span>Start Your Project</span>
+              <ArrowUpRight size={15} />
+            </a>
+
+            {whatsAppHref && (
+              <a
+                href={whatsAppHref}
+                target="_blank"
+                rel="noreferrer"
+                className="button button-outline py-4 px-7 text-xs font-mono font-bold uppercase tracking-wider inline-flex items-center gap-2 hover:border-[#25D366] hover:text-[#25D366]"
               >
-                Full-Funnel Services. <br />
-                <span className="text-[#FFD21C]">One Coordinated Partner.</span>
-              </h2>
-            </div>
-            <p className="text-base text-[#A1A1AA] max-w-md m-0 font-sans leading-relaxed">
-              We eliminate the friction of coordinating between disconnected videographers, editors, and ad agencies.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-            {serviceOfferings.slice(0, 6).map((service, index) => {
-              const IconComponent = serviceIconsMap[service.slug] || Scissors;
-              return (
-                <article
-                  key={service.slug}
-                  className="p-8 rounded-2xl bg-[#141414]/90 backdrop-blur-md border border-[#222222] hover:border-[#FFD21C]/50 transition-all duration-300 flex flex-col justify-between group shadow-xl"
-                >
-                  <div>
-                    <div className="flex items-center justify-between mb-5">
-                      <div className="w-12 h-12 rounded-xl bg-[#1C1C1C] text-[#FFD21C] flex items-center justify-center border border-white/5 group-hover:bg-[#FFD21C] group-hover:text-[#0A0A0A] transition-all">
-                        <IconComponent size={22} />
-                      </div>
-                      <span className="font-mono text-xs font-black text-[#71717A] tracking-wider uppercase">
-                        0{index + 1} // SPRINT
-                      </span>
-                    </div>
-
-                    <h3 className="text-2xl font-black text-white mb-2 font-display group-hover:text-[#FFD21C] transition-colors">
-                      {service.title}
-                    </h3>
-                    <p className="text-xs sm:text-sm text-[#A1A1AA] leading-relaxed mb-6 font-sans">
-                      {service.shortDescription}
-                    </p>
-
-                    <div className="flex flex-wrap gap-1.5 mb-6">
-                      {service.scope.slice(0, 3).map((item) => (
-                        <span
-                          key={item}
-                          className="font-mono text-[10px] text-[#CCCCCC] bg-[#1A1A1A] px-2.5 py-1 rounded-md border border-white/5"
-                        >
-                          {item}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="pt-4 border-t border-[#222222] flex items-center justify-between">
-                    <Link
-                      to={`/services/${service.slug}`}
-                      className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-white group-hover:text-[#FFD21C] transition-colors"
-                    >
-                      <span>Learn More</span>
-                      <ArrowRight size={13} />
-                    </Link>
-                    <a
-                      href={`#contact?service=${encodeURIComponent(service.title)}`}
-                      className="text-xs font-mono font-bold text-[#FFD21C] hover:underline"
-                    >
-                      Book Service →
-                    </a>
-                  </div>
-                </article>
-              );
-            })}
+                <MessageCircle size={16} className="text-[#25D366]" />
+                <span>Chat on WhatsApp</span>
+              </a>
+            )}
           </div>
         </div>
       </section>
-
-      {/* 6. Process: 4-Step Animated Timeline */}
-      <ProcessSection />
-
-      {/* 7. Case Studies / Results */}
-      <ResultsSection />
-
-      {/* 8. Testimonials Carousel */}
-      <TestimonialsSection />
-
-      {/* 9. Pricing & Packages */}
-      <PricingSection />
-
-      {/* 10. Frequently Asked Questions Accordion */}
-      <FaqAccordion />
-
-      {/* 11. Lead Magnet Download Section */}
-      <LeadMagnetSection />
-
-      {/* 11. Final CTA Banner & High-Converting Lead Form */}
-      <LeadCaptureForm onOpenCalendly={openCalendly} />
 
       {/* Lightbox Cinema Preview Modal */}
       <CinemaModal

@@ -1,30 +1,30 @@
-import { ArrowUpRight, Menu, MessageCircle, X, Sparkles } from "lucide-react";
+import { ArrowUpRight, Menu, MessageCircle, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import Brand from "./Brand.jsx";
 import { getWhatsAppHref } from "../data/contact.js";
 
 const navLinks = [
-  { label: "Work", to: "#portfolio" },
-  { label: "Services", to: "#services" },
-  { label: "Process", to: "#process" },
-  { label: "Results", to: "#results" },
-  { label: "Pricing", to: "#pricing" },
-  { label: "FAQ", to: "#faq" },
+  { label: "Home", to: "/" },
+  { label: "Services", to: "/services" },
+  { label: "Our Work", to: "/work" },
+  { label: "About", to: "/about" },
+  { label: "Process", to: "/process" },
+  { label: "Contact", to: "/contact" },
 ];
 
-export default function SiteHeader({ onOpenCalendly }) {
+export default function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const menuToggleRef = useRef(null);
   const location = useLocation();
   const whatsAppHref = getWhatsAppHref(
-    "Hi VIP StudioS, I'd like to discuss a content strategy & video editing partnership."
+    "Hi VIP StudioS, I'm interested in social media management and content creation for my business."
   );
 
   useEffect(() => {
     setMenuOpen(false);
-  }, [location.pathname, location.hash]);
+  }, [location.pathname]);
 
   useEffect(() => {
     let frame = 0;
@@ -41,18 +41,6 @@ export default function SiteHeader({ onOpenCalendly }) {
       if (frame) window.cancelAnimationFrame(frame);
     };
   }, []);
-
-  function handleNavClick(e, targetHash) {
-    if (location.pathname === "/") {
-      e.preventDefault();
-      const el = document.querySelector(targetHash);
-      if (el) {
-        el.scrollIntoView({ behavior: "smooth" });
-        window.history.pushState(null, "", targetHash);
-      }
-    }
-    setMenuOpen(false);
-  }
 
   return (
     <header
@@ -77,33 +65,33 @@ export default function SiteHeader({ onOpenCalendly }) {
         {/* Desktop Navigation Links */}
         <nav
           aria-label="Primary navigation"
-          className="hidden lg:flex items-center gap-8 font-mono text-xs uppercase tracking-wider"
+          className="hidden lg:flex items-center gap-7 font-mono text-xs uppercase tracking-wider"
         >
-          {navLinks.map((link) => {
-            const href = location.pathname === "/" ? link.to : `/${link.to}`;
-            return (
-              <a
-                key={link.label}
-                href={href}
-                onClick={(e) => handleNavClick(e, link.to)}
-                className="text-[#CCCCCC] hover:text-[#FFD21C] transition-colors font-bold cursor-pointer"
-              >
-                {link.label}
-              </a>
-            );
-          })}
+          {navLinks.map((link) => (
+            <NavLink
+              key={link.to}
+              to={link.to}
+              end={link.to === "/"}
+              className={({ isActive }) =>
+                `transition-colors font-bold ${
+                  isActive ? "text-[#FFD21C]" : "text-[#CCCCCC] hover:text-[#FFD21C]"
+                }`
+              }
+            >
+              {link.label}
+            </NavLink>
+          ))}
         </nav>
 
         {/* Header Right Actions */}
         <div className="hidden sm:flex items-center gap-3">
-          <a
-            href={location.pathname === "/" ? "#contact" : "/#contact"}
+          <Link
+            to="/contact"
             className="button button-gold button-small font-mono text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1.5 shadow-[0_0_15px_rgba(255,210,28,0.3)] hover:scale-105 transition-all"
           >
-            <Sparkles size={13} />
-            <span>Get a Free Strategy Call</span>
+            <span>Let&apos;s Work Together</span>
             <ArrowUpRight size={14} />
-          </a>
+          </Link>
         </div>
 
         {/* Mobile Hamburger Button */}
@@ -123,29 +111,31 @@ export default function SiteHeader({ onOpenCalendly }) {
       {menuOpen && (
         <div className="lg:hidden bg-[#0A0A0A]/95 backdrop-blur-xl border-b border-[#222222] px-6 py-8 animate-fade-in">
           <div className="flex flex-col gap-4 font-mono text-sm uppercase tracking-wider mb-8">
-            {navLinks.map((link) => {
-              const href = location.pathname === "/" ? link.to : `/${link.to}`;
-              return (
-                <a
-                  key={link.label}
-                  href={href}
-                  onClick={(e) => handleNavClick(e, link.to)}
-                  className="text-white hover:text-[#FFD21C] transition-colors py-2 border-b border-white/5 font-bold"
-                >
-                  {link.label}
-                </a>
-              );
-            })}
+            {navLinks.map((link) => (
+              <NavLink
+                key={link.to}
+                to={link.to}
+                end={link.to === "/"}
+                onClick={() => setMenuOpen(false)}
+                className={({ isActive }) =>
+                  `py-2 border-b border-white/5 font-bold transition-colors ${
+                    isActive ? "text-[#FFD21C]" : "text-white hover:text-[#FFD21C]"
+                  }`
+                }
+              >
+                {link.label}
+              </NavLink>
+            ))}
           </div>
 
           <div className="flex flex-col gap-3">
-            <a
-              href="#contact"
+            <Link
+              to="/contact"
               onClick={() => setMenuOpen(false)}
               className="button button-gold w-full py-3.5 text-xs font-mono font-bold uppercase tracking-wider text-center"
             >
-              Get a Free Strategy Call →
-            </a>
+              Let&apos;s Work Together →
+            </Link>
             {whatsAppHref && (
               <a
                 href={whatsAppHref}
@@ -153,7 +143,7 @@ export default function SiteHeader({ onOpenCalendly }) {
                 rel="noreferrer"
                 className="button button-outline w-full py-3 text-xs font-mono font-bold uppercase tracking-wider inline-flex items-center justify-center gap-2"
               >
-                <MessageCircle size={16} className="text-[#25D366]" /> Direct WhatsApp Chat
+                <MessageCircle size={16} className="text-[#25D366]" /> Chat on WhatsApp
               </a>
             )}
           </div>
