@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { trackEvent } from "../data/analytics.js";
 import { getProjectBySlug } from "../data/projects.js";
@@ -8,34 +8,38 @@ import SiteFooter from "./SiteFooter.jsx";
 import SiteHeader from "./SiteHeader.jsx";
 import WhatsAppButton from "./WhatsAppButton.jsx";
 import MobilePersistentCTA from "./MobilePersistentCTA.jsx";
+import ScrollProgressBar from "./ScrollProgressBar.jsx";
+import CustomCursor from "./CustomCursor.jsx";
+import ExitIntentModal from "./ExitIntentModal.jsx";
+import CalendlyModal from "./CalendlyModal.jsx";
 
 const siteOrigin = "https://vip-studios.pages.dev";
 
 const pageMetadata = {
   "/": {
-    title: "VIP STUDIOS | Creative Video Editing & Content Studio",
+    title: "VIP StudioS | Complete Content, Social Media & Digital Growth Partner",
     description:
-      "Commercial video editing, high-retention vertical reels, YouTube series, podcasts, and digital content crafted for brands and creators.",
+      "We turn content into customers. Commercial video production, high-retention video editing, viral reels, podcasts, and full-funnel digital growth.",
   },
   "/services": {
-    title: "Video Editing & Production Services | VIP STUDIOS",
+    title: "Services & Solutions | VIP StudioS",
     description:
-      "Explore video editing, commercial brand films, 9:16 vertical reels, podcasts, YouTube management, and DaVinci color grading.",
+      "High-retention editing, commercial brand films, viral reels, visual podcasts, and complete omnichannel growth suites.",
   },
   "/work": {
-    title: "Selected Work & Portfolio | VIP STUDIOS",
+    title: "Selected Work & Portfolio | VIP StudioS",
     description:
-      "Explore commercial video edits, high-retention vertical reels, YouTube productions, and brand films crafted by VIP STUDIOS.",
+      "Explore commercial brand films, high-retention vertical reels, podcasts, and digital campaigns crafted by VIP StudioS.",
   },
   "/about": {
-    title: "About the Studio | VIP STUDIOS",
+    title: "About the Studio | VIP StudioS",
     description:
-      "Meet VIP STUDIOS: a creative video editing and digital content studio crafting high-impact visual stories for businesses and creators.",
+      "Meet VIP StudioS: a creative video editing and digital growth partner turning content into revenue.",
   },
   "/contact": {
-    title: "Start a Project | VIP STUDIOS",
+    title: "Start a Project | VIP StudioS",
     description:
-      "Share your video editing or content brief with VIP STUDIOS by email or direct WhatsApp chat.",
+      "Book a free strategy call or submit your project brief directly to the VIP StudioS team.",
   },
 };
 
@@ -43,23 +47,23 @@ function applyRouteMetadata(pathname, project, service, pendingProject = false) 
   const normalizedPath = pathname.replace(/\/$/, "") || "/";
   const metadata = pendingProject
     ? {
-        title: "Selected Project — VIP STUDIOS",
-        description: "Explore selected video and content work from VIP STUDIOS.",
+        title: "Selected Project — VIP StudioS",
+        description: "Explore selected video and content work from VIP StudioS.",
       }
     : project
     ? {
-        title: `${project.title} — VIP STUDIOS`,
+        title: `${project.title} — VIP StudioS`,
         description: project.summary,
       }
     : service
       ? {
-          title: `${service.title} — VIP STUDIOS`,
+          title: `${service.title} — VIP StudioS`,
           description: service.description,
         }
       : pageMetadata[normalizedPath] ?? {
-          title: "Page Not Found — VIP STUDIOS",
+          title: "Page Not Found — VIP StudioS",
           description:
-            "This page is not available. Explore VIP STUDIOS services or contact the studio.",
+            "This page is not available. Explore VIP StudioS services or contact the studio.",
         };
   const canonicalUrl = new URL(pathname, siteOrigin).href;
   const isNotFound =
@@ -94,137 +98,51 @@ function applyRouteMetadata(pathname, project, service, pendingProject = false) 
   document
     .querySelector('meta[name="robots"]')
     ?.setAttribute("content", isNotFound ? "noindex, follow" : "index, follow");
-
-  const breadcrumbScriptId = "route-breadcrumb-schema";
-  let breadcrumbScript = document.getElementById(breadcrumbScriptId);
-  if (normalizedPath === "/") {
-    breadcrumbScript?.remove();
-  } else {
-    if (!breadcrumbScript) {
-      breadcrumbScript = document.createElement("script");
-      breadcrumbScript.id = breadcrumbScriptId;
-      breadcrumbScript.type = "application/ld+json";
-      document.head.append(breadcrumbScript);
-    }
-    const routeLabel =
-      project?.title ||
-      service?.title ||
-      ({
-        "/services": "Services",
-        "/work": "Our Work",
-        "/about": "About",
-        "/contact": "Contact",
-      }[normalizedPath] || "Page");
-    const category = normalizedPath.startsWith("/services/")
-      ? "Services"
-      : normalizedPath.startsWith("/work/")
-        ? "Our Work"
-        : "";
-    const crumbs = [{ name: "Home", path: "/" }];
-    if (category) {
-      crumbs.push({
-        name: category,
-        path: category === "Services" ? "/services" : "/work",
-      });
-    }
-    crumbs.push({ name: routeLabel, path: pathname });
-    breadcrumbScript.textContent = JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      itemListElement: crumbs.map((crumb, index) => ({
-        "@type": "ListItem",
-        position: index + 1,
-        name: crumb.name,
-        item: new URL(crumb.path, siteOrigin).href,
-      })),
-    });
-  }
-
-  return metadata;
 }
 
 function RouteMetadata() {
-  const { pathname, hash } = useLocation();
-  const previousPathname = useRef(pathname);
-  const lastTrackedPath = useRef("");
+  const { pathname } = useLocation();
+  const projectSlugMatch = pathname.match(/^\/work\/([^/]+)/);
+  const projectSlug = projectSlugMatch?.[1];
+  const serviceSlugMatch = pathname.match(/^\/services\/([^/]+)/);
+  const serviceSlug = serviceSlugMatch?.[1];
+
+  const localProject = projectSlug ? getProjectBySlug(projectSlug) : null;
+  const localService = serviceSlug
+    ? serviceOfferings.find((s) => s.slug === serviceSlug)
+    : null;
 
   useEffect(() => {
-    let isActive = true;
-    if (previousPathname.current !== pathname) {
-      document.getElementById("main-content")?.focus({ preventScroll: true });
-      previousPathname.current = pathname;
-    }
-
-    if (hash) {
-      window.requestAnimationFrame(() => {
-        const target = document.getElementById(hash.slice(1));
-        if (target) {
-          target.scrollIntoView();
-        } else {
-          window.scrollTo({ top: 0, behavior: "instant" });
-        }
-      });
-    } else {
-      window.scrollTo({ top: 0, behavior: "instant" });
-    }
-    const slug = pathname.startsWith("/work/")
-      ? pathname.split("/").at(-1)
-      : "";
-    const staticProject = slug ? getProjectBySlug(slug) : null;
-    const serviceSlug = pathname.startsWith("/services/")
-      ? pathname.split("/").at(-1)
-      : "";
-    const service = serviceSlug
-      ? serviceOfferings.find((item) => item.slug === serviceSlug)
-      : null;
-    const pendingProject = !staticProject && Boolean(slug && supabase);
-    const metadata = applyRouteMetadata(
-      pathname,
-      staticProject,
-      service,
-      pendingProject,
-    );
-    if (pendingProject) {
+    let isMounted = true;
+    if (projectSlug && !localProject && supabase) {
+      applyRouteMetadata(pathname, null, null, true);
       supabase
         .from("projects")
-        .select("title, summary, is_concept")
-        .eq("slug", slug)
+        .select("title, summary")
+        .eq("slug", projectSlug)
         .eq("status", "published")
         .maybeSingle()
-        .then(({ data, error }) => {
-          if (!isActive) return;
-          if (error) {
-            applyRouteMetadata(pathname, null, null);
-            return;
-          }
-          if (data) {
-            applyRouteMetadata(
-              pathname,
-              { ...data, concept: data.is_concept },
-              null,
-            );
-          } else {
-            applyRouteMetadata(pathname, null, null);
-          }
+        .then(({ data }) => {
+          if (!isMounted) return;
+          applyRouteMetadata(pathname, data ? { title: data.title, summary: data.summary } : null, null);
         })
         .catch(() => {
-          if (isActive) applyRouteMetadata(pathname, null, null);
+          if (isMounted) applyRouteMetadata(pathname, null, null);
         });
+      return () => {
+        isMounted = false;
+      };
     }
-    if (lastTrackedPath.current !== pathname) {
-      trackEvent("page_view", {
-        page_path: pathname,
-        page_title: metadata.title,
-      });
-      if (service) {
-        trackEvent("service_page_view", { service_name: service.title });
-      }
-      lastTrackedPath.current = pathname;
-    }
+
+    applyRouteMetadata(pathname, localProject, localService);
     return () => {
-      isActive = false;
+      isMounted = false;
     };
-  }, [hash, pathname]);
+  }, [pathname, projectSlug, localProject, localService]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
 
   return null;
 }
@@ -235,14 +153,9 @@ function ConversionEvents() {
       const target = event.target instanceof Element ? event.target.closest("a, button") : null;
       if (!target) return;
       const href = target.getAttribute("href") || "";
-      const label = target.getAttribute("aria-label") || target.textContent.trim().replace(/\s+/g, " ");
+      const label = target.getAttribute("aria-label") || target.textContent?.trim()?.replace(/\s+/g, " ") || "";
       if (href.startsWith("https://wa.me/")) {
-        const placement = target.classList.contains("whatsapp-float")
-          ? "floating_button"
-          : target.classList.contains("header-whatsapp")
-            ? "mobile_navigation"
-            : "contact_or_footer";
-        trackEvent("whatsapp_click", { link_text: label, placement });
+        trackEvent("whatsapp_click", { link_text: label });
       } else if (href.startsWith("mailto:")) {
         trackEvent("email_click", { link_text: label });
       } else if (href.startsWith("tel:")) {
@@ -261,20 +174,34 @@ function ConversionEvents() {
 }
 
 export default function SiteShell() {
+  const [calendlyOpen, setCalendlyOpen] = useState(false);
+
+  useEffect(() => {
+    function onOpenCalendly() {
+      setCalendlyOpen(true);
+    }
+    window.addEventListener("open-calendly", onOpenCalendly);
+    return () => window.removeEventListener("open-calendly", onOpenCalendly);
+  }, []);
+
   return (
     <>
+      <ScrollProgressBar />
+      <CustomCursor />
       <a className="skip-link" href="#main-content">
         Skip to content
       </a>
-      <SiteHeader />
+      <SiteHeader onOpenCalendly={() => setCalendlyOpen(true)} />
       <RouteMetadata />
       <ConversionEvents />
       <main id="main-content" tabIndex="-1">
-        <Outlet />
+        <Outlet context={{ openCalendly: () => setCalendlyOpen(true) }} />
       </main>
       <WhatsAppButton />
       <MobilePersistentCTA />
       <SiteFooter />
+      <ExitIntentModal />
+      <CalendlyModal isOpen={calendlyOpen} onClose={() => setCalendlyOpen(false)} />
     </>
   );
 }

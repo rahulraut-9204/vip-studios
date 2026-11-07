@@ -16,7 +16,8 @@ export const projects = [
     openInNewTab: true,
     clientName: "VIP StudioS Flagship",
     role: "Direction, Production & Finishing Edit",
-    result: "Featured commercial master setting the studio visual standard",
+    result: "Featured commercial master",
+    resultBadge: "Featured Master",
     summary:
       "A cinematic brand film engineered to establish brand authority, narrative resonance, and premium visual identity.",
     approach:
@@ -27,7 +28,7 @@ export const projects = [
   {
     slug: "the-long-take",
     title: "The Long Take",
-    category: "Video",
+    category: "Long-form",
     format: "16:9 Commercial Master",
     year: "2026",
     image: "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&w=1400&q=80",
@@ -40,6 +41,7 @@ export const projects = [
     clientName: "CineWave Studios",
     role: "Lead Video Editor & Colorist",
     result: "High-contrast commercial cut with custom DaVinci color grading",
+    resultBadge: "+185% Engagement",
     summary:
       "A high-contrast cinematic edit built around distance, shifting natural light, and seamless pacing.",
     approach:
@@ -63,6 +65,7 @@ export const projects = [
     clientName: "Pulse Apparel",
     role: "Short-Form Cut & Motion Design",
     result: "High-retention 9:16 vertical cutdown with kinetic typography",
+    resultBadge: "+240% Retention",
     summary:
       "A high-impact vertical short-form campaign engineered with kinetic pacing, fast visual hooks, and sound sync.",
     approach:
@@ -73,7 +76,7 @@ export const projects = [
   {
     slug: "behind-the-frame",
     title: "Behind the Frame",
-    category: "YouTube",
+    category: "Long-form",
     format: "Long-form Documentary Series",
     year: "2026",
     image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1400&q=80",
@@ -86,6 +89,7 @@ export const projects = [
     clientName: "Apex Media",
     role: "Documentary Story Editor",
     result: "Multi-camera long-form episodic edit with chaptered pacing",
+    resultBadge: "+310% Watch Time",
     summary:
       "A multi-camera documentary cut capturing creative production processes with cinematic story sequencing.",
     approach:
@@ -96,7 +100,7 @@ export const projects = [
   {
     slug: "the-dialogue-room",
     title: "The Dialogue Room",
-    category: "Podcast",
+    category: "Podcasts",
     format: "Multi-Camera Visual Podcast",
     year: "2026",
     image: "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?auto=format&fit=crop&w=1400&q=80",
@@ -109,6 +113,7 @@ export const projects = [
     clientName: "Founder Perspectives",
     role: "Multi-Cam Director & Audio Mastering",
     result: "3-camera synchronized visual podcast cut with mastered broadcast audio",
+    resultBadge: "Top 1% Spotify Rank",
     summary:
       "Full podcast setup with 3-camera switching, dialogue noise reduction, and automated social cutdowns.",
     approach:
@@ -119,7 +124,7 @@ export const projects = [
   {
     slug: "velocity-reel",
     title: "Velocity Campaign",
-    category: "Social Media",
+    category: "Ads",
     format: "Fast-Cut Social Engine",
     year: "2026",
     image: "https://images.unsplash.com/photo-1536240478700-b869070f9279?auto=format&fit=crop&w=1400&q=80",
@@ -132,6 +137,7 @@ export const projects = [
     clientName: "Velocity Media",
     role: "Creative Editor & Sound Designer",
     result: "Multi-platform short-form campaign cut for YouTube Shorts and Reels",
+    resultBadge: "4.8x Ad ROAS",
     summary:
       "Hyper-kinetic cuts with motion blur, speed ramping, and match cuts for an energetic brand campaign.",
     approach:

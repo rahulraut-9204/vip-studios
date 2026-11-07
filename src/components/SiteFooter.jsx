@@ -1,30 +1,34 @@
-import { ArrowUpRight, MessageCircle } from "lucide-react";
+import { ArrowUpRight, MessageCircle, Instagram, Youtube, Linkedin, Twitter } from "lucide-react";
 import { Link } from "react-router-dom";
 import { contactConfig, getWhatsAppHref } from "../data/contact.js";
 import { serviceOfferings } from "../data/services.js";
 import Brand from "./Brand.jsx";
 
-const footerLinks = [
-  { label: "Home", to: "/" },
-  { label: "Services", to: "/services" },
-  { label: "Our Work", to: "/work" },
-  { label: "About", to: "/about" },
-  { label: "Contact", to: "/contact" },
+const quickLinks = [
+  { label: "Work", to: "/#portfolio" },
+  { label: "Services", to: "/#services" },
+  { label: "Process", to: "/#process" },
+  { label: "Results", to: "/#results" },
+  { label: "Pricing", to: "/#pricing" },
+  { label: "FAQ", to: "/#faq" },
+  { label: "Contact", to: "/#contact" },
 ];
 
 export default function SiteFooter() {
-  const whatsAppHref = getWhatsAppHref();
+  const whatsAppHref = getWhatsAppHref(
+    "Hi VIP StudioS, I'm reaching out from your website footer to discuss a content project."
+  );
 
   return (
     <footer className="site-footer bg-[#0A0A0A] border-t border-[#1E1E1E] text-white">
-      {/* Prominent Footer Brand Tagline */}
+      {/* Top Tagline Strip */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12 border-b border-[#1E1E1E]">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="flex items-center gap-4">
             <Brand />
             <div>
               <span className="font-mono text-xs font-bold uppercase tracking-widest text-[#FFD21C] block">
-                VIP STUDIOS // CREATIVE PARTNER
+                VIP STUDIOS // COMPLETE DIGITAL GROWTH PARTNER
               </span>
               <p className="text-xl sm:text-2xl font-black text-white m-0 tracking-tight font-display">
                 VISION → IDENTITY → PERFORMANCE
@@ -33,9 +37,9 @@ export default function SiteFooter() {
           </div>
 
           <div className="flex items-center gap-3">
-            <Link className="button button-gold" to="/contact">
-              Start a project <ArrowUpRight aria-hidden="true" size={15} />
-            </Link>
+            <a href="#contact" className="button button-gold">
+              Get a Free Strategy Call <ArrowUpRight aria-hidden="true" size={15} />
+            </a>
             {whatsAppHref && (
               <a
                 className="button button-outline inline-flex items-center gap-1.5"
@@ -53,17 +57,51 @@ export default function SiteFooter() {
       <div className="footer-main max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-10">
         <div className="lg:col-span-5">
           <h2 className="text-2xl sm:text-3xl font-black text-white leading-tight mb-3 font-display">
-            A complete content, social media &amp; <span className="text-[#FFD21C]">digital growth partner.</span>
+            Turning creative content into <br />
+            <span className="text-[#FFD21C]">compounding customer pipeline.</span>
           </h2>
           <p className="text-sm text-[#A1A1AA] leading-relaxed max-w-md mb-6 font-sans">
-            We guide ambitious businesses through the full content journey: Strategy → Content → Shoot → Edit → Publish → Manage → Analyse → Grow.
+            Strategy → Content → Shoot → Edit → Publish → Manage → Analyse → Grow. We partner with founders, creators, and brands to engineer high-retention video systems that scale.
           </p>
-          <div className="flex items-center gap-2 text-xs font-mono text-[#71717A]">
-            <span>DAILIES</span>
-            <span>·</span>
-            <span>4K CINEMA MASTERS</span>
-            <span>·</span>
-            <span>9:16 RETENTION REELS</span>
+
+          {/* Social Links */}
+          <div className="flex items-center gap-3 text-[#A1A1AA]">
+            <a
+              href="https://youtube.com"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="YouTube channel"
+              className="w-10 h-10 rounded-xl bg-[#141414] border border-[#222222] hover:border-[#FFD21C] hover:text-[#FFD21C] flex items-center justify-center transition-colors"
+            >
+              <Youtube size={18} />
+            </a>
+            <a
+              href="https://instagram.com"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Instagram profile"
+              className="w-10 h-10 rounded-xl bg-[#141414] border border-[#222222] hover:border-[#FFD21C] hover:text-[#FFD21C] flex items-center justify-center transition-colors"
+            >
+              <Instagram size={18} />
+            </a>
+            <a
+              href="https://linkedin.com"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="LinkedIn profile"
+              className="w-10 h-10 rounded-xl bg-[#141414] border border-[#222222] hover:border-[#FFD21C] hover:text-[#FFD21C] flex items-center justify-center transition-colors"
+            >
+              <Linkedin size={18} />
+            </a>
+            <a
+              href="https://x.com"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="X / Twitter profile"
+              className="w-10 h-10 rounded-xl bg-[#141414] border border-[#222222] hover:border-[#FFD21C] hover:text-[#FFD21C] flex items-center justify-center transition-colors"
+            >
+              <Twitter size={18} />
+            </a>
           </div>
         </div>
 
@@ -72,14 +110,14 @@ export default function SiteFooter() {
             Navigation
           </h3>
           <nav aria-label="Footer navigation" className="flex flex-col gap-2.5 text-sm font-sans">
-            {footerLinks.map((link) => (
-              <Link
+            {quickLinks.map((link) => (
+              <a
+                key={link.label}
+                href={link.to}
                 className="text-[#A1A1AA] hover:text-white transition-colors"
-                key={link.to}
-                to={link.to}
               >
                 {link.label}
-              </Link>
+              </a>
             ))}
           </nav>
         </div>
@@ -106,29 +144,18 @@ export default function SiteFooter() {
           <h3 className="text-xs font-mono font-bold uppercase tracking-widest text-[#FFD21C] mb-1">
             Studio Desk
           </h3>
-          {contactConfig.email ? (
-            <a
-              className="text-[#A1A1AA] hover:text-[#FFD21C] transition-colors break-all"
-              href={`mailto:${contactConfig.email}`}
-            >
-              {contactConfig.email}
-            </a>
-          ) : (
-            <a
-              className="text-[#A1A1AA] hover:text-[#FFD21C] transition-colors break-all"
-              href="mailto:mr.rohit8530@gmail.com"
-            >
-              mr.rohit8530@gmail.com
-            </a>
-          )}
-          {contactConfig.phoneNumber && (
-            <a
-              className="text-[#A1A1AA] hover:text-white transition-colors"
-              href={`tel:+${contactConfig.phoneNumber}`}
-            >
-              {contactConfig.phoneDisplay}
-            </a>
-          )}
+          <a
+            className="text-[#A1A1AA] hover:text-[#FFD21C] transition-colors break-all"
+            href={`mailto:${contactConfig.email || "mr.rohit8530@gmail.com"}`}
+          >
+            {contactConfig.email || "mr.rohit8530@gmail.com"}
+          </a>
+          <a
+            className="text-[#A1A1AA] hover:text-white transition-colors"
+            href="tel:+918530541815"
+          >
+            +91 85305 41815
+          </a>
           {whatsAppHref && (
             <a
               className="text-[#FFD21C] font-mono text-xs uppercase tracking-wider inline-flex items-center gap-1 hover:underline"
@@ -139,15 +166,18 @@ export default function SiteFooter() {
               Fast WhatsApp Brief <ArrowUpRight size={13} />
             </a>
           )}
+          <span className="text-xs font-mono text-[#71717A] mt-2">
+            Location: Mumbai / Pune / Global Remote
+          </span>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 border-t border-[#1E1E1E] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-[#71717A]">
         <span>© {new Date().getFullYear()} VIP StudioS. All rights reserved.</span>
         <span className="text-[#FFD21C] font-bold">VISION → IDENTITY → PERFORMANCE</span>
-        <Link className="hover:text-white transition-colors inline-flex items-center gap-1" to="/contact">
+        <a className="hover:text-white transition-colors inline-flex items-center gap-1" href="#contact">
           Start a project <ArrowUpRight size={13} />
-        </Link>
+        </a>
       </div>
     </footer>
   );

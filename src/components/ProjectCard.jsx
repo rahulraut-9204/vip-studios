@@ -1,4 +1,4 @@
-import { ArrowUpRight, Play, Volume2 } from "lucide-react";
+import { ArrowUpRight, Play, Volume2, TrendingUp } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useRef, useState, useEffect } from "react";
 import { getDirectVideoUrl, getMediaPlatformLabel } from "../data/media.js";
@@ -52,6 +52,8 @@ export default function ProjectCard({ project, index = 0, variant = "auto", onPr
       onPreviewCut(project);
     }
   }
+
+  const resultBadgeText = project?.resultBadge || project?.result;
 
   const cardInner = (
     <>
@@ -142,11 +144,16 @@ export default function ProjectCard({ project, index = 0, variant = "auto", onPr
             </span>
             <AspectPill aspect={aspectLabel} resolution="4K" />
           </div>
-          {project.featured && (
+
+          {resultBadgeText ? (
+            <span className="font-mono text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded bg-[#FFD21C] text-[#0A0A0A] shadow-sm flex items-center gap-1">
+              <TrendingUp size={11} /> {resultBadgeText}
+            </span>
+          ) : project.featured ? (
             <span className="font-mono text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded bg-[#FFD21C] text-[#0A0A0A] shadow-sm">
               FEATURED
             </span>
-          )}
+          ) : null}
         </div>
 
         {/* Center Play Button Overlay on Hover */}
@@ -205,7 +212,7 @@ export default function ProjectCard({ project, index = 0, variant = "auto", onPr
           </h3>
           {project.clientName && (
             <p className="project-client font-mono text-xs text-[#A1A1AA] mt-0.5">
-              Client: {project.clientName}
+              Client: <span className="text-white font-semibold">{project.clientName}</span>
             </p>
           )}
         </div>

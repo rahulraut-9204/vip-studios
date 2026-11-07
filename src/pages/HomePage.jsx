@@ -2,9 +2,6 @@ import { useState, useMemo } from "react";
 import {
   ArrowRight,
   ArrowUpRight,
-  CheckCircle2,
-  Mail,
-  MessageCircle,
   Scissors,
   Share2,
   Sparkles,
@@ -14,16 +11,20 @@ import {
   Youtube,
   Layers,
 } from "lucide-react";
-import { motion, useReducedMotion } from "motion/react";
-import { Link } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
 import HeroReel from "../components/HeroReel.jsx";
+import StatsCounter from "../components/StatsCounter.jsx";
+import ProcessSection from "../components/ProcessSection.jsx";
+import ResultsSection from "../components/ResultsSection.jsx";
+import TestimonialsSection from "../components/TestimonialsSection.jsx";
+import PricingSection from "../components/PricingSection.jsx";
+import FaqAccordion from "../components/FaqAccordion.jsx";
+import LeadMagnetSection from "../components/LeadMagnetSection.jsx";
+import LeadCaptureForm from "../components/LeadCaptureForm.jsx";
 import ProjectCard from "../components/ProjectCard.jsx";
 import CinemaModal from "../components/CinemaModal.jsx";
-import { getWhatsAppHref } from "../data/contact.js";
 import { serviceOfferings } from "../data/services.js";
 import usePublishedProjects from "../hooks/usePublishedProjects.js";
-import { CATEGORIES, BRAND_JOURNEY } from "../config/site.js";
-import { isSupabaseConfigured, supabase } from "../lib/supabase.js";
 
 const serviceIconsMap = {
   "social-media-management": Share2,
@@ -36,321 +37,124 @@ const serviceIconsMap = {
   "brand-content": Layers,
 };
 
-function revealProps(reduceMotion, delay = 0) {
-  return {
-    initial: reduceMotion ? false : { opacity: 0, y: 18 },
-    whileInView: { opacity: 1, y: 0 },
-    viewport: { once: true, amount: 0.1 },
-    transition: {
-      delay: reduceMotion ? 0 : delay,
-      duration: reduceMotion ? 0 : 0.45,
-      ease: [0.22, 1, 0.36, 1],
-    },
-  };
-}
+const PORTFOLIO_FILTERS = ["All", "Reels", "Long-form", "Podcasts", "Ads", "Branding"];
 
 export default function HomePage() {
-  const reduceMotion = useReducedMotion();
+  const context = useOutletContext();
+  const openCalendly = context?.openCalendly;
+
   const [previewProject, setPreviewProject] = useState(null);
   const [portfolioCategory, setPortfolioCategory] = useState("All");
-
-  // Ingest form state
-  const [formName, setFormName] = useState("");
-  const [formBrand, setFormBrand] = useState("");
-  const [formEmail, setFormEmail] = useState("");
-  const [formPhone, setFormPhone] = useState("");
-  const [formMessage, setFormMessage] = useState("");
-  const [formSubmitting, setFormSubmitting] = useState(false);
-  const [formSuccess, setFormSuccess] = useState(false);
-  const [formFeedback, setFormFeedback] = useState("");
 
   const { projects: publishedProjects, isLoading, error } = usePublishedProjects();
 
   // Filterable Our Work
   const filteredProjects = useMemo(() => {
     if (portfolioCategory === "All") return publishedProjects;
-    return publishedProjects.filter((p) => p.category === portfolioCategory);
+    return publishedProjects.filter((p) => {
+      if (portfolioCategory === "Reels") return p.category === "Reels";
+      if (portfolioCategory === "Long-form") return p.category === "Long-form" || p.category === "Video" || p.category === "YouTube";
+      if (portfolioCategory === "Podcasts") return p.category === "Podcasts" || p.category === "Podcast";
+      if (portfolioCategory === "Ads") return p.category === "Ads" || p.category === "Social Media";
+      if (portfolioCategory === "Branding") return p.category === "Branding";
+      return p.category === portfolioCategory;
+    });
   }, [publishedProjects, portfolioCategory]);
-
-  const whatsAppHref = getWhatsAppHref(
-    "Hi VIP StudioS, I'm interested in exploring a content and digital growth project."
-  );
-
-  async function handleContactSubmit(e) {
-    e.preventDefault();
-    if (formSubmitting) return;
-
-    if (!formEmail && !formPhone) {
-      setFormFeedback("Please provide at least an email or WhatsApp phone number.");
-      return;
-    }
-
-    setFormSubmitting(true);
-    setFormFeedback("");
-
-    try {
-      if (isSupabaseConfigured && supabase) {
-        const { error: insertError } = await supabase.from("enquiries").insert({
-          name: formName || "Prospective Partner",
-          company: formBrand || "",
-          email: formEmail,
-          phone: formPhone,
-          service: "General / Growth",
-          requirements: formMessage,
-          status: "new",
-        });
-        if (insertError) throw insertError;
-      }
-      setFormSuccess(true);
-    } catch (err) {
-      setFormFeedback(err?.message || "Could not submit brief. Please connect via direct WhatsApp.");
-    } finally {
-      setFormSubmitting(false);
-    }
-  }
 
   return (
     <div className="vip-home bg-[#0A0A0A] text-white">
-      {/* 1. Hero with Brand Message & CTAs */}
-      <HeroReel projects={publishedProjects} />
+      {/* 2. Hero: Outcome Headline, One-Line Subheading, Dual CTAs, Showreel & Trust Strip */}
+      <HeroReel projects={publishedProjects} onOpenCalendly={openCalendly} />
 
-      {/* 2. Credibility Statistics Band */}
-      <section aria-label="Studio credibility statistics" className="py-14 bg-[#121212] border-y border-[#1E1E1E]" id="stats">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-            <div className="p-6 rounded-xl bg-[#161616] border border-[#222222]">
-              <span className="block font-display text-4xl sm:text-5xl font-black text-[#FFD21C] tracking-tight leading-none mb-2">
-                6+
-              </span>
-              <strong className="block text-white text-base font-display font-bold mb-1">
-                Years of Experience
-              </strong>
-              <span className="text-xs text-[#A1A1AA] font-sans">
-                Hands-on video editing, post-production &amp; brand positioning.
-              </span>
-            </div>
-
-            <div className="p-6 rounded-xl bg-[#161616] border border-[#222222]">
-              <span className="block font-display text-4xl sm:text-5xl font-black text-[#FFD21C] tracking-tight leading-none mb-2">
-                10+
-              </span>
-              <strong className="block text-white text-base font-display font-bold mb-1">
-                Team Members
-              </strong>
-              <span className="text-xs text-[#A1A1AA] font-sans">
-                Specialized editors, colorists, sound designers &amp; strategists.
-              </span>
-            </div>
-
-            <div className="p-6 rounded-xl bg-[#161616] border border-[#222222]">
-              <span className="block font-display text-4xl sm:text-5xl font-black text-[#FFD21C] tracking-tight leading-none mb-2">
-                12+
-              </span>
-              <strong className="block text-white text-base font-display font-bold mb-1">
-                Active Clients
-              </strong>
-              <span className="text-xs text-[#A1A1AA] font-sans">
-                Long-term retained creators, corporate leaders &amp; growth partners.
-              </span>
-            </div>
-
-            <div className="p-6 rounded-xl bg-[#161616] border border-[#222222]">
-              <span className="block font-display text-4xl sm:text-5xl font-black text-[#FFD21C] tracking-tight leading-none mb-2">
-                1,000+
-              </span>
-              <strong className="block text-white text-base font-display font-bold mb-1">
-                Projects Delivered
-              </strong>
-              <span className="text-xs text-[#A1A1AA] font-sans">
-                4K commercial cuts, high-retention reels &amp; documentary masters.
-              </span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 3. Services Overview Covering Full Range & Growth Journey */}
-      <motion.section
-        {...revealProps(reduceMotion)}
-        aria-labelledby="services-title"
-        className="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
-        id="services"
-      >
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-          <div>
-            <div className="flex items-center gap-2 mb-3">
-              <span className="w-2 h-2 rounded-full bg-[#FFD21C]" />
-              <span className="font-mono text-xs font-bold uppercase tracking-widest text-[#FFD21C]">
-                FULL-SERVICE CREATIVE &amp; GROWTH PARTNER
-              </span>
-            </div>
-            <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-white m-0 font-display" id="services-title">
-              Complete Content, Social Media &amp; <span className="text-[#FFD21C]">Digital Growth.</span>
-            </h2>
-          </div>
-          <p className="text-sm sm:text-base text-[#A1A1AA] max-w-md m-0 font-sans leading-relaxed">
-            We engineer end-to-end production pipelines built to capture audience attention and scale brand revenue.
-          </p>
-        </div>
-
-        {/* Brand Journey Bar */}
-        <div className="mb-12 p-4 sm:p-5 rounded-xl bg-[#141414] border border-[#222222]">
-          <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-[#FFD21C] block mb-2">
-            THE COMPLETE JOURNEY WE GUIDE YOU THROUGH
-          </span>
-          <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs sm:text-sm font-display font-bold">
-            {BRAND_JOURNEY.map((step, idx) => (
-              <span className="inline-flex items-center gap-2" key={step}>
-                <span className="px-3 py-1 rounded bg-[#1C1C1C] border border-[#2E2E2E] text-white hover:border-[#FFD21C] transition-colors">
-                  {step}
-                </span>
-                {idx < BRAND_JOURNEY.length - 1 && (
-                  <span className="text-[#FFD21C] font-mono text-xs">→</span>
-                )}
-              </span>
-            ))}
-          </div>
-        </div>
-
-        {/* 8 Core Services Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          {serviceOfferings.map((service, index) => {
-            const IconComponent = serviceIconsMap[service.slug] || Scissors;
-            return (
-              <div
-                className="group p-6 rounded-xl bg-[#141414] border border-[#222222] hover:border-[#FFD21C]/60 transition-all flex flex-col justify-between"
-                key={service.slug}
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="w-10 h-10 rounded-lg bg-[#1C1C1C] text-[#FFD21C] flex items-center justify-center border border-white/5 group-hover:bg-[#FFD21C] group-hover:text-[#0A0A0A] transition-colors">
-                      <IconComponent size={20} />
-                    </div>
-                    <span className="font-mono text-[10px] font-bold text-[#71717A] tracking-wider uppercase">
-                      0{index + 1} // SUITE
-                    </span>
-                  </div>
-
-                  <h3 className="text-lg font-bold text-white mb-2 font-display group-hover:text-[#FFD21C] transition-colors">
-                    {service.title}
-                  </h3>
-                  <p className="text-xs sm:text-sm text-[#A1A1AA] leading-relaxed mb-4 font-sans">
-                    {service.shortDescription}
-                  </p>
-                </div>
-
-                <div>
-                  <div className="flex flex-wrap gap-1.5 pt-3 border-t border-[#222222] mb-4">
-                    {service.scope.slice(0, 3).map((item) => (
-                      <span
-                        className="font-mono text-[10px] text-[#A1A1AA] bg-[#1A1A1A] px-2 py-0.5 rounded border border-white/5"
-                        key={item}
-                      >
-                        {item}
-                      </span>
-                    ))}
-                  </div>
-
-                  <Link
-                    className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-[#FFD21C] hover:underline"
-                    to={`/services/${service.slug}`}
-                  >
-                    View Details <ArrowUpRight size={13} />
-                  </Link>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="flex items-center justify-between flex-wrap gap-4 pt-6 border-t border-[#1E1E1E]">
-          <span className="font-mono text-xs text-[#71717A]">
-            FULL PRODUCTION &amp; POST-PRODUCTION SUITE WITH UNLIMITED REVISIONS
-          </span>
-          <Link className="button button-outline text-xs font-mono font-bold uppercase inline-flex items-center gap-2" to="/services">
-            Explore All 8 Services <ArrowUpRight size={14} />
-          </Link>
-        </div>
-      </motion.section>
+      {/* 3. Animated Stats Counters */}
+      <StatsCounter />
 
       {/* 4. Filterable Our Work Portfolio */}
-      <motion.section
-        {...revealProps(reduceMotion)}
-        aria-labelledby="portfolio-title"
-        className="py-24 bg-[#121212] border-y border-[#1E1E1E]"
+      <section
         id="portfolio"
+        aria-labelledby="portfolio-title"
+        className="py-24 bg-[#0A0A0A] border-t border-[#1E1E1E] relative overflow-hidden"
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
             <div>
               <div className="flex items-center gap-2 mb-3">
-                <span className="w-2 h-2 rounded-full bg-[#FFD21C]" />
-                <span className="font-mono text-xs font-bold uppercase tracking-widest text-[#FFD21C]">
-                  SHOWCASE // CURATED WORK
+                <span className="w-2.5 h-2.5 rounded-full bg-[#FFD21C] shadow-[0_0_8px_#FFD21C]" />
+                <span className="font-mono text-xs uppercase tracking-widest text-[#FFD21C] font-bold">
+                  HIGH-RETENTION PORTFOLIO
                 </span>
               </div>
-              <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-white m-0 font-display" id="portfolio-title">
-                Our Work. <span className="text-[#FFD21C]">Crafted to Convert.</span>
+              <h2
+                id="portfolio-title"
+                className="text-3xl sm:text-5xl font-black tracking-tight text-white m-0 font-display"
+              >
+                Selected Work. <span className="text-[#FFD21C]">Engineered to Convert.</span>
               </h2>
             </div>
             <p className="text-sm sm:text-base text-[#A1A1AA] max-w-md m-0 font-sans leading-relaxed">
-              Explore recent projects across social media campaigns, high-retention vertical reels, podcasts, YouTube series, and brand films.
+              Explore 9:16 viral reels, episodic YouTube series, commercial brand films, and visual podcasts built for compounding attention.
             </p>
           </div>
 
-          {/* Filter Categories */}
-          <div className="flex flex-wrap items-center gap-2 mb-10 pb-4 border-b border-[#1E1E1E]">
-            {["All", ...CATEGORIES].map((cat) => {
-              const isActive = portfolioCategory === cat;
-              return (
-                <button
-                  className={`font-mono text-xs uppercase px-4 py-2 rounded-lg border transition-all cursor-pointer font-bold ${
-                    isActive
-                      ? "bg-[#FFD21C] text-[#0A0A0A] border-[#FFD21C] shadow-sm"
-                      : "bg-[#161616] text-[#A1A1AA] border-[#222222] hover:text-white hover:border-[#333333]"
-                  }`}
-                  key={cat}
-                  onClick={() => setPortfolioCategory(cat)}
-                  type="button"
-                >
-                  {cat === "All" ? "ALL WORK" : cat}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Highlight Callout: Direct Link to Brand Film Production */}
-          <div className="mb-8 p-4 rounded-xl bg-[#161616] border border-[#FFD21C]/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#FFD21C] animate-pulse" />
+          {/* Featured Direct Link Callout: Brand Film Production */}
+          <div className="mb-10 p-5 rounded-2xl bg-[#141414] border border-[#FFD21C]/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xl">
+            <div className="flex items-center gap-3.5">
+              <span className="w-3 h-3 rounded-full bg-[#FFD21C] animate-pulse" />
               <div>
-                <strong className="block text-white text-sm font-display font-bold">
+                <strong className="block text-white text-base font-display font-bold">
                   Featured Master Cut: Brand Film Production
                 </strong>
                 <span className="text-xs text-[#A1A1AA] font-sans">
-                  Direct commercial link hosted on YouTube 4K.
+                  Direct commercial cut hosted on YouTube in 4K DCI anamorphic format.
                 </span>
               </div>
             </div>
             <a
-              className="button button-gold button-small inline-flex items-center gap-1.5"
+              className="button button-gold button-small inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider"
               href="https://youtu.be/5ey7tP006cg?si=2XUdvaCgFEbLc06C"
               rel="noopener noreferrer"
               target="_blank"
             >
-              Watch Brand Film <ArrowUpRight size={14} />
+              Watch on YouTube <ArrowUpRight size={14} />
             </a>
+          </div>
+
+          {/* Filter Categories Toolbar */}
+          <div className="flex flex-wrap items-center justify-between gap-4 mb-10 pb-6 border-b border-[#1E1E1E]">
+            <div className="flex flex-wrap items-center gap-2">
+              {PORTFOLIO_FILTERS.map((cat) => {
+                const isActive = portfolioCategory === cat;
+                return (
+                  <button
+                    key={cat}
+                    type="button"
+                    onClick={() => setPortfolioCategory(cat)}
+                    className={`font-mono text-xs uppercase px-4 py-2 rounded-xl border transition-all cursor-pointer font-bold ${
+                      isActive
+                        ? "bg-[#FFD21C] text-[#0A0A0A] border-[#FFD21C] shadow-[0_0_15px_rgba(255,210,28,0.3)] scale-105"
+                        : "bg-[#141414] text-[#A1A1AA] border-[#222222] hover:text-white hover:border-[#333333]"
+                    }`}
+                  >
+                    {cat === "All" ? "ALL PROJECTS" : cat}
+                  </button>
+                );
+              })}
+            </div>
+
+            <span className="font-mono text-xs text-[#71717A]">
+              AUTOPLAY ON HOVER · CLICK FOR LIGHTBOX
+            </span>
           </div>
 
           {isLoading && (
             <div className="py-20 text-center font-mono text-sm text-[#A1A1AA]">
-              <span className="inline-block animate-spin mr-2">●</span> Loading curated cuts…
+              <span className="inline-block animate-spin mr-2 text-[#FFD21C]">●</span> Loading curated portfolio cuts…
             </div>
           )}
 
           {error && (
             <div className="py-12 text-center text-red-400 font-mono text-xs">
-              Notice: Could not load dynamic cuts: {error}. Presenting curated offline archive.
+              Notice: Could not load dynamic cuts: {error}. Presenting offline archive.
             </div>
           )}
 
@@ -358,8 +162,8 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-12">
             {filteredProjects.map((project, index) => (
               <ProjectCard
-                index={index}
                 key={project.slug || index}
+                index={index}
                 onPreviewCut={setPreviewProject}
                 project={project}
               />
@@ -367,389 +171,123 @@ export default function HomePage() {
           </div>
 
           <div className="flex justify-center">
-            <Link className="button button-outline font-mono text-xs font-bold uppercase tracking-wider inline-flex items-center gap-2" to="/work">
-              View Complete Work Archive <ArrowUpRight size={15} />
+            <Link
+              to="/work"
+              className="button button-outline font-mono text-xs font-bold uppercase tracking-wider inline-flex items-center gap-2"
+            >
+              View Full Portfolio Archive <ArrowUpRight size={15} />
             </Link>
           </div>
         </div>
-      </motion.section>
+      </section>
 
-      {/* 5. Reasons to Work with VIP StudioS */}
-      <motion.section
-        {...revealProps(reduceMotion)}
-        aria-labelledby="reasons-title"
-        className="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
-        id="reasons"
+      {/* 5. Services: Cards with Icons, One-Line Benefit Each & Scope */}
+      <section
+        id="services"
+        aria-labelledby="services-title"
+        className="py-24 bg-[#0E0E0E] border-t border-[#1E1E1E] relative overflow-hidden"
       >
-        <div className="max-w-2xl mb-12">
-          <div className="flex items-center gap-2 mb-3">
-            <span className="w-2 h-2 rounded-full bg-[#FFD21C]" />
-            <span className="font-mono text-xs font-bold uppercase tracking-widest text-[#FFD21C]">
-              THE VIP DIFFERENCE
-            </span>
-          </div>
-          <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-white m-0 font-display" id="reasons-title">
-            Why Partner with <span className="text-[#FFD21C]">VIP StudioS.</span>
-          </h2>
-          <p className="text-base text-[#A1A1AA] mt-3 font-sans leading-relaxed">
-            Content creation works best when unified. Here is how our model elevates your brand:
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="p-6 rounded-xl bg-[#141414] border border-[#222222]">
-            <span className="font-mono text-2xl font-black text-[#FFD21C] block mb-3">01</span>
-            <h3 className="text-lg font-bold text-white mb-2 font-display">End-to-End Ownership</h3>
-            <p className="text-sm text-[#A1A1AA] m-0 font-sans leading-relaxed">
-              One synchronized team handles strategy, filming, editing, publishing, analytics, and growth.
-            </p>
-          </div>
-
-          <div className="p-6 rounded-xl bg-[#141414] border border-[#222222]">
-            <span className="font-mono text-2xl font-black text-[#FFD21C] block mb-3">02</span>
-            <h3 className="text-lg font-bold text-white mb-2 font-display">Retention Psychology</h3>
-            <p className="text-sm text-[#A1A1AA] m-0 font-sans leading-relaxed">
-              Every cut, speed ramp, and sound cue is calculated to stop the scroll, elevate watch time, and satisfy audience engagement.
-            </p>
-          </div>
-
-          <div className="p-6 rounded-xl bg-[#141414] border border-[#222222]">
-            <span className="font-mono text-2xl font-black text-[#FFD21C] block mb-3">03</span>
-            <h3 className="text-lg font-bold text-white mb-2 font-display">Cinema-Grade Color &amp; Mix</h3>
-            <p className="text-sm text-[#A1A1AA] m-0 font-sans leading-relaxed">
-              Graded on calibrated monitors in DaVinci Resolve Studio with broadcast-level multi-track audio mastering.
-            </p>
-          </div>
-
-          <div className="p-6 rounded-xl bg-[#141414] border border-[#222222]">
-            <span className="font-mono text-2xl font-black text-[#FFD21C] block mb-3">04</span>
-            <h3 className="text-lg font-bold text-white mb-2 font-display">Built to Scale</h3>
-            <p className="text-sm text-[#A1A1AA] m-0 font-sans leading-relaxed">
-              Structured asset pipelines that allow your output to multiply without sacrificing brand rigor or delivery speed.
-            </p>
-          </div>
-        </div>
-      </motion.section>
-
-      {/* 6. Clear Six-Step Growth Process */}
-      <motion.section
-        {...revealProps(reduceMotion)}
-        aria-labelledby="process-title"
-        className="py-24 bg-[#121212] border-y border-[#1E1E1E]"
-        id="process"
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
             <div>
               <div className="flex items-center gap-2 mb-3">
-                <span className="w-2 h-2 rounded-full bg-[#FFD21C]" />
-                <span className="font-mono text-xs font-bold uppercase tracking-widest text-[#FFD21C]">
-                  METHODICAL EXECUTION
+                <span className="w-2.5 h-2.5 rounded-full bg-[#FFD21C] shadow-[0_0_8px_#FFD21C]" />
+                <span className="font-mono text-xs uppercase tracking-widest text-[#FFD21C] font-bold">
+                  CORE AGENCY CAPABILITIES
                 </span>
               </div>
-              <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-white m-0 font-display" id="process-title">
-                Our 6-Step <span className="text-[#FFD21C]">Growth Process.</span>
-              </h2>
-            </div>
-            <p className="text-sm sm:text-base text-[#A1A1AA] max-w-md m-0 font-sans leading-relaxed">
-              Discover, Strategy, Create, Edit, Publish, Optimize. A proven system that turns raw ideas into compounding brand performance.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[
-              {
-                step: "01",
-                name: "Discover",
-                tagline: "AUDIT & ALIGNMENT",
-                desc: "We analyze your audience demographics, brand identity, competitors, and growth goals to identify immediate high-payoff opportunities.",
-              },
-              {
-                step: "02",
-                name: "Strategy",
-                tagline: "CONTENT BLUEPRINT",
-                desc: "We build your weekly editorial calendar, content pillars, viral retention hooks, and production formats tailored to target platforms.",
-              },
-              {
-                step: "03",
-                name: "Create",
-                tagline: "SHOOT & INGEST",
-                desc: "From creative scripting and lighting direction to camera shooting and raw media ingest, we capture pristine, high-fidelity footage.",
-              },
-              {
-                step: "04",
-                name: "Edit",
-                tagline: "RHYTHM & FINISHING",
-                desc: "Our editors assemble the narrative curve, craft bespoke sound foley, layer motion typography, and calibrate DaVinci color grading.",
-              },
-              {
-                step: "05",
-                name: "Publish",
-                tagline: "PACKAGING & ROLLOUT",
-                desc: "High-CTR custom thumbnails, SEO-optimized titles, hashtags, and multi-format exports (16:9 & 9:16) scheduled for maximum reach.",
-              },
-              {
-                step: "06",
-                name: "Optimize",
-                tagline: "ANALYSIS & COMPOUNDING",
-                desc: "We review retention graphs, click-through rates, and follower conversions, feeding data insights directly back into the next sprint.",
-              },
-            ].map((st) => (
-              <div className="p-6 rounded-xl bg-[#161616] border border-[#222222] flex flex-col justify-between" key={st.step}>
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="font-mono text-xs font-bold text-[#FFD21C]">STEP {st.step}</span>
-                    <span className="font-mono text-[10px] text-[#A1A1AA] px-2 py-0.5 rounded bg-white/5 border border-white/10 uppercase">
-                      {st.tagline}
-                    </span>
-                  </div>
-                  <h3 className="text-xl font-bold text-white mb-2 font-display">{st.name}</h3>
-                  <p className="text-sm text-[#A1A1AA] leading-relaxed m-0 font-sans">{st.desc}</p>
-                </div>
-                <div className="mt-6 pt-4 border-t border-[#222222] flex items-center justify-between text-xs font-mono text-[#71717A]">
-                  <span>SYSTEM PHASE</span>
-                  <span className="text-[#FFD21C]">✓</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </motion.section>
-
-      {/* 7. Workflow Strip & Team / About Section */}
-      <section aria-label="Studio tools and team" className="py-20 bg-[#121212] border-t border-[#1E1E1E]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Production Toolchain Strip */}
-          <div className="mb-16 pb-12 border-b border-[#1E1E1E]">
-            <p className="text-center font-mono text-xs uppercase tracking-widest text-[#71717A] mb-6">
-              ENGINEERED ON INDUSTRY-STANDARD PRODUCTION TOOLCHAINS
-            </p>
-            <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-10 font-mono text-xs font-bold text-[#A1A1AA]">
-              <span className="hover:text-white transition-colors">DAVINCI RESOLVE STUDIO</span>
-              <span className="text-white/20">/</span>
-              <span className="hover:text-white transition-colors">ADOBE PREMIERE PRO</span>
-              <span className="text-white/20">/</span>
-              <span className="hover:text-white transition-colors">AFTER EFFECTS</span>
-              <span className="text-white/20">/</span>
-              <span className="hover:text-white transition-colors">SONY &amp; RED CINEMA DCI</span>
-              <span className="text-white/20">/</span>
-              <span className="hover:text-white transition-colors">4K DCI COLOR SCOPES</span>
-            </div>
-          </div>
-
-          {/* Team / About Section */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-            <div className="lg:col-span-6">
-              <div className="flex items-center gap-2 mb-3">
-                <span className="w-2 h-2 rounded-full bg-[#FFD21C]" />
-                <span className="font-mono text-xs font-bold uppercase tracking-widest text-[#FFD21C]">
-                  ABOUT VIP STUDIOS
-                </span>
-              </div>
-              <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight mb-4 font-display">
-                Editors, Directors &amp; <span className="text-[#FFD21C]">Growth Partners.</span>
-              </h2>
-              <p className="text-sm sm:text-base text-[#A1A1AA] leading-relaxed mb-4 font-sans">
-                Founded by passionate creative editors, VIP StudioS connects cinema-quality video production with focused business growth. We craft visual stories that command attention, build credibility, and drive measurable revenue.
-              </p>
-              <p className="text-sm sm:text-base text-[#A1A1AA] leading-relaxed mb-6 font-sans">
-                Whether you need dedicated editing for short-form reels or an ongoing digital growth partner, our team is equipped to scale with your ambitions.
-              </p>
-              <div className="flex items-center gap-4">
-                <Link className="button button-gold text-xs font-mono uppercase font-bold" to="/about">
-                  Learn More About Us <ArrowRight size={14} />
-                </Link>
-                <Link className="button button-outline text-xs font-mono uppercase font-bold" to="/work">
-                  Explore The Work
-                </Link>
-              </div>
-            </div>
-
-            <div className="lg:col-span-6 grid grid-cols-2 gap-4">
-              <div className="p-5 rounded-xl bg-[#161616] border border-[#222222]">
-                <strong className="block text-white text-base font-bold font-display mb-1">
-                  Editorial Craftsmanship
-                </strong>
-                <p className="text-xs text-[#A1A1AA] m-0 font-sans leading-relaxed">
-                  Frame-accurate timing, bespoke audio ducking, and tailored visual hooks.
-                </p>
-              </div>
-
-              <div className="p-5 rounded-xl bg-[#161616] border border-[#222222]">
-                <strong className="block text-white text-base font-bold font-display mb-1">
-                  Strategic Distribution
-                </strong>
-                <p className="text-xs text-[#A1A1AA] m-0 font-sans leading-relaxed">
-                  Tailored packaging for YouTube, Meta, TikTok, and professional networks.
-                </p>
-              </div>
-
-              <div className="p-5 rounded-xl bg-[#161616] border border-[#222222]">
-                <strong className="block text-white text-base font-bold font-display mb-1">
-                  Transparent Timelines
-                </strong>
-                <p className="text-xs text-[#A1A1AA] m-0 font-sans leading-relaxed">
-                  Clear delivery SLAs, collaborative review stages, and zero hidden friction.
-                </p>
-              </div>
-
-              <div className="p-5 rounded-xl bg-[#161616] border border-[#222222]">
-                <strong className="block text-white text-base font-bold font-display mb-1">
-                  Ready to Scale
-                </strong>
-                <p className="text-xs text-[#A1A1AA] m-0 font-sans leading-relaxed">
-                  Sprint models designed to scale output seamlessly as your business expands.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 8. Direct Contact Section */}
-      <section aria-labelledby="contact-title" className="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" id="contact">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-          <div className="lg:col-span-5">
-            <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-white m-0 mb-4 font-display" id="contact-title">
-              Let&apos;s Build Something <span className="text-[#FFD21C]">Exceptional.</span>
-            </h2>
-            <p className="text-base text-[#A1A1AA] font-sans leading-relaxed mb-8">
-              Share your project brief, footage scope, or growth goals. Our lead team will review your requirements and respond promptly.
-            </p>
-
-            <div className="flex flex-col gap-3 font-mono text-xs">
-              <a
-                className="p-4 rounded-xl bg-[#141414] border border-[#222222] hover:border-[#FFD21C] transition-colors flex items-center justify-between text-white"
-                href="mailto:mr.rohit8530@gmail.com"
+              <h2
+                id="services-title"
+                className="text-3xl sm:text-5xl font-black tracking-tight text-white m-0 font-display"
               >
-                <span className="flex items-center gap-2.5">
-                  <Mail className="text-[#FFD21C]" size={16} /> mr.rohit8530@gmail.com
-                </span>
-                <ArrowUpRight size={14} />
-              </a>
-
-              {whatsAppHref && (
-                <a
-                  className="p-4 rounded-xl bg-[#141414] border border-[#222222] hover:border-[#25D366] transition-colors flex items-center justify-between text-white"
-                  href={whatsAppHref}
-                  rel="noreferrer"
-                  target="_blank"
-                >
-                  <span className="flex items-center gap-2.5">
-                    <MessageCircle className="text-[#25D366]" size={16} /> WhatsApp: +91 8530541815
-                  </span>
-                  <span className="px-2 py-0.5 rounded bg-[#25D366]/20 text-[#25D366] font-bold text-[10px]">
-                    FAST CHAT
-                  </span>
-                </a>
-              )}
+                Full-Funnel Services. <br />
+                <span className="text-[#FFD21C]">One Coordinated Partner.</span>
+              </h2>
             </div>
+            <p className="text-base text-[#A1A1AA] max-w-md m-0 font-sans leading-relaxed">
+              We eliminate the friction of coordinating between disconnected videographers, editors, and ad agencies.
+            </p>
           </div>
 
-          <div className="lg:col-span-7 p-6 sm:p-8 rounded-2xl bg-[#141414] border border-[#222222]">
-            {formSuccess ? (
-              <div className="py-12 text-center">
-                <div className="w-16 h-16 rounded-full bg-[#FFD21C]/20 text-[#FFD21C] flex items-center justify-center mx-auto mb-4">
-                  <CheckCircle2 size={32} />
-                </div>
-                <h3 className="text-2xl font-black text-white mb-2 font-display">Brief Logged in Studio Desk!</h3>
-                <p className="text-sm text-[#A1A1AA] max-w-md mx-auto mb-6">
-                  Thank you, {formName || "Partner"}. Our lead director will review your project parameters and reach out promptly.
-                </p>
-                {whatsAppHref && (
-                  <a className="button button-gold" href={whatsAppHref} rel="noreferrer" target="_blank">
-                    <MessageCircle size={15} /> Instant WhatsApp Follow-up
-                  </a>
-                )}
-              </div>
-            ) : (
-              <form className="flex flex-col gap-4" onSubmit={handleContactSubmit}>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-mono font-bold uppercase tracking-wider text-white/80 mb-1.5">
-                      Your Name
-                    </label>
-                    <input
-                      className="w-full bg-[#181818] border border-[#2A2A2A] focus:border-[#FFD21C] rounded-lg px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none transition-colors font-sans"
-                      onChange={(e) => setFormName(e.target.value)}
-                      placeholder="e.g. Alex Vance"
-                      required
-                      type="text"
-                      value={formName}
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-mono font-bold uppercase tracking-wider text-white/80 mb-1.5">
-                      Brand / Company Name
-                    </label>
-                    <input
-                      className="w-full bg-[#181818] border border-[#2A2A2A] focus:border-[#FFD21C] rounded-lg px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none transition-colors font-sans"
-                      onChange={(e) => setFormBrand(e.target.value)}
-                      placeholder="e.g. Apex Media or Creator Handle"
-                      type="text"
-                      value={formBrand}
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-mono font-bold uppercase tracking-wider text-white/80 mb-1.5">
-                      Email Address
-                    </label>
-                    <input
-                      className="w-full bg-[#181818] border border-[#2A2A2A] focus:border-[#FFD21C] rounded-lg px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none transition-colors font-mono"
-                      onChange={(e) => setFormEmail(e.target.value)}
-                      placeholder="alex@company.com"
-                      type="email"
-                      value={formEmail}
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-mono font-bold uppercase tracking-wider text-white/80 mb-1.5">
-                      WhatsApp / Phone
-                    </label>
-                    <input
-                      className="w-full bg-[#181818] border border-[#2A2A2A] focus:border-[#FFD21C] rounded-lg px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none transition-colors font-mono"
-                      onChange={(e) => setFormPhone(e.target.value)}
-                      placeholder="+91 85305 41815"
-                      type="tel"
-                      value={formPhone}
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-mono font-bold uppercase tracking-wider text-white/80 mb-1.5">
-                    Project Brief &amp; Goals
-                  </label>
-                  <textarea
-                    className="w-full bg-[#181818] border border-[#2A2A2A] focus:border-[#FFD21C] rounded-lg px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none transition-colors font-sans"
-                    onChange={(e) => setFormMessage(e.target.value)}
-                    placeholder="Tell us about your project requirements, footage volume, or turnaround timeline..."
-                    rows={4}
-                    value={formMessage}
-                  />
-                </div>
-
-                {formFeedback && (
-                  <p className="text-xs font-mono text-[#FFD21C] m-0">{formFeedback}</p>
-                )}
-
-                <button
-                  className="button button-gold w-full py-4 text-xs font-mono font-bold uppercase tracking-wider cursor-pointer disabled:opacity-50"
-                  disabled={formSubmitting}
-                  type="submit"
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            {serviceOfferings.slice(0, 6).map((service, index) => {
+              const IconComponent = serviceIconsMap[service.slug] || Scissors;
+              return (
+                <article
+                  key={service.slug}
+                  className="p-8 rounded-2xl bg-[#141414]/90 backdrop-blur-md border border-[#222222] hover:border-[#FFD21C]/50 transition-all duration-300 flex flex-col justify-between group shadow-xl"
                 >
-                  {formSubmitting ? "Connecting to Studio Queue…" : "Send Project Brief →"}
-                </button>
-              </form>
-            )}
+                  <div>
+                    <div className="flex items-center justify-between mb-5">
+                      <div className="w-12 h-12 rounded-xl bg-[#1C1C1C] text-[#FFD21C] flex items-center justify-center border border-white/5 group-hover:bg-[#FFD21C] group-hover:text-[#0A0A0A] transition-all">
+                        <IconComponent size={22} />
+                      </div>
+                      <span className="font-mono text-xs font-black text-[#71717A] tracking-wider uppercase">
+                        0{index + 1} // SPRINT
+                      </span>
+                    </div>
+
+                    <h3 className="text-2xl font-black text-white mb-2 font-display group-hover:text-[#FFD21C] transition-colors">
+                      {service.title}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-[#A1A1AA] leading-relaxed mb-6 font-sans">
+                      {service.shortDescription}
+                    </p>
+
+                    <div className="flex flex-wrap gap-1.5 mb-6">
+                      {service.scope.slice(0, 3).map((item) => (
+                        <span
+                          key={item}
+                          className="font-mono text-[10px] text-[#CCCCCC] bg-[#1A1A1A] px-2.5 py-1 rounded-md border border-white/5"
+                        >
+                          {item}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="pt-4 border-t border-[#222222] flex items-center justify-between">
+                    <Link
+                      to={`/services/${service.slug}`}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-white group-hover:text-[#FFD21C] transition-colors"
+                    >
+                      <span>Learn More</span>
+                      <ArrowRight size={13} />
+                    </Link>
+                    <a
+                      href={`#contact?service=${encodeURIComponent(service.title)}`}
+                      className="text-xs font-mono font-bold text-[#FFD21C] hover:underline"
+                    >
+                      Book Service →
+                    </a>
+                  </div>
+                </article>
+              );
+            })}
           </div>
         </div>
       </section>
+
+      {/* 6. Process: 4-Step Animated Timeline */}
+      <ProcessSection />
+
+      {/* 7. Case Studies / Results */}
+      <ResultsSection />
+
+      {/* 8. Testimonials Carousel */}
+      <TestimonialsSection />
+
+      {/* 9. Pricing & Packages */}
+      <PricingSection />
+
+      {/* 10. Frequently Asked Questions Accordion */}
+      <FaqAccordion />
+
+      {/* 11. Lead Magnet Download Section */}
+      <LeadMagnetSection />
+
+      {/* 11. Final CTA Banner & High-Converting Lead Form */}
+      <LeadCaptureForm onOpenCalendly={openCalendly} />
 
       {/* Lightbox Cinema Preview Modal */}
       <CinemaModal
