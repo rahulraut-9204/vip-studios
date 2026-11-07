@@ -3,32 +3,23 @@ import {
   ArrowRight,
   ArrowUpRight,
   CheckCircle2,
-  Clock,
-  Film,
-  Instagram,
-  Layers,
   Mail,
   MessageCircle,
-  Mic2,
-  Play,
-  Repeat,
   Scissors,
   Share2,
   Sparkles,
   TrendingUp,
-  Tv,
-  Users,
   Video,
-  Volume2,
+  Mic2,
   Youtube,
-  Zap,
+  Layers,
 } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import { Link } from "react-router-dom";
 import HeroReel from "../components/HeroReel.jsx";
 import ProjectCard from "../components/ProjectCard.jsx";
 import CinemaModal from "../components/CinemaModal.jsx";
-import { getWhatsAppHref, contactConfig } from "../data/contact.js";
+import { getWhatsAppHref } from "../data/contact.js";
 import { serviceOfferings } from "../data/services.js";
 import usePublishedProjects from "../hooks/usePublishedProjects.js";
 import { CATEGORIES, BRAND_JOURNEY } from "../config/site.js";
@@ -65,9 +56,9 @@ export default function HomePage() {
 
   // Ingest form state
   const [formName, setFormName] = useState("");
+  const [formBrand, setFormBrand] = useState("");
   const [formEmail, setFormEmail] = useState("");
   const [formPhone, setFormPhone] = useState("");
-  const [formService, setFormService] = useState("Video Production & Editing");
   const [formMessage, setFormMessage] = useState("");
   const [formSubmitting, setFormSubmitting] = useState(false);
   const [formSuccess, setFormSuccess] = useState(false);
@@ -82,7 +73,7 @@ export default function HomePage() {
   }, [publishedProjects, portfolioCategory]);
 
   const whatsAppHref = getWhatsAppHref(
-    "Hi VIP StudioS, I'm interested in exploring a complete content and digital growth partnership."
+    "Hi VIP StudioS, I'm interested in exploring a content and digital growth project."
   );
 
   async function handleContactSubmit(e) {
@@ -101,9 +92,10 @@ export default function HomePage() {
       if (isSupabaseConfigured && supabase) {
         const { error: insertError } = await supabase.from("enquiries").insert({
           name: formName || "Prospective Partner",
+          company: formBrand || "",
           email: formEmail,
           phone: formPhone,
-          service: formService,
+          service: "General / Growth",
           requirements: formMessage,
           status: "new",
         });
@@ -197,7 +189,7 @@ export default function HomePage() {
             </h2>
           </div>
           <p className="text-sm sm:text-base text-[#A1A1AA] max-w-md m-0 font-sans leading-relaxed">
-            Not just a posting agency. We engineer end-to-end production pipelines built to capture audience attention and scale revenue.
+            We engineer end-to-end production pipelines built to capture audience attention and scale brand revenue.
           </p>
         </div>
 
@@ -400,7 +392,7 @@ export default function HomePage() {
             Why Partner with <span className="text-[#FFD21C]">VIP StudioS.</span>
           </h2>
           <p className="text-base text-[#A1A1AA] mt-3 font-sans leading-relaxed">
-            Content creation is broken when treated as isolated tasks. Here is how our coordinated model sets your brand apart:
+            Content creation works best when unified. Here is how our model elevates your brand:
           </p>
         </div>
 
@@ -409,7 +401,7 @@ export default function HomePage() {
             <span className="font-mono text-2xl font-black text-[#FFD21C] block mb-3">01</span>
             <h3 className="text-lg font-bold text-white mb-2 font-display">End-to-End Ownership</h3>
             <p className="text-sm text-[#A1A1AA] m-0 font-sans leading-relaxed">
-              No disconnected freelancers. One synchronized team handles strategy, filming, editing, publishing, analytics, and growth.
+              One synchronized team handles strategy, filming, editing, publishing, analytics, and growth.
             </p>
           </div>
 
@@ -417,7 +409,7 @@ export default function HomePage() {
             <span className="font-mono text-2xl font-black text-[#FFD21C] block mb-3">02</span>
             <h3 className="text-lg font-bold text-white mb-2 font-display">Retention Psychology</h3>
             <p className="text-sm text-[#A1A1AA] m-0 font-sans leading-relaxed">
-              Every cut, speed ramp, and sound cue is calculated to stop the scroll, elevate watch time, and satisfy algorithm curves.
+              Every cut, speed ramp, and sound cue is calculated to stop the scroll, elevate watch time, and satisfy audience engagement.
             </p>
           </div>
 
@@ -433,13 +425,13 @@ export default function HomePage() {
             <span className="font-mono text-2xl font-black text-[#FFD21C] block mb-3">04</span>
             <h3 className="text-lg font-bold text-white mb-2 font-display">Built to Scale</h3>
             <p className="text-sm text-[#A1A1AA] m-0 font-sans leading-relaxed">
-              Structured asset pipelines that allow your output to double or triple without sacrificing brand rigor or delivery speed.
+              Structured asset pipelines that allow your output to multiply without sacrificing brand rigor or delivery speed.
             </p>
           </div>
         </div>
       </motion.section>
 
-      {/* 6. Clear Six-Step Process */}
+      {/* 6. Clear Six-Step Growth Process */}
       <motion.section
         {...revealProps(reduceMotion)}
         aria-labelledby="process-title"
@@ -524,94 +516,7 @@ export default function HomePage() {
         </div>
       </motion.section>
 
-      {/* 7. Visual Content & Platform Ecosystem */}
-      <motion.section
-        {...revealProps(reduceMotion)}
-        aria-labelledby="ecosystem-title"
-        className="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
-        id="ecosystem"
-      >
-        <div className="max-w-2xl mb-12">
-          <div className="flex items-center gap-2 mb-3">
-            <span className="w-2 h-2 rounded-full bg-[#FFD21C]" />
-            <span className="font-mono text-xs font-bold uppercase tracking-widest text-[#FFD21C]">
-              MULTIPLIER ARCHITECTURE
-            </span>
-          </div>
-          <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-white m-0 font-display" id="ecosystem-title">
-            The Content &amp; <span className="text-[#FFD21C]">Platform Ecosystem.</span>
-          </h2>
-          <p className="text-base text-[#A1A1AA] mt-3 font-sans leading-relaxed">
-            How a single core master production is repurposed into an omnipresent digital engine across all major platforms:
-          </p>
-        </div>
-
-        <div className="p-6 sm:p-8 rounded-2xl bg-[#141414] border border-[#222222]">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            {/* Left Core Hub */}
-            <div className="lg:col-span-4 p-6 rounded-xl bg-[#1C1C1C] border border-[#FFD21C]/40 text-center">
-              <span className="font-mono text-xs font-bold uppercase text-[#FFD21C] tracking-widest block mb-2">
-                CORE MASTER ASSET
-              </span>
-              <h3 className="text-2xl font-black text-white mb-2 font-display">
-                Brand Film / Studio Podcast
-              </h3>
-              <p className="text-xs text-[#A1A1AA] m-0 font-sans mb-4">
-                High-fidelity 4K recording with calibrated multi-track audio and multi-camera angles.
-              </p>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-[#FFD21C]/10 text-[#FFD21C] font-mono text-xs font-bold">
-                <Zap size={14} /> 1 PRODUCTION → 20+ ASSETS
-              </div>
-            </div>
-
-            {/* Middle Divider */}
-            <div className="hidden lg:flex lg:col-span-1 justify-center text-[#FFD21C] font-mono text-xl">
-              →
-            </div>
-
-            {/* Right Cascading Outputs */}
-            <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="p-4 rounded-lg bg-[#181818] border border-[#2A2A2A]">
-                <div className="flex items-center gap-2 mb-1.5 text-xs font-mono font-bold text-[#FFD21C]">
-                  <Youtube size={15} /> YOUTUBE 4K MASTER
-                </div>
-                <p className="text-xs text-[#A1A1AA] m-0 font-sans">
-                  Long-form episodic asset, chapter timestamps, custom high-CTR thumbnails &amp; SEO description.
-                </p>
-              </div>
-
-              <div className="p-4 rounded-lg bg-[#181818] border border-[#2A2A2A]">
-                <div className="flex items-center gap-2 mb-1.5 text-xs font-mono font-bold text-[#FFD21C]">
-                  <Instagram size={15} /> 10+ 9:16 VERTICAL REELS
-                </div>
-                <p className="text-xs text-[#A1A1AA] m-0 font-sans">
-                  Fast-hook cutdowns engineered for Instagram Reels, TikTok, and YouTube Shorts algorithms.
-                </p>
-              </div>
-
-              <div className="p-4 rounded-lg bg-[#181818] border border-[#2A2A2A]">
-                <div className="flex items-center gap-2 mb-1.5 text-xs font-mono font-bold text-[#FFD21C]">
-                  <Share2 size={15} /> LINKEDIN &amp; SOCIAL CAROUSELS
-                </div>
-                <p className="text-xs text-[#A1A1AA] m-0 font-sans">
-                  High-value quotes, data charts, and leadership snippets for executive authority building.
-                </p>
-              </div>
-
-              <div className="p-4 rounded-lg bg-[#181818] border border-[#2A2A2A]">
-                <div className="flex items-center gap-2 mb-1.5 text-xs font-mono font-bold text-[#FFD21C]">
-                  <TrendingUp size={15} /> CONVERSION PAID ADS
-                </div>
-                <p className="text-xs text-[#A1A1AA] m-0 font-sans">
-                  Targeted short-form video ads optimized for customer acquisition and retargeting campaigns.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </motion.section>
-
-      {/* 8. Workflow Strip & Team / About Section */}
+      {/* 7. Workflow Strip & Team / About Section */}
       <section aria-label="Studio tools and team" className="py-20 bg-[#121212] border-t border-[#1E1E1E]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Production Toolchain Strip */}
@@ -645,17 +550,17 @@ export default function HomePage() {
                 Editors, Directors &amp; <span className="text-[#FFD21C]">Growth Partners.</span>
               </h2>
               <p className="text-sm sm:text-base text-[#A1A1AA] leading-relaxed mb-4 font-sans">
-                Founded by passionate creative editors, VIP StudioS was created to bridge the gap between cinema-quality video production and data-driven business growth. We do not believe in superficial vanity posting—we believe in crafting visual stories that command attention, foster trust, and drive measurable revenue.
+                Founded by passionate creative editors, VIP StudioS connects cinema-quality video production with focused business growth. We craft visual stories that command attention, build credibility, and drive measurable revenue.
               </p>
               <p className="text-sm sm:text-base text-[#A1A1AA] leading-relaxed mb-6 font-sans">
-                Whether you need a dedicated editing room for daily short-form reels or an ongoing multi-channel digital growth partner, our team is equipped to scale with your ambitions.
+                Whether you need dedicated editing for short-form reels or an ongoing digital growth partner, our team is equipped to scale with your ambitions.
               </p>
               <div className="flex items-center gap-4">
                 <Link className="button button-gold text-xs font-mono uppercase font-bold" to="/about">
                   Learn More About Us <ArrowRight size={14} />
                 </Link>
-                <Link className="button button-outline text-xs font-mono uppercase font-bold" to="/process">
-                  Our Workflows
+                <Link className="button button-outline text-xs font-mono uppercase font-bold" to="/work">
+                  Explore The Work
                 </Link>
               </div>
             </div>
@@ -701,21 +606,15 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 9. Direct Contact Section */}
+      {/* 8. Direct Contact Section */}
       <section aria-labelledby="contact-title" className="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" id="contact">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
           <div className="lg:col-span-5">
-            <div className="flex items-center gap-2 mb-3">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#FFD21C] animate-pulse" />
-              <span className="font-mono text-xs font-bold uppercase tracking-widest text-[#FFD21C]">
-                START A PROJECT // CONNECT DIRECTLY
-              </span>
-            </div>
             <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-white m-0 mb-4 font-display" id="contact-title">
               Let&apos;s Build Something <span className="text-[#FFD21C]">Exceptional.</span>
             </h2>
             <p className="text-base text-[#A1A1AA] font-sans leading-relaxed mb-8">
-              Share your project brief, footage scope, or growth goals. Our lead team will review your requirements and respond within 2 to 4 business hours.
+              Share your project brief, footage scope, or growth goals. Our lead team will review your requirements and respond promptly.
             </p>
 
             <div className="flex flex-col gap-3 font-mono text-xs">
@@ -768,12 +667,12 @@ export default function HomePage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-mono font-bold uppercase tracking-wider text-white/80 mb-1.5">
-                      Your Name / Brand
+                      Your Name
                     </label>
                     <input
                       className="w-full bg-[#181818] border border-[#2A2A2A] focus:border-[#FFD21C] rounded-lg px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none transition-colors font-sans"
                       onChange={(e) => setFormName(e.target.value)}
-                      placeholder="e.g. Alex Vance or Apex Brand"
+                      placeholder="e.g. Alex Vance"
                       required
                       type="text"
                       value={formName}
@@ -782,22 +681,15 @@ export default function HomePage() {
 
                   <div>
                     <label className="block text-xs font-mono font-bold uppercase tracking-wider text-white/80 mb-1.5">
-                      Service Category
+                      Brand / Company Name
                     </label>
-                    <select
-                      className="w-full bg-[#181818] border border-[#2A2A2A] focus:border-[#FFD21C] rounded-lg px-4 py-3 text-sm text-white focus:outline-none transition-colors font-sans"
-                      onChange={(e) => setFormService(e.target.value)}
-                      value={formService}
-                    >
-                      <option value="Social Media Management & Strategy">Social Media Management &amp; Strategy</option>
-                      <option value="Video Production & Editing">Video Production &amp; Editing</option>
-                      <option value="Reels & Short-Form Content">Reels &amp; Short-Form Content</option>
-                      <option value="Podcast Production">Podcast Production</option>
-                      <option value="YouTube Channel Management">YouTube Channel Management</option>
-                      <option value="Content Creation">Content Creation</option>
-                      <option value="Creative Branding">Creative Branding</option>
-                      <option value="Digital Growth">Digital Growth</option>
-                    </select>
+                    <input
+                      className="w-full bg-[#181818] border border-[#2A2A2A] focus:border-[#FFD21C] rounded-lg px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none transition-colors font-sans"
+                      onChange={(e) => setFormBrand(e.target.value)}
+                      placeholder="e.g. Apex Media or Creator Handle"
+                      type="text"
+                      value={formBrand}
+                    />
                   </div>
                 </div>
 
@@ -822,7 +714,7 @@ export default function HomePage() {
                     <input
                       className="w-full bg-[#181818] border border-[#2A2A2A] focus:border-[#FFD21C] rounded-lg px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none transition-colors font-mono"
                       onChange={(e) => setFormPhone(e.target.value)}
-                      placeholder="+91 00000 00000"
+                      placeholder="+91 85305 41815"
                       type="tel"
                       value={formPhone}
                     />
@@ -831,13 +723,13 @@ export default function HomePage() {
 
                 <div>
                   <label className="block text-xs font-mono font-bold uppercase tracking-wider text-white/80 mb-1.5">
-                    Project Goals / Raw Footage Details
+                    Project Brief &amp; Goals
                   </label>
                   <textarea
                     className="w-full bg-[#181818] border border-[#2A2A2A] focus:border-[#FFD21C] rounded-lg px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none transition-colors font-sans"
                     onChange={(e) => setFormMessage(e.target.value)}
-                    placeholder="Tell us about your brand targets, footage volume, or timeline requirements..."
-                    rows={3}
+                    placeholder="Tell us about your project requirements, footage volume, or turnaround timeline..."
+                    rows={4}
                     value={formMessage}
                   />
                 </div>

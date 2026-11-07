@@ -2,7 +2,7 @@ import { ArrowUpRight, Play, Volume2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useRef, useState, useEffect } from "react";
 import { getDirectVideoUrl, getMediaPlatformLabel } from "../data/media.js";
-import { AspectPill, AudioEqualizer, TimecodeBadge, ViewfinderCorners } from "./StudioGraphics.jsx";
+import { AspectPill, AudioEqualizer } from "./StudioGraphics.jsx";
 import { getFallbackImage } from "../data/fallbackImages.js";
 
 export default function ProjectCard({ project, index = 0, variant = "auto", onPreviewCut }) {
@@ -19,10 +19,7 @@ export default function ProjectCard({ project, index = 0, variant = "auto", onPr
 
   const isVertical = variant === "vertical" || project?.category === "Reels";
   const isFeatured = variant === "featured" || project?.featured;
-
   const aspectLabel = isVertical ? "9:16" : "16:9";
-  const dummyTimecodes = ["00:00:45:12", "00:01:12:04", "00:03:20:18", "00:00:30:00", "00:02:15:22"];
-  const timecode = dummyTimecodes[index % dummyTimecodes.length];
 
   // Specific requirement: Link "Brand Film Production" to YouTube in a new tab
   const isBrandFilm =
@@ -135,11 +132,9 @@ export default function ProjectCard({ project, index = 0, variant = "auto", onPr
           </>
         )}
 
-        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/40 z-10 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/30 z-10 pointer-events-none" />
 
-        <ViewfinderCorners color="rgba(255, 255, 255, 0.7)" />
-
-        {/* Top Overlays */}
+        {/* Top Badges */}
         <div className="absolute top-3 left-3 right-3 flex items-center justify-between z-20 pointer-events-none">
           <div className="flex items-center gap-2">
             <span className="font-mono text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded bg-black/80 text-white border border-white/10 shadow-sm">
@@ -165,9 +160,11 @@ export default function ProjectCard({ project, index = 0, variant = "auto", onPr
           </span>
         </div>
 
-        {/* Bottom Overlays */}
+        {/* Bottom Bar */}
         <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between z-20 pointer-events-none">
-          <TimecodeBadge timecode={timecode} />
+          <span className="text-[10px] font-mono text-[#A1A1AA] uppercase tracking-wider px-2 py-0.5 rounded bg-black/70 border border-white/10">
+            {project.category}
+          </span>
           <div className="flex items-center gap-2">
             {isPreviewing && (
               <span className="flex items-center gap-1 px-2 py-0.5 rounded bg-black/80 text-[#FFD21C] border border-[#FFD21C]/30 text-[10px] font-mono shadow-sm">

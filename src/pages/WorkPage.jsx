@@ -42,7 +42,7 @@ export default function WorkPage() {
           <div className="flex items-center gap-2 mb-3">
             <span className="w-2.5 h-2.5 rounded-full bg-[#FFD21C] shadow-[0_0_8px_#FFD21C]" />
             <p className="studio-location m-0 font-mono text-xs uppercase tracking-widest text-[#FFD21C] font-bold">
-              SHOWCASE ARCHIVE // CURATED CUTS
+              OUR WORK &amp; PORTFOLIO
             </p>
           </div>
           <h1 className="text-4xl sm:text-6xl font-black tracking-tight leading-none mb-4 text-white font-display">
@@ -179,7 +179,7 @@ export default function WorkPage() {
         <div className="work-inquiry mt-20 p-8 sm:p-12 rounded-2xl bg-[#141414] border border-[#222222] flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-xl">
           <div>
             <span className="font-mono text-xs font-bold uppercase tracking-widest text-[#FFD21C] block mb-2">
-              START A PROJECT // CUTTING ROOM READY
+              START A PROJECT
             </span>
             <h3 className="text-2xl sm:text-3xl font-black text-white m-0 mb-2 font-display">
               Have raw footage or an upcoming production sprint?

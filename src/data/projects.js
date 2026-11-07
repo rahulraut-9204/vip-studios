@@ -16,7 +16,7 @@ export const projects = [
     openInNewTab: true,
     clientName: "VIP StudioS Flagship",
     role: "Direction, Production & Finishing Edit",
-    result: "Featured commercial master setting the visual standard",
+    result: "Featured commercial master setting the studio visual standard",
     summary:
       "A cinematic brand film engineered to establish brand authority, narrative resonance, and premium visual identity.",
     approach:
@@ -39,7 +39,7 @@ export const projects = [
     videoUrl: "https://www.youtube.com/watch?v=LXb3EKWsInQ",
     clientName: "CineWave Studios",
     role: "Lead Video Editor & Colorist",
-    result: "Over 450K impressions and featured on FilmCraft Monthly",
+    result: "High-contrast commercial cut with custom DaVinci color grading",
     summary:
       "A high-contrast cinematic edit built around distance, shifting natural light, and seamless pacing.",
     approach:
@@ -62,11 +62,11 @@ export const projects = [
     videoUrl: "https://www.youtube.com/watch?v=bTqVqk7FSmY",
     clientName: "Pulse Apparel",
     role: "Short-Form Cut & Motion Design",
-    result: "89% 3-second hold rate and 2.4M Instagram views",
+    result: "High-retention 9:16 vertical cutdown with kinetic typography",
     summary:
       "A high-impact vertical short-form campaign engineered with kinetic pacing, fast visual hooks, and sound sync.",
     approach:
-      "Engineered cut tempo to maintain 85%+ retention rate in the first 3 seconds, pairing sound cues with punch-ins and kinetic typography.",
+      "Engineered cut tempo to maintain viewer attention in the opening frames, pairing sound cues with punch-ins and kinetic typography.",
     concept: false,
     featured: true,
   },
@@ -85,7 +85,7 @@ export const projects = [
     videoUrl: "https://www.youtube.com/watch?v=EngW7tLk6R8",
     clientName: "Apex Media",
     role: "Documentary Story Editor",
-    result: "Grew channel subscriber base by 35% in 60 days",
+    result: "Multi-camera long-form episodic edit with chaptered pacing",
     summary:
       "A multi-camera documentary cut capturing creative production processes with cinematic story sequencing.",
     approach:
@@ -108,7 +108,7 @@ export const projects = [
     videoUrl: "https://www.youtube.com/watch?v=21X5lGlDOfg",
     clientName: "Founder Perspectives",
     role: "Multi-Cam Director & Audio Mastering",
-    result: "Top 5% business podcast launch in Q1",
+    result: "3-camera synchronized visual podcast cut with mastered broadcast audio",
     summary:
       "Full podcast setup with 3-camera switching, dialogue noise reduction, and automated social cutdowns.",
     approach:
@@ -131,7 +131,7 @@ export const projects = [
     videoUrl: "https://www.youtube.com/watch?v=aqz-KE-bpKQ",
     clientName: "Velocity Media",
     role: "Creative Editor & Sound Designer",
-    result: "Used as hero campaign cut across TikTok and YouTube Shorts",
+    result: "Multi-platform short-form campaign cut for YouTube Shorts and Reels",
     summary:
       "Hyper-kinetic cuts with motion blur, speed ramping, and match cuts for an energetic brand campaign.",
     approach:

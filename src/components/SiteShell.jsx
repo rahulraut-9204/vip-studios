@@ -32,11 +32,6 @@ const pageMetadata = {
     description:
       "Meet VIP STUDIOS: a creative video editing and digital content studio crafting high-impact visual stories for businesses and creators.",
   },
-  "/process": {
-    title: "Our Process | VIP STUDIOS",
-    description:
-      "See how VIP STUDIOS takes a project from creative brief through rough cut, DaVinci color grading, sound design, and master delivery.",
-  },
   "/contact": {
     title: "Start a Project | VIP STUDIOS",
     description:
@@ -117,7 +112,6 @@ function applyRouteMetadata(pathname, project, service, pendingProject = false) 
       ({
         "/services": "Services",
         "/work": "Our Work",
-        "/process": "Process",
         "/about": "About",
         "/contact": "Contact",
       }[normalizedPath] || "Page");
